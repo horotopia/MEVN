@@ -1,26 +1,29 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  backend:
-    build: ./backend
+  api:
+    container_name: api
+    build:
+      context: ./api
+    env_file: ./api/.env
     ports:
-      - '5000:5000'
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/mydatabase
-    depends_on:
-      - mongo
+      - "5000:5000"
+    networks:
+      - mevn
+    command: ["npm", "start"]
 
-  frontend:
-    build: ./frontend
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    networks:
+      - mevn
+
+  client:
+    container_name: client
+    build:
+      context: ./client
     ports:
-      - '8080:80'
+      - "3000:3000"
 
-  mongo:
-    image: mongo:4.4.3
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
+networks:
+  mevn:
