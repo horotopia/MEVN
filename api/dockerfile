@@ -1,0 +1,11 @@
+FROM node:16-alpine
+
+WORKDIR api/src
+
+RUN mkdir -p api/src
+
+COPY . /api/src
+
+RUN npm install
+
+EXPOSE 3000
