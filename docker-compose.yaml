@@ -13,8 +13,13 @@ services:
     command: ["npm", "start"]
 
   mongodb:
-    container_name: mongodb
     image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/db:/data/db
+    env_file: ./mongo/.env
     networks:
       - mevn
 

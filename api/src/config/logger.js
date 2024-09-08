@@ -1,8 +1,13 @@
-const { createLogger, addColors, format, transports } = require('winston');
-const { combine, timestamp, printf } = format;
-const dotenv = require('dotenv');
+const winston = require("winston")
+const dotenv = require("dotenv")
 
 dotenv.config()
+
+const level = () => {
+  const env = process.env.NODE_ENV ?? "development"
+  const isDevelopment = env === "development"
+  return isDevelopment ? "debug" : "warn"
+}
 
 const levels = {
   error: 0,
@@ -12,12 +17,6 @@ const levels = {
   debug: 5,
 }
 
-const level = () => {
-  const env = process.env.NODE_ENV ?? "development"
-  const isDevelopment = env === "development"
-  return isDevelopment ? "debug" : "warn"
-}
-
 const colors = {
   error: "red",
   warn: "yellow",
@@ -25,37 +24,28 @@ const colors = {
   http: "magenta",
   debug: "white",
 }
+winston.addColors(colors)
 
-addColors(colors)
-
-const format = combine(
-  timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
-  colorize({ all: true }),
-  printf(
+const format = winston.format.combine(
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
+  winston.format.colorize({ all: true }),
+  winston.format.printf(
     (info) => `${info.level}: ${info.message}, timestamp : ${info.timestamp}`,
   ),
 )
 
 const transports = [
-  new transports.Console(),
-  new transports.File({
+  new winston.transports.Console(),
+  new winston.transports.File({
     filename: "logs/error.log",
     level: "error",
   }),
-  new transports.File({ filename: `logs/all_${new Date().toLocaleDateString().split('/').join('')}.log` }),
+  new winston.transports.File({ filename: `logs/all_${new Date().toLocaleDateString().split('/').join('')}.log` }),
 ]
 
-const logger = createLogger({
+const logger = winston.createLogger({
   level: level(),
   levels,
   format,
   transports,
 })
-
-logger.stream = {
-  write: function(message, encoding) {
-    logger.info(message);
-  },
-};
-
-module.exports = logger;
