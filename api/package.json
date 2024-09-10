@@ -32,7 +32,8 @@
     "stripe": "^16.2.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "winston": "^3.13.1"
+    "winston": "^3.13.1",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^9.7.0",
