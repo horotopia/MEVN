@@ -1,17 +1,22 @@
-FROM node:16-alpine
-
-RUN npm install -g http-server
+FROM node:22.6.1-alpine3.20 AS build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
 RUN npm install
+
+ENV PATH /app/node_modules/.bin:$PATH
 
 COPY . .
 
 RUN npm run build
 
+FROM nginx:1.25.4-alpine3.20
+
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /var/www/html/
+
 EXPOSE 3000
 
-CMD [ "http-server", "dist" ]
+ENTRYPOINT ["nginx","-g","daemon off;"]
