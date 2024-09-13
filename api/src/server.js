@@ -1,19 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const dotenv = require('dotenv');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const csurf = require('csurf');
-const swaggerUi = require('swagger-ui-express');
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const swaggerUi = require("swagger-ui-express");
 
-const swaggerSpec = require('./config/swagger');
-const { connectDB } = require('./config/database');
-const logger = require('./config/logger');
+const swaggerSpec = require("./config/swagger");
+const { connectDB } = require("./config/database");
+const logger = require("./config/logger");
 
-const errorHandler = require('./middlewares/errorHandler');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
+const errorHandler = require("./middlewares/errorHandler");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 dotenv.config();
 
@@ -28,21 +27,22 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(csurf({ cookie: true }));
-
-// Routes
-app.use('/api/users', userRoutes);
 
 // Swagger
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // Error handling
 app.use(errorHandler);
 
 // Listen to the server
 const hostname = process.env.API_HOST || "localhost";
-const PORT = process.env.API_PORT || 5000;
+const port = process.env.API_PORT || 5000;
 
-app.listen(PORT, hostname, () => {
-  logger.info(`Server is running on http://${hostname}:${PORT}/`);
+app.listen(port, hostname, () => {
+  logger.info(`Server is running on http://${hostname}:${port}/`);
+  logger.info(`Swagger UI available at http://${hostname}:${port}/doc`);
 });
