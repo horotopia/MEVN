@@ -4,16 +4,29 @@ services:
     build:
       context: ./api
     env_file: ./api/.env
+    environment:
+      - API_HOST
+      - API_PORT
+      - MODE_ENV
+      - MONGO_HOST
+      - MONGO_PORT
+      - MONGO_DB
+      - JWT_SECRET
     ports:
-      - "5000:5000"
+      - 5000:5000
+    depends_on:
+      - mongodb
     networks:
       - mevn
-    command: ["npm", "start"]
 
   mongodb:
     image: mongo
     container_name: mongodb
     env_file: ./mongo/.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
     ports:
       - 27017:27017
     volumes:
@@ -26,7 +39,9 @@ services:
     build:
       context: ./client
     ports:
-      - "3000:3000"
+      - 3000:3000
+    networks:
+      - mevn
 
 networks:
   mevn:

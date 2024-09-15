@@ -39,10 +39,9 @@ app.use("/api/users", userRoutes);
 app.use(errorHandler);
 
 // Listen to the server
-const hostname = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 5000;
 
-app.listen(port, hostname, () => {
-  logger.info(`Server is running on http://${hostname}:${port}/`);
-  logger.info(`Swagger UI available at http://${hostname}:${port}/doc`);
+app.listen(port, () => {
+  logger.info(`Server is running on http://localhost:${port}/`);
+  logger.info(`Swagger UI available at http://localhost:${port}/doc`);
 });

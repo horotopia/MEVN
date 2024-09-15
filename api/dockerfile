@@ -1,11 +1,13 @@
-FROM node:16-alpine
+FROM node:22.6.0-alpine3.20
 
-WORKDIR ./api/src
+WORKDIR /api
 
-RUN mkdir -p api/src
-
-COPY . /api/src
+COPY . .
 
 RUN npm install
 
+RUN npm update
+
 EXPOSE 5000
+
+ENTRYPOINT [ "npm", "run", "dev" ]
