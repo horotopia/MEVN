@@ -24,9 +24,9 @@ connectDB();
 
 // config
 configureCORS(app);
+configureHelmet(app);
 
-// Middleware
-app.use(helmet());
+// Security
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -35,6 +35,9 @@ app.use(cookieParser());
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("Welcome to the API");
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
