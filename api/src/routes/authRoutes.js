@@ -1,8 +1,6 @@
 const express = require("express");
-const { body } = require("express-validator");
 const { register, login } = require("../controllers/authController");
-const validate = require("../middlewares/validate");
-
+const validateUser = require("../middlewares/validator/validateUser");
 const router = express.Router();
 
 /**
@@ -17,28 +15,43 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             items:
- *              ref: '#/components/schemas/User'
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Nom de l'utilisateur
+ *               email:
+ *                 type: string
+ *                 description: Email de l'utilisateur
+ *               password:
+ *                 type: string
+ *                 description: Mot de passe de l'utilisateur
+ *             example:
+ *               name: John Doe
+ *               email: johndoe@example.com
+ *               password: mypassword
  *     responses:
  *       201:
  *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token de l'utilisateur
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Échec de l'authentification
  *       500:
  *         description: Server error
  */
-router.post(
-  "/register",
-  [
-    body("name").notEmpty().withMessage("Name is required"),
-    body("email").isEmail().withMessage("Valid email is required"),
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters long"),
-  ],
-  validate,
-  register
-);
+router.post("/register", validateUser, hashPassword, register);
 
 /**
  * @swagger
@@ -62,6 +75,6 @@ router.post(
  *       500:
  *         description: Server error
  */
-router.post("/login", login);
+router.post("/login", validateUser, login);
 
 module.exports = router;

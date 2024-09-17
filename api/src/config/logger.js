@@ -10,11 +10,11 @@ const level = process.env.NODE_ENV === "development" ? "debug" : "info";
 
 // Define log levels
 const levels = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  http: 3,
-  debug: 5,
+  error: 0, // logger.error(`Erreur capturée : ${e.message}`);
+  warn: 1, // logger.warn("La mémoire disponible est faible, surveillez cela.");
+  info: 2, // logger.info("L'application a démarré correctement sur le port 3000.");
+  http: 3, // logger.http(`${req.method} ${req.url} - ${res.statusCode}`);
+  debug: 5, // logger.debug("Détails internes de la requête : ", { reqBody: req.body, reqParams: req.params });
 };
 
 // Define log colors

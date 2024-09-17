@@ -40,6 +40,12 @@
 ### 7. Dépendances de logging et debugging :
 
 - `winston` : pour le logging avancé.
+  - Récapitulatif des niveaux et de leur utilisation :
+  - error : Pour capturer des erreurs critiques ou des exceptions.
+  - warn : Pour signaler des problèmes potentiels ou des comportements anormaux.
+  - info : Pour consigner des événements normaux ou des informations générales.
+  - http : Pour enregistrer les requêtes HTTP et leur statut.
+  - debug : Pour capturer des informations très détaillées, surtout lors du développement.
 
 ### 8. Dépendances de développement :
 

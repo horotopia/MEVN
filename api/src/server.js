@@ -1,17 +1,16 @@
 const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const swaggerUi = require("swagger-ui-express");
-
+// Configurations
 const swaggerSpec = require("./config/swagger");
 const { connectDB } = require("./config/database");
 const logger = require("./config/logger");
 const configureCORS = require("./config/cors");
-
+// Middlewares
 const errorHandler = require("./middlewares/errorHandler");
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 
@@ -36,7 +35,7 @@ app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Welcome to the API");
+  res.send("Welcome to the API"); // test
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);

@@ -1,6 +1,6 @@
 const express = require("express");
 const { getUsers } = require("../controllers/userController");
-
+const authenticateToken = require("../middlewares/authenticateToken");
 const router = express.Router();
 
 /**
@@ -30,6 +30,6 @@ const router = express.Router();
  *        description: Server error
  */
 
-router.get("/", getUsers);
+router.get("/", authenticateToken, getUsers);
 
 module.exports = router;
