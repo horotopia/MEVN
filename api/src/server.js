@@ -9,6 +9,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 const { connectDB } = require("./config/database");
 const logger = require("./config/logger");
+const configureCORS = require("./config/cors");
 
 const errorHandler = require("./middlewares/errorHandler");
 const authRoutes = require("./routes/authRoutes");
@@ -21,8 +22,10 @@ const app = express();
 // DB Connection
 connectDB();
 
+// config
+configureCORS(app);
+
 // Middleware
-app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
