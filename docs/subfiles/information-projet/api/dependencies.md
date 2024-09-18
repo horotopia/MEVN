@@ -4,8 +4,7 @@
 
 ### 1. Dépendances de sécurité :
 
-- `bcrypt` : pour le hachage des mots de passe.
-- `csurf` : protection contre les attaques CSRF (Cross-Site Request Forgery).
+- `bcrypt` : pour le hachage et la comparaison des mots de passe.
 - `helmet` : renforce la sécurité des en-têtes HTTP.
 - `jsonwebtoken` : génération et validation des tokens JWT pour l'authentification.
 
