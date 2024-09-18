@@ -13,7 +13,7 @@
 
 - `body-parser` : pour parser les corps des requêtes HTTP.
 - `cookie-parser` : pour parser les cookies dans les requêtes HTTP.
-- `cors` : pour gérer les permissions Cross-Origin Resource Sharing.
+- `cors` : pour gérer les permissions Cross-Origin Resource Sharing. L'API est accessible depuis localhost:3000 que celui d'origine.
 - `express` : framework web pour la gestion des requêtes HTTP.
 - `express-validator` : pour la validation des données dans les requêtes HTTP.
 - `multer` : pour le traitement des fichiers multipart/form-data (upload de fichiers).
