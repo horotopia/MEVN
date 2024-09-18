@@ -8,6 +8,7 @@ const swaggerSpec = require("./config/swagger");
 const { connectDB } = require("./config/database");
 const logger = require("./config/logger");
 const configureCORS = require("./config/cors");
+const configureHelmet = require("./config/helmet");
 // Middlewares
 const errorHandler = require("./middlewares/errorHandler");
 // Routes
