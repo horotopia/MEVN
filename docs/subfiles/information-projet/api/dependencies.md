@@ -40,12 +40,18 @@
 ### 7. Dépendances de logging et debugging :
 
 - `winston` : pour le logging avancé.
-  - Récapitulatif des niveaux et de leur utilisation :
-  - error : Pour capturer des erreurs critiques ou des exceptions.
-  - warn : Pour signaler des problèmes potentiels ou des comportements anormaux.
-  - info : Pour consigner des événements normaux ou des informations générales.
-  - http : Pour enregistrer les requêtes HTTP et leur statut.
-  - debug : Pour capturer des informations très détaillées, surtout lors du développement.
+  Récapitulatif des niveaux et de leur utilisation :
+
+  - **Error** : Pour capturer des erreurs critiques ou des exceptions.  
+    `` logger.error(`Erreur capturée : ${e.message}`); ``
+  - **Warn** : Pour signaler des problèmes potentiels ou des comportements anormaux.  
+    `logger.warn("La mémoire disponible est faible, surveillez cela.");`
+  - **Info** : Pour consigner des événements normaux ou des informations générales.  
+    `logger.info("L'application a démarré correctement sur le port 3000.");`
+  - **Http** : Pour enregistrer les requêtes HTTP et leur statut.  
+    `` logger.http(`${req.method} ${req.url} - ${res.statusCode}`); ``
+  - **Debug** : Pour capturer des informations très détaillées, surtout lors du développement.
+    `logger.debug("Détails internes de la requête : ", { reqBody: req.body, reqParams: req.params });`
 
 ### 8. Dépendances de développement :
 
