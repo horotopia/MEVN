@@ -13,7 +13,7 @@ const configureHelmet = require("./config/helmet");
 const errorHandler = require("./middlewares/errorHandler");
 // Routes
 const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
+const usersRoutes = require("./routes/usersRoutes");
 
 dotenv.config();
 
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to the API"); // test
 });
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/users", usersRoutes);
 
 // Error handling
 app.use(errorHandler);
