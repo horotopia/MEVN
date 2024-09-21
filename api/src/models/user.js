@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
  *
  * components:
  *   schemas:
- *     Users:
+ *     User:
  *       type: object
  *       required:
  *         - name
@@ -32,7 +32,7 @@ const bcrypt = require("bcrypt");
  *         role: ROLE_USER
  */
 
-const usersSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
@@ -52,7 +52,7 @@ const usersSchema = new mongoose.Schema({
   },
 });
 
-usersSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
   }
@@ -61,8 +61,8 @@ usersSchema.pre("save", async function (next) {
   next();
 });
 
-usersSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model("Users", usersSchema);
+module.exports = mongoose.model("User", userSchema);

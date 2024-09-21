@@ -1,5 +1,5 @@
 const express = require("express");
-const { getUsers } = require("../controllers/usersController");
+const { getUsers } = require("../controllers/userController");
 const { authenticateToken } = require("../middlewares/jwt");
 const router = express.Router();
 
@@ -17,7 +17,7 @@ const router = express.Router();
  *            schema:
  *              type: array
  *              items:
- *                $ref: '#/components/schemas/Users'
+ *                $ref: '#/components/schemas/User'
  *      400:
  *        description: Bad request
  *      401:

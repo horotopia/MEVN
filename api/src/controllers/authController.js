@@ -1,4 +1,4 @@
-const Users = require('../models/users');
+const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const logger = require('../config/logger');
 const { generateToken } = require('../middlewares/jwt');
@@ -7,14 +7,14 @@ const { generateToken } = require('../middlewares/jwt');
 const register = async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = await Users.findOne({ email });
+  const existingUser = await User.findOne({ email });
   if (existingUser) {
     logger.http(`${req.method} ${req.url} - ${res.statusCode}: User ${email} already exists`);
     return res.status(400).json({ message: 'User already exists' });
   }
 
   try {
-    const user = await Users.create({ email, password });
+    const user = await User.create({ email, password });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
@@ -32,7 +32,7 @@ const login = async (req, res) => {
 
   try {
     // Check if user exists and password is correct
-    const user = await Users.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
       logger.http(`${req.method} ${req.url} - ${res.statusCode}: Invalid credentials`);
       return res.status(400).json({ message: 'Invalid credentials' });

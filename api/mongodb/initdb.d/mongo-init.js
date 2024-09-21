@@ -1,17 +1,17 @@
 db = db.getSiblingDB("ecommerce");
 
-db.createUser({
-    user: "user",
-    pwd: "passuser",
-    roles: [
-        {
-        role: 'readWrite', 
-        db: 'ecommerce'
-        },
-    ],
-});
+// db.createUser({
+//     user: "user",
+//     pwd: "passuser",
+//     roles: [
+//         {
+//         role: 'readWrite', 
+//         db: 'ecommerce'
+//         },
+//     ],
+// });
 
-db.createCollection("users");
+db.createCollection("user");
 
 db.users.insertMany([
     {
