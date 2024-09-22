@@ -1,19 +1,27 @@
 db = db.getSiblingDB("ecommerce");
 
-// db.createUser({
-//     user: "user",
-//     pwd: "passuser",
-//     roles: [
-//         {
-//         role: 'readWrite', 
-//         db: 'ecommerce'
-//         },
-//     ],
-// });
+db.createUser({
+    user: "admin",
+    pwd: "secret",
+    roles: [
+        {
+            role: 'readWrite', 
+            db: 'ecommerce'
+        },
+    ],
+});
 
-db.createCollection("user");
+db.createCollection("users");
 
 db.users.insertMany([
+    {
+        name: "LeGrizzly",
+        email: "xalsie.ff@hotmail.fr",
+        password: null,
+        role: "ROLE_ADMIN",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
     {
         name: "John Doe",
         email: "fake@mail.com",

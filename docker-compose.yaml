@@ -7,20 +7,14 @@ services:
     env_file: ./api/.env
     volumes:
       - ./api:/api
-    environment:
-      - API_HOST
-      - API_PORT
-      - MODE_ENV
-      - MONGO_HOST
-      - MONGO_PORT
-      - MONGO_DB
-      - JWT_SECRET
     ports:
       - 5000:5000
     depends_on:
       - mongodb
     networks:
       - mevn
+    command: >
+      sh -c "yarn install -D && yarn dev"
 
   mongodb:
     image: mongo
@@ -37,17 +31,18 @@ services:
       - mongo_db:/data/db
     networks:
       - mevn
-  
+
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
     restart: always
-    env_file: ./mongo/.env
+    env_file:
+      - ./mongo/.env
+      - ./mongo/.env.mongo-express
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_SERVER: 'mongodb'
+      ME_CONFIG_MONGODB_URL: "mongodb://mongodb:27017"
       ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME}
       ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
     ports:

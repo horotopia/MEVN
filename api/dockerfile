@@ -9,16 +9,10 @@ WORKDIR /api
 
 # COPY . .
 
-# RUN npm install -D --verbose
-# RUN yarn install -D --verbose
-
 EXPOSE 5000
 
-# ENTRYPOINT [ "npm", "run", "dev" ]
-
 # run file script
-
-ENTRYPOINT [ "./entrypoint.sh" ]
+# ENTRYPOINT [ "./entrypoint.sh" ]
 
 # build stage
 FROM base AS build

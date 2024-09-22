@@ -1,12 +1,14 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+import mongoose, { Schema } from 'mongoose';
+import bcrypt from 'bcrypt';
+
+const SALT_WORK_FACTOR = 10;
 
 /**
  * @swagger
  *
  * components:
  *   schemas:
- *     User:
+ *     Users:
  *       type: object
  *       required:
  *         - name
@@ -32,14 +34,14 @@ const bcrypt = require("bcrypt");
  *         role: ROLE_USER
  */
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new Schema({
   name: {
     type: String,
   },
   email: {
     type: String,
     required: true,
-    unique: true,
+    index: { unique: true }
   },
   password: {
     type: String,
@@ -52,17 +54,36 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+UserSchema.virtual('not_hashed_password').set(function (password) {
+  this._not_hashed_password = password;
 });
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
+UserSchema.pre('save', async function(next) {
+  const user = this;
 
-module.exports = mongoose.model("User", userSchema);
+  if (user._not_hashed_password === undefined) {
+    return next();
+  }
+  try {
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    user.password = await bcrypt.hash(user._not_hashed_password, salt);
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * Methods
+*/
+UserSchema.methods = {
+  matchPasswords: async (data) => {
+    return bcrypt.compare(data, this.password);
+  }
+}
+
+const UserModel = mongoose.model('Users', UserSchema)
+
+export {
+  UserModel
+}
