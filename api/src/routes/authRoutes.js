@@ -1,8 +1,8 @@
-const express = require("express");
-const { register, login } = require("../controllers/authController");
-const { validateUser } = require("../middlewares/validator/validateUser");
-const { hashPassword } = require("../middlewares/bcrypt");
-const router = express.Router();
+import express from "express";
+import { registerUser, loginUser, logoutUser } from "../controllers/authController.js";
+import validateUser from "../middlewares/validator/validateUser.js";
+import hashPassword from "../middlewares/bcrypt.js";
+const userRouter = express.Router();
 
 /**
  * @swagger
@@ -52,7 +52,7 @@ const router = express.Router();
  *       500:
  *         description: Server error
  */
-router.post("/register", validateUser, hashPassword, register);
+userRouter.post("/register", validateUser, hashPassword, registerUser);
 
 /**
  * @swagger
@@ -66,8 +66,19 @@ router.post("/register", validateUser, hashPassword, register);
  *         application/json:
  *           schema:
  *             type: object
- *             items:
- *               ref: '#/components/schemas/User'
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Email de l'utilisateur
+ *               password:
+ *                 type: string
+ *                 description: Mot de passe de l'utilisateur
+ *             example:
+ *               email: johndoe@example.com
+ *               password: mypassword
  *     responses:
  *       200:
  *         description: User logged in successfully
@@ -76,6 +87,22 @@ router.post("/register", validateUser, hashPassword, register);
  *       500:
  *         description: Server error
  */
-router.post("/login", validateUser, login);
+userRouter.post("/login", loginUser);
 
-module.exports = router;
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: logout a user
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Server error
+ */
+userRouter.get("/logout", logoutUser);
+
+export default userRouter;

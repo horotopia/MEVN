@@ -1,13 +1,38 @@
-FROM node:22.6.0-alpine3.20
+FROM node:22.6.0-alpine3.20 AS base
+
+RUN npm i -g yarn --force
+
+# development stage
+FROM base AS development
 
 WORKDIR /api
 
-COPY . .
-
-RUN npm install
-
-RUN npm update
+# COPY . .
 
 EXPOSE 5000
 
-ENTRYPOINT [ "npm", "run", "dev" ]
+# run file script
+# ENTRYPOINT [ "./entrypoint.sh" ]
+
+# build stage
+FROM base AS build
+
+WORKDIR /api
+
+RUN yarn install
+
+RUN yarn build
+
+# production stage
+FROM base AS production
+
+WORKDIR /api
+
+COPY --from=build /api/dist ./dist
+COPY --from=build /api/package.json ./
+
+RUN yarn install --production
+
+EXPOSE 5000
+
+CMD ["node", "dist/main.js"]

@@ -1,7 +1,7 @@
-const { body, validationResult } = require("express-validator");
-const logger = require("../../config/logger");
+import { body, validationResult } from "express-validator";
+import logger from "../../config/logger.js";
 
-module.exports.validateUser = [
+const validateUser = [
   // Validation de l'email
   body("email").isEmail().withMessage("E-mail valide obligatoire"),
   // Validation du mot de passe
@@ -22,3 +22,5 @@ module.exports.validateUser = [
     next();
   }
 ];
+
+export default validateUser;
