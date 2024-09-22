@@ -1,6 +1,5 @@
 import compression from "compression";
 import express from "express";
-// import session from "express-session";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
@@ -29,14 +28,6 @@ const app = express();
 configureCORS(app);
 configureHelmet(app);
 
-app.use(express.static("public"));
-// app.use(
-//   session({
-//       secret: process.env.SESSION_SECRET,
-//       resave: true,
-//       saveUninitialized: true,
-//   })
-// );
 app.use(
   compression({
       // Compress all HTTP responses
@@ -68,7 +59,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
-app.use("/upload", uploadRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Listen to the server
 const port = process.env.API_PORT || 5000;
