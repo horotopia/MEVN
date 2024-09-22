@@ -1,7 +1,7 @@
-const helmet = require('helmet');
-const logger = require('./logger');
+import helmet from 'helmet';
+import logger from './logger.js';
 
-module.exports = (app) => {
+const configureHelmet = (app) => {
   app.use(helmet());
   // Optionnel: configuration spécifique si besoin
   // app.use(
@@ -16,3 +16,5 @@ module.exports = (app) => {
   // );
   logger.info('Helmet has been enabled');
 }
+
+export default configureHelmet;

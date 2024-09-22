@@ -1,7 +1,7 @@
-const winston = require("winston");
-const dotenv = require("dotenv");
+import winston from "winston";
+import dotenv from "dotenv";
 
-require("winston-daily-rotate-file");
+import "winston-daily-rotate-file";
 
 dotenv.config();
 
@@ -69,4 +69,4 @@ const logger = winston.createLogger({
   transports,
 });
 
-module.exports = logger;
+export default logger;
