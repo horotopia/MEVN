@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
 
     if (!user || !(await user.matchPasswords(password))) {
       logger.http(`${req.method} ${req.url} - ${res.statusCode}: Invalid credentials`);
-      return res.status(400).json({ body: req.body, message: '1: Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     // Create token
@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
     res.json({ message: 'Connexion réussie', jwtToken });
   } catch (error) {
     logger.error(`Error logging in user ${email}: ${error}`);
-    res.status(500).json({ error: "Test", message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
