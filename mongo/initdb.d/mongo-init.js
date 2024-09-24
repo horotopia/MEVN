@@ -1,23 +1,23 @@
-db = db.getSiblingDB("ecommerce");
+db = db.getSiblingDB(process.env.MONGO_INITDB_DATABASE);
 
 db.createUser({
-    user: "admin",
-    pwd: "secret",
+    user: process.env.MONGO_USER,
+    pwd: process.env.MONGO_PASSWORD,
     roles: [
         {
             role: 'readWrite', 
-            db: 'ecommerce'
-        },
-    ],
+            db: process.env.MONGO_INITDB_DATABASE
+        }
+    ]
 });
 
-db.createCollection("users");
+db.createCollection('users');
 
 db.users.insertMany([
     {
         name: "LeGrizzly",
-        email: "xalsie.ff@hotmail.fr",
-        password: null,
+        email: "LeGrizzly@hotmail.fr",
+        password: "$2a$10$HdhL0Nwy2AQrAwyVxQ9HMuhpz5cgczdhrRPY4ePCh.gseXHniOYvS", // password: "LeGrizzly@hotmail.fr"
         role: "ROLE_ADMIN",
         createdAt: new Date(),
         updatedAt: new Date(),

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { UserModel } from '../models/user.model.js';
+import { User } from '../models/user.model.js';
 
 const auth = async (req, res, next) => {
   const jwtToken = req.cookies["jwtToken"];
@@ -11,7 +11,7 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ message: 'Token is not valid' });
     }
 
-    const { id, email, role } = await UserModel.findById(decoded.id);
+    const { id, email, role } = await User.findById(decoded.id);
     req.user = { id, email, role };
 
     if (role !== 'ROLE_ADMIN') {
