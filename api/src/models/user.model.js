@@ -8,7 +8,7 @@ const SALT_WORK_FACTOR = 10;
  *
  * components:
  *   schemas:
- *     Users:
+ *     User:
  *       type: object
  *       required:
  *         - name
@@ -34,58 +34,56 @@ const SALT_WORK_FACTOR = 10;
  *         role: ROLE_USER
  */
 
-const userSchema = new Schema({
-    name: {
-        type: String,
-    },
-    email: {
-        type: String,
-        required: true,
-        index: { unique: true }
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    role: {
-        type: String,
-        enum: ["ROLE_USER", "ROLE_STORE_KEEPER", "ROLE_ADMIN", "ROLE_COMPTA"],
-        default: "ROLE_USER",
-    },
+const UserSchema = new Schema({
+  name: {
+    type: String,
+  },
+  email: {
+    type: String,
+    required: true,
+    index: { unique: true }
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ["ROLE_USER", "ROLE_STORE_KEEPER", "ROLE_ADMIN", "ROLE_COMPTA"],
+    default: "ROLE_USER",
+  },
 });
 
-userSchema.virtual('not_hashed_password').set(function (password) {
-    this._not_hashed_password = password;
+UserSchema.virtual('not_hashed_password').set(function (password) {
+  this._not_hashed_password = password;
 });
 
-userSchema.pre('save', async function(next) {
-    const user = this;
+UserSchema.pre('save', async function(next) {
+  const user = this;
 
-    if (user._not_hashed_password === undefined) {
-        return next();
-    }
-    try {
-        const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-        user.password = await bcrypt.hash(user._not_hashed_password, salt);
-        return next();
-    } catch (err) {
-        return next(err);
-    }
+  if (user._not_hashed_password === undefined) {
+    return next();
+  }
+  try {
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    user.password = await bcrypt.hash(user._not_hashed_password, salt);
+    return next();
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /**
  * Methods
 */
-userSchema.methods.matchPasswords = function (password) {
-    return bcrypt.compareSync(password, this.password);
-};
+UserSchema.methods = {
+  matchPasswords: async (data) => {
+    return bcrypt.compare(data, this.password);
+  }
+}
 
-// Delete password send to client
-userSchema.set('toJSON', {
-    transform: function (doc, ret) {
-        delete ret.password;
-        return ret;
-    }
-});
+const UserModel = mongoose.model('User', UserSchema)
 
-export const User = mongoose.model('Users', userSchema);
+export {
+  UserModel
+}

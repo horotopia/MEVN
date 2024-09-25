@@ -1,9 +1,9 @@
-import { User } from '../models/user.model.js';
+import { UserModel } from '../models/user.model.js';
 import logger from '../config/logger.js';
 
 const getUsers = async (req, res, next) => {
   try {
-    const result = await User.find()
+    const result = await UserModel.find()
 
     res
       .status(200)
@@ -17,7 +17,7 @@ const getUsers = async (req, res, next) => {
 
 const deleteUsers = async (req, res, next) => {
   try {
-    await User.deleteMany({});
+    await UserModel.deleteMany({});
     res.status(200).json({
       success: true,
       msg: 'All users were deleted'
@@ -30,7 +30,7 @@ const deleteUsers = async (req, res, next) => {
 
 const postUser = async (req, res, next) => {
   try {
-    const result = await User.create(req.body)
+    const result = await UserModel.create(req.body)
 
     res
       .status(201)
@@ -44,7 +44,7 @@ const postUser = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const result = await User.findById(req.params.id)
+    const result = await UserModel.findById(req.params.id)
     if (!result) {
       res.status(404)
       throw new Error("User not found.");
@@ -63,7 +63,7 @@ const getUser = async (req, res, next) => {
 
 const putUser = async (req, res, next) => {
   try {
-    const result = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const result = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!result) {
       res.status(404)
       throw new Error("User not found.");
@@ -84,7 +84,7 @@ const deleteUser = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const user = await User.findById(userId);
+    const user = await UserModel.findById(userId);
     if (!user) {
       res.status(404);
       throw new Error('User not found');
