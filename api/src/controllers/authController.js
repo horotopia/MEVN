@@ -1,25 +1,26 @@
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const logger = require('../config/logger');
-const { generateToken } = require('../middlewares/jwt');
+import { UserModel } from '../models/user.model.js';
+import logger from '../config/logger.js';
+import { generateToken } from '../middlewares/jwt.js';
 
 // /api/auth/register
-const register = async (req, res) => {
+const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await UserModel.findOne({ email });
   if (existingUser) {
     logger.http(`${req.method} ${req.url} - ${res.statusCode}: User ${email} already exists`);
     return res.status(400).json({ message: 'User already exists' });
   }
 
   try {
-    const user = await User.create({ email, password });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
+    const user = await UserModel.create({ email, password });
 
-    res.status(201).json({ token });
+    // Create token
+    const jwtToken = generateToken({ id: user._id });
+
+		// Stockage du JWT dans un cookie HttpOnly
+		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
+    res.status(201).json({ jwtToken });
   } catch (error) {
     logger.error(`Error registering user ${email}: ${error}`);
     res.status(500).json({ message: error.message });
@@ -27,33 +28,37 @@ const register = async (req, res) => {
 };
 
 // /api/auth/login
-const login = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check if user exists and password is correct
-    const user = await User.findOne({ email });
-    if (!user || !(await user.matchPassword(password))) {
-      logger.http(`${req.method} ${req.url} - ${res.statusCode}: Invalid credentials`);
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-    // Compare passwords
-    const isMatch = bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      logger.http(`${req.method} ${req.url} - ${res.statusCode}: Invalid credentials`);
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-    // Create token
-    const token = generateToken({ id: user._id });
+    const user = await UserModel.findOne({ email });
 
-    res.json({ message: 'Connexion réussie', token });
+    if (!user || !(await user.matchPasswords(password))) {
+      logger.http(`${req.method} ${req.url} - ${res.statusCode}: Invalid credentials`);
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    // Create token
+    const jwtToken = generateToken({ id: user._id });
+
+		// Stockage du JWT dans un cookie HttpOnly
+		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
+    res.json({ message: 'Connexion réussie', jwtToken });
   } catch (error) {
     logger.error(`Error logging in user ${email}: ${error}`);
     res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = {
-  register,
-  login,
+// /api/auth/logout
+const logoutUser = async (req, res) => {
+  res.clearCookie("jwtToken");
+  res.status(200).json({ message: "User logged out successfully" });
+};
+
+export {
+  loginUser,
+  registerUser,
+  logoutUser
 };

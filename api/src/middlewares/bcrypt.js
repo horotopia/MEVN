@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt');
-const logger = require('../config/logger');
+import bcrypt from 'bcrypt';
+import logger from '../config/logger.js';
 
 // Hachage du mot de passe avant l'enregistrement
-module.exports.hashPassword = async (req, res, next) => {
+const hashPassword = async (req, res, next) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -13,3 +13,5 @@ module.exports.hashPassword = async (req, res, next) => {
     res.status(500).json({ error: 'Erreur lors du hachage du mot de passe' });
   }
 };
+
+export default hashPassword;

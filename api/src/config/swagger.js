@@ -1,4 +1,4 @@
-const swaggerJsdoc = require("swagger-jsdoc");
+import swaggerJsdoc from "swagger-jsdoc";
 
 const hostname = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 5000;
@@ -49,7 +49,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     ],
   },
-  apis: ["src/routes/*.js", "../models/*.js", `${__dirname}/swagger.js`],
+  apis: ["src/routes/*.js", "../models/*.js", `./swagger.js`],
 });
 
-module.exports = swaggerSpec;
+export default swaggerSpec;
