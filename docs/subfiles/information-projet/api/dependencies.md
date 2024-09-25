@@ -4,8 +4,7 @@
 
 ### 1. Dépendances de sécurité :
 
-- `bcrypt` : pour le hachage des mots de passe.
-- `csurf` : protection contre les attaques CSRF (Cross-Site Request Forgery).
+- `bcrypt` : pour le hachage et la comparaison des mots de passe.
 - `helmet` : renforce la sécurité des en-têtes HTTP.
 - `jsonwebtoken` : génération et validation des tokens JWT pour l'authentification.
 
@@ -15,7 +14,8 @@
 - `cookie-parser` : pour parser les cookies dans les requêtes HTTP.
 - `cors` : pour gérer les permissions Cross-Origin Resource Sharing.
 - `express` : framework web pour la gestion des requêtes HTTP.
-- `express-validator` : pour la validation des données dans les requêtes HTTP.
+- `express-validator` :
+  - **validateUser** : pour la validation des données utilisateur.
 - `multer` : pour le traitement des fichiers multipart/form-data (upload de fichiers).
 
 ### 3. Dépendances de configuration :
@@ -41,7 +41,6 @@
 
 - `winston` : pour le logging avancé.
   Récapitulatif des niveaux et de leur utilisation :
-
   - **Error** : Pour capturer des erreurs critiques ou des exceptions.  
     `` logger.error(`Erreur capturée : ${e.message}`); ``
   - **Warn** : Pour signaler des problèmes potentiels ou des comportements anormaux.  
