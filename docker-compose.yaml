@@ -9,60 +9,48 @@ services:
       - ./api:/api
     ports:
       - 5000:5000
+      - 8081:80
     depends_on:
       - mongodb
     networks:
       - mevn
-    command: >
-      sh -c "yarn install -D && yarn dev"
 
   mongodb:
     image: mongo
     container_name: mongodb
     env_file: ./mongo/.env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
     ports:
       - 27017:27017
     volumes:
-      - ./api/mongodb/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - mongo_db:/data/db
     networks:
       - mevn
 
   mongo-express:
-    image: mongo-express:latest
+    image: mongo-express:1.0.2-20-alpine3.19
     container_name: mongo-express
     restart: always
-    env_file:
-      - ./mongo/.env
-      - ./mongo/.env.mongo-express
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      ME_CONFIG_MONGODB_URL: "mongodb://mongodb:27017"
-      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+    env_file: ./mongo/.env
     ports:
-      - 5001:8081
+      - 8082:8081
     networks:
       - mevn
     depends_on:
       - mongodb
 
-  client:
-    container_name: client
-    build:
-      context: ./client
-      # target: ${CONTEXT:-development}
-    volumes:
-      - ./client:/app
-    ports:
-      - 3000:3000
-    networks:
-      - mevn
+  # client:
+  #   container_name: client
+  #   build:
+  #     context: ./client
+  #     target: ${CONTEXT:-development}
+  #   volumes:
+  #     - ./client:/app
+  #   ports:
+  #     - 3000:3000
+  #     - 8080:80
+  #   networks:
+  #     - mevn
 
 networks:
   mevn:
