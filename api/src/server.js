@@ -27,7 +27,6 @@ const app = express();
 // config
 configureCORS(app);
 configureHelmet(app);
-connectDB();
 
 app.use(
   compression({
@@ -50,13 +49,13 @@ app.use(cookieParser());
 // Error handling
 app.use(errorHandler);
 
+// Swagger
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Routes
 app.get("/", (req, res) => {
   res.send("Welcome to the API");
 });
-
-// Swagger
-app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
