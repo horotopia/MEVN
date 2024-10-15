@@ -1,4 +1,4 @@
-import { UserModel } from '../models/user.model.js';
+import { User } from '../models/user.model.js';
 import logger from '../config/logger.js';
 import { generateToken } from '../middlewares/jwt.js';
 
@@ -6,14 +6,14 @@ import { generateToken } from '../middlewares/jwt.js';
 const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = await UserModel.findOne({ email });
+  const existingUser = await User.findOne({ email });
   if (existingUser) {
     logger.http(`${req.method} ${req.url} - ${res.statusCode}: User ${email} already exists`);
     return res.status(400).json({ message: 'User already exists' });
   }
 
   try {
-    const user = await UserModel.create({ email, password });
+    const user = await User.create({ email, password });
 
     // Create token
     const jwtToken = generateToken({ id: user._id });
@@ -32,10 +32,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.findOne({ email });
-
-    console.log(await UserModel.find());
-    console.log(email, password, user);
+    const user = await User.findOne({ email });
 
     if (!user || !(await user.matchPasswords(password))) {
       logger.http(`${req.method} ${req.url} - ${res.statusCode}: Invalid credentials`);
