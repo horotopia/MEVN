@@ -1,5 +1,11 @@
 import express from "express";
-import { getUsers, deleteUsers, postUser, getUser, putUser, deleteUser } from "../controllers/userController.js";
+import {
+  deleteUser,
+  getUser,
+  getUsers,
+  postUser,
+  putUser,
+} from "../controllers/userController.js";
 import { authenticateToken } from "../middlewares/jwt.js";
 const router = express.Router();
 
@@ -84,35 +90,7 @@ router.get("/", authenticateToken, getUsers);
  *      500:
  *        description: Server error
  */
-router.post('/', authenticateToken, postUser);
-
-/**
- * @swagger
- * /api/users:
- *  delete:
- *    summary: Delete all users
- *    tags: [Users]
- *    responses:
- *      200:
- *        description: List of users
- *        content:
- *          application/json:
- *            schema:
- *              type: array
- *              items:
- *                $ref: '#/components/schemas/User'
- *      400:
- *        description: Bad request
- *      401:
- *        description: Unauthorized
- *      403:
- *        description: Forbidden
- *      404:
- *        description: Not found
- *      500:
- *        description: Server error
- */
-router.delete('/', authenticateToken, deleteUsers);
+router.post("/", authenticateToken, postUser);
 
 /**
  * @swagger
@@ -120,6 +98,13 @@ router.delete('/', authenticateToken, deleteUsers);
  *  get:
  *    summary: Get user by id
  *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: ID of the user to get
  *    responses:
  *      200:
  *        description: List of users
@@ -140,7 +125,7 @@ router.delete('/', authenticateToken, deleteUsers);
  *      500:
  *        description: Server error
  */
-router.get('/:id', authenticateToken, getUser);
+router.get("/:id", authenticateToken, getUser);
 
 /**
  * @swagger
@@ -148,6 +133,13 @@ router.get('/:id', authenticateToken, getUser);
  *  put:
  *    summary: Update user by id
  *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: ID of the user to get
  *    responses:
  *      200:
  *        description: List of users
@@ -168,7 +160,7 @@ router.get('/:id', authenticateToken, getUser);
  *      500:
  *        description: Server error
  */
-router.put('/:id', authenticateToken, putUser);
+router.put("/:id", authenticateToken, putUser);
 
 /**
  * @swagger
@@ -176,6 +168,13 @@ router.put('/:id', authenticateToken, putUser);
  *  delete:
  *    summary: Delete user by id
  *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: ID of the user to get
  *    responses:
  *      200:
  *        description: List of users
@@ -196,6 +195,6 @@ router.put('/:id', authenticateToken, putUser);
  *      500:
  *        description: Server error
  */
-router.delete('/:id', authenticateToken, deleteUser);
+router.delete("/:id", authenticateToken, deleteUser);
 
 export default router;
