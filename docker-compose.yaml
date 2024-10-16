@@ -39,18 +39,18 @@ services:
     depends_on:
       - mongodb
 
-  # client:
-  #   container_name: client
-  #   build:
-  #     context: ./client
-  #     target: ${CONTEXT:-development}
-  #   volumes:
-  #     - ./client:/app
-  #   ports:
-  #     - 3000:3000
-  #     - 8080:80
-  #   networks:
-  #     - mevn
+  client:
+    container_name: client
+    build:
+      context: ./client
+      target: ${CONTEXT:-development}
+    volumes:
+      - ./client:/app
+    ports:
+      - 3000:5173
+      - 8080:80
+    networks:
+      - mevn
 
 networks:
   mevn:
