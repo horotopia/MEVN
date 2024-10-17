@@ -17,6 +17,7 @@ import errorHandler from "./middlewares/errorHandler.js";
 // Routes
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import addressRoutes from "./routes/addressRoutes.js";
 
 import uploadRoutes from "./routes/uploadRoutes.js";
 
@@ -29,16 +30,16 @@ configureCORS(app);
 configureHelmet(app);
 
 app.use(
-  compression({
-      // Compress all HTTP responses
-      filter: (req, res) => {
-        if (req.headers["x-no-compression"]) {
-            return false;
-        }
-        return compression.filter(req, res);
-      },
-      threshold: 0,
-  })
+    compression({
+        // Compress all HTTP responses
+        filter: (req, res) => {
+            if (req.headers["x-no-compression"]) {
+                return false;
+            }
+            return compression.filter(req, res);
+        },
+        threshold: 0,
+    })
 );
 
 // Security
@@ -59,6 +60,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+
+app.use("/api/address", addressRoutes);
 
 app.use("/api/upload", uploadRoutes);
 

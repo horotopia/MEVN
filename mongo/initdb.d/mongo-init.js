@@ -15,6 +15,7 @@ db.createCollection('users');
 
 db.users.insertMany([
     {
+        _id: ObjectId("111111111111111111111111"),
         name: "LeGrizzly",
         email: "LeGrizzly@hotmail.fr",
         password: "$2a$10$HdhL0Nwy2AQrAwyVxQ9HMuhpz5cgczdhrRPY4ePCh.gseXHniOYvS", // password: "LeGrizzly@hotmail.fr"
@@ -62,4 +63,19 @@ db.users.insertMany([
         createdAt: new Date(),
         updatedAt: new Date(),
     },
+]);
+
+db.createCollection('addresses');
+
+db.addresses.insertMany([
+    {
+        _id: ObjectId("111111111111111111111111"),
+        userId: ObjectId("111111111111111111111111"),
+        street: "Rue Faubourg Saint-Antoine",
+        city: "Paris",
+        postalCode: "75012",
+        country: "France",
+        createdAt: new Date(),
+        updatedAt: new Date()
+    }
 ]);
