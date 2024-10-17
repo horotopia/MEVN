@@ -16,5 +16,7 @@ const validateNoToken = (req, res, next) => {
       .status(401)
       .json({ message: "Token already generated, authorization denied" });
   }
+  next();
 };
-export default validate;
+
+export { validate, validateNoToken };

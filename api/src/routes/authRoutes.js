@@ -5,7 +5,8 @@ import {
   registerUser,
 } from "../controllers/authController.js";
 import hashPassword from "../middlewares/bcrypt.js";
-import validateNoToken from "../middlewares/validate.js";
+import { authenticateToken } from "../middlewares/jwt.js";
+import { validateNoToken } from "../middlewares/validate.js";
 import validateUser from "../middlewares/validator/validateUser.js";
 const userRouter = express.Router();
 
