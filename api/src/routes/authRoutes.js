@@ -1,7 +1,13 @@
 import express from "express";
-import { registerUser, loginUser, logoutUser } from "../controllers/authController.js";
-import validateUser from "../middlewares/validator/validateUser.js";
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+} from "../controllers/authController.js";
 import hashPassword from "../middlewares/bcrypt.js";
+import { authenticateToken } from "../middlewares/jwt.js";
+import { validateNoToken } from "../middlewares/validate.js";
+import validateUser from "../middlewares/validator/validateUser.js";
 const userRouter = express.Router();
 
 /**
@@ -52,7 +58,13 @@ const userRouter = express.Router();
  *       500:
  *         description: Server error
  */
-userRouter.post("/register", validateUser, hashPassword, registerUser);
+userRouter.post(
+  "/register",
+  validateUser,
+  validateNoToken,
+  hashPassword,
+  registerUser
+);
 
 /**
  * @swagger
@@ -87,7 +99,7 @@ userRouter.post("/register", validateUser, hashPassword, registerUser);
  *       500:
  *         description: Server error
  */
-userRouter.post("/login", loginUser);
+userRouter.post("/login", validateNoToken, loginUser);
 
 /**
  * @swagger
@@ -103,6 +115,6 @@ userRouter.post("/login", loginUser);
  *       500:
  *         description: Server error
  */
-userRouter.get("/logout", logoutUser);
+userRouter.get("/logout", authenticateToken, logoutUser);
 
 export default userRouter;
