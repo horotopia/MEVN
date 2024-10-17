@@ -1,4 +1,4 @@
-import { validationResult } from 'express-validator';
+import { validationResult } from "express-validator";
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -8,4 +8,13 @@ const validate = (req, res, next) => {
   next();
 };
 
+// Vérifier que l'utilisateur n'a pas de token
+const validateNoToken = (req, res, next) => {
+  const jwtToken = req.cookies["jwtToken"];
+  if (jwtToken) {
+    return res
+      .status(401)
+      .json({ message: "Token already generated, authorization denied" });
+  }
+};
 export default validate;
