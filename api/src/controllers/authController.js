@@ -51,14 +51,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-// /api/auth/logout
-const logoutUser = async (req, res) => {
-  res.clearCookie("jwtToken");
-  res.status(200).json({ message: "User logged out successfully" });
-};
-
 export {
   loginUser,
-  registerUser,
-  logoutUser
+  registerUser
 };

@@ -1,5 +1,10 @@
 import express from "express";
-import { getAddressesByUserId } from "../controllers/addressController.js";
+import {
+    getAddressesByUserId,
+    postAddress,
+    updateAddress,
+    deleteAddress
+} from "../controllers/addressController.js";
 import { authenticateToken } from "../middlewares/jwt.js";
 
 const router = express.Router();
@@ -75,5 +80,11 @@ const router = express.Router();
  *        description: Server error
  */
 router.get("/:userId", authenticateToken, getAddressesByUserId);
+
+router.post("/", authenticateToken, postAddress);
+
+router.put("/:id", authenticateToken, updateAddress);
+
+router.delete("/:id", authenticateToken, deleteAddress);
 
 export default router;

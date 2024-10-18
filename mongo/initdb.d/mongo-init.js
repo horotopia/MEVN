@@ -69,7 +69,6 @@ db.createCollection('addresses');
 
 db.addresses.insertMany([
     {
-        _id: ObjectId("111111111111111111111111"),
         userId: ObjectId("111111111111111111111111"),
         street: "Rue Faubourg Saint-Antoine",
         city: "Paris",
