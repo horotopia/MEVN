@@ -1,9 +1,9 @@
-import { User } from '../models/user.model.js';
-import logger from '../config/logger.js';
-import { generateToken } from '../middlewares/jwt.js';
+import { User } from '../models/user.model';
+import logger from '../config/logger';
+import { generateToken } from '../middlewares/jwt';
 
 // /api/auth/register
-const registerUser = async (req, res) => {
+const registerUser = async (req: any, res: any) => {
   const { email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
@@ -21,14 +21,14 @@ const registerUser = async (req, res) => {
 		// Stockage du JWT dans un cookie HttpOnly
 		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
     res.status(201).json({ jwtToken });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`Error registering user ${email}: ${error}`);
     res.status(500).json({ message: error.message });
   }
 };
 
 // /api/auth/login
-const loginUser = async (req, res) => {
+const loginUser = async (req: any, res: any) => {
   const { email, password } = req.body;
 
   try {
@@ -45,7 +45,7 @@ const loginUser = async (req, res) => {
 		// Stockage du JWT dans un cookie HttpOnly
 		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
     res.json({ message: 'Connexion réussie', jwtToken });
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`Error logging in user ${email}: ${error}`);
     res.status(500).json({ message: error.message });
   }

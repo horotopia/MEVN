@@ -1,7 +1,29 @@
-import swaggerJsdoc from "swagger-jsdoc";
+import swaggerJsdoc, { Options } from "swagger-jsdoc";
 
-const hostname = process.env.API_HOST || "localhost";
-const port = process.env.API_PORT || 5000;
+interface SwaggerInfo {
+  title: string;
+  version: string;
+  description: string;
+}
+
+interface SwaggerServer {
+  url: string;
+  description: string;
+}
+
+interface SwaggerDefinition {
+  openapi: string;
+  info: SwaggerInfo;
+  servers: SwaggerServer[];
+}
+
+interface SwaggerOptions extends Options {
+  definition: SwaggerDefinition;
+  apis: string[];
+}
+
+const hostname: string = process.env.API_HOST || "localhost";
+const port: string | number = process.env.API_PORT || 5000;
 
 /**
  * @swagger
@@ -33,8 +55,7 @@ const port = process.env.API_PORT || 5000;
  *         password: password
  *         role: ROLE_USER
  */
-
-const swaggerSpec = swaggerJsdoc({
+const swaggerOptions: SwaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
@@ -49,7 +70,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     ],
   },
-  apis: ["src/routes/*.js", "../models/*.js", `./swagger.js`],
-});
+  apis: ["src/routes/*.ts", "../models/*.ts", `./swagger.js`]
+};
 
-export default swaggerSpec;
+export default swaggerJsdoc(swaggerOptions);

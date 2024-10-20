@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from 'bcrypt';
 
 const SALT_WORK_FACTOR = 10;
@@ -34,7 +34,20 @@ const SALT_WORK_FACTOR = 10;
  *         role: ROLE_USER
  */
 
-const userSchema = new Schema({
+interface IUser {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+    _not_hashed_password: string;
+}
+
+export interface IUserDocument extends IUser, Document {
+    matchPasswords(password: string): boolean;
+}
+
+const userSchema: Schema<IUserDocument> = new Schema({
+    _id: Schema.Types.ObjectId,
     name: {
         type: String,
     },
@@ -52,13 +65,16 @@ const userSchema = new Schema({
         enum: ["ROLE_USER", "ROLE_STORE_KEEPER", "ROLE_ADMIN", "ROLE_COMPTA"],
         default: "ROLE_USER",
     },
+    _not_hashed_password: {
+        type: String,
+    }
 });
 
 userSchema.virtual('not_hashed_password').set(function (password) {
     this._not_hashed_password = password;
 });
 
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
     const user = this;
 
     if (user._not_hashed_password === undefined) {
@@ -68,7 +84,7 @@ userSchema.pre('save', async function(next) {
         const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
         user.password = await bcrypt.hash(user._not_hashed_password, salt);
         return next();
-    } catch (err) {
+    } catch (err: any) {
         return next(err);
     }
 });
@@ -76,7 +92,7 @@ userSchema.pre('save', async function(next) {
 /**
  * Methods
 */
-userSchema.methods.matchPasswords = function (password) {
+userSchema.methods.matchPasswords = function (password: string): boolean {
     return bcrypt.compareSync(password, this.password);
 };
 
@@ -88,4 +104,4 @@ userSchema.set('toJSON', {
     }
 });
 
-export const User = mongoose.model('Users', userSchema);
+export const User = mongoose.model<IUserDocument>("Users", userSchema);

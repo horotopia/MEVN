@@ -1,5 +1,5 @@
 import { body, validationResult } from "express-validator";
-import logger from "../../config/logger.js";
+import logger from "../../config/logger";
 
 const validateUser = [
   // Validation de l'email
@@ -13,7 +13,7 @@ const validateUser = [
     .matches(/[@$!%*?&]/).withMessage('Le mot de passe doit contenir au moins un caractère spécial (@, $, !, %, *, ?, & etc.)'),
 
   // Vérification des erreurs de validation
-  (req, res, next) => {
+  (req: any, res: any, next: any) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       logger.http(`${req.method} ${req.url} - ${res.statusCode}`);
