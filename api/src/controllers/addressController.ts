@@ -1,7 +1,7 @@
-import logger from "../config/logger.js";
-import { Address } from "../models/address.model.js";
+import logger from "../config/logger";
+import { Address } from "../models/address.model";
 
-const getAddressesByUserId = async (req, res, next) => {
+const getAddressesByUserId = async (req: any, res: any, next: any) => {
     const id = req.params.userId;
     if (!id) {
         logger.error("No id provided");
@@ -11,13 +11,13 @@ const getAddressesByUserId = async (req, res, next) => {
         const result = await Address.find({ userId: id });
     
         res.status(200).setHeader("Content-Type", "application/json").json(result);
-    } catch (err) {
+    } catch (err: any) {
         logger.error(`Error retrieving addresses: ${err}`);
         res.status(500).json({ message: err.message });
     }
 }
 
-const postAddress = async (req, res, next) => {
+const postAddress = async (req: any, res: any, next: any) => {
     const { userId, street, city, postalCode, country } = req.body;
     if (!userId || !street || !city || !postalCode || !country) {
         logger.error("Missing required fields");
@@ -26,13 +26,13 @@ const postAddress = async (req, res, next) => {
     try {
         const address = await Address.create({ userId, street, city, postalCode, country });
         res.status(201).json(address);
-    } catch (err) {
+    } catch (err: any) {
         logger.error(`Error creating address: ${err}`);
         res.status(500).json({ message: err.message });
     }
 }
 
-const updateAddress = async (req, res, next) => {
+const updateAddress = async (req: any, res: any, next: any) => {
     const id = req.params.id;
     const { street, city, postalCode, country } = req.body;
     if (!id || !street || !city || !postalCode || !country) {
@@ -42,13 +42,13 @@ const updateAddress = async (req, res, next) => {
     try {
         const address = await Address.findByIdAndUpdate(id, { street, city, postalCode, country }, { new: true });
         res.status(200).json(address);
-    } catch (err) {
+    } catch (err: any) {
         logger.error(`Error updating address: ${err}`);
         res.status(500).json({ message: err.message });
     }
 }
 
-const deleteAddress = async (req, res, next) => {
+const deleteAddress = async (req: any, res: any, next: any) => {
     const id = req.params.id;
     if (!id) {
         logger.error("No id provided");
@@ -57,7 +57,7 @@ const deleteAddress = async (req, res, next) => {
     try {
         await Address.findByIdAndDelete(id);
         res.status(204).json();
-    } catch (err) {
+    } catch (err: any) {
         logger.error(`Error deleting address: ${err}`);
         res.status(500).json({ message: err.message });
     }

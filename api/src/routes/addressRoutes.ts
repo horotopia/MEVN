@@ -4,8 +4,8 @@ import {
     postAddress,
     updateAddress,
     deleteAddress
-} from "../controllers/addressController.js";
-import { authenticateToken } from "../middlewares/jwt.js";
+} from "../controllers/addressController";
+import { authenticateToken } from "../middlewares/jwt";
 
 const router = express.Router();
 
@@ -81,6 +81,40 @@ const router = express.Router();
  */
 router.get("/:userId", authenticateToken, getAddressesByUserId);
 
+/**
+ * @swagger
+ * /api/address:
+ *  post:
+ *    summary: Create a new address
+ *    tags: [Address]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/Addresses'
+ *    responses:
+ *      200:
+ *        description: Create a new address
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Addresses'
+ *      400:
+ *        description: Bad request
+ *      401:
+ *        description: Unauthorized
+ *      403:
+ *        description: Forbidden
+ *      404:
+ *        description: Not found
+ *      500:
+ *        description: Server error
+ */
 router.post("/", authenticateToken, postAddress);
 
 router.put("/:id", authenticateToken, updateAddress);
