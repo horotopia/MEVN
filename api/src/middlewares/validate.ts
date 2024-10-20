@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
 
-const validate = (req, res, next) => {
+const validate = (req: any, res: any, next: any) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -9,7 +9,7 @@ const validate = (req, res, next) => {
 };
 
 // Vérifier que l'utilisateur n'a pas de token
-const validateNoToken = (req, res, next) => {
+const validateNoToken = (req: any, res: any, next: any) => {
   const jwtToken = req.cookies["jwtToken"];
   if (jwtToken) {
     return res

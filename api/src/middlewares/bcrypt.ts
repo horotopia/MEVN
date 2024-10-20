@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import logger from '../config/logger.js';
+import logger from '../config/logger';
 
 // Hachage du mot de passe avant l'enregistrement
-const hashPassword = async (req, res, next) => {
+const hashPassword = async (req: any, res: any, next: any) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);

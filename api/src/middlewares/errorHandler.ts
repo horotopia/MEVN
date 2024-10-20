@@ -1,6 +1,6 @@
-import logger from '../config/logger.js';
+import logger from '../config/logger';
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err: any, req: any, res: any, next: any) => {
   logger.error({
     message: err.message,
     stack: err.stack,

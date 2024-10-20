@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import path from "node:path";
-import { authenticateToken } from "../middlewares/jwt.js";
+import { authenticateToken } from "../middlewares/jwt";
 
 const router = express.Router();
 
@@ -48,16 +48,16 @@ const router = express.Router();
 // region multer configuration
 // Configuration de multer pour stocker les fichiers uploadés
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (req: any, file: any, cb: any) => {
         cb(null, path.resolve() + '/src/uploads/');
     },
-    filename: (req, file, cb) => {
+    filename: (req: any, file: any, cb: any) => {
         cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 const upload = multer({ storage });
 
-router.post("/", authenticateToken, upload.single("image"), async (req, res) => {
+router.post("/", authenticateToken, upload.single("image"), async (req: any, res: any) => {
     if (!req.file) {
         return res.status(400).send("Aucun fichier sélectionné.");
     }

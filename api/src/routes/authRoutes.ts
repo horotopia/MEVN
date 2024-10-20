@@ -3,11 +3,11 @@ import {
   loginUser,
   logoutUser,
   registerUser,
-} from "../controllers/authController.js";
-import hashPassword from "../middlewares/bcrypt.js";
-import { authenticateToken } from "../middlewares/jwt.js";
-import { validateNoToken } from "../middlewares/validate.js";
-import validateUser from "../middlewares/validator/validateUser.js";
+} from "../controllers/authController";
+import hashPassword from "../middlewares/bcrypt";
+import { authenticateToken } from "../middlewares/jwt";
+import { validateNoToken } from "../middlewares/validate";
+import validateUser from "../middlewares/validator/validateUser";
 const userRouter = express.Router();
 
 /**

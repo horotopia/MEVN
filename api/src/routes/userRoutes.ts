@@ -5,8 +5,8 @@ import {
   getUsers,
   postUser,
   putUser,
-} from "../controllers/userController.js";
-import { authenticateToken } from "../middlewares/jwt.js";
+} from "../controllers/userController";
+import { authenticateToken } from "../middlewares/jwt";
 const router = express.Router();
 
 /**
