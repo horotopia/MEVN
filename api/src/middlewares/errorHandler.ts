@@ -1,6 +1,7 @@
+import { Request, Response, NextFunction } from "express";
 import logger from '../config/logger';
 
-const errorHandler = (err: any, req: any, res: any, next: any) => {
+const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error({
     message: err.message,
     stack: err.stack,

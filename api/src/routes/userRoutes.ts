@@ -1,4 +1,4 @@
-import express from "express";
+import { Router, Request, Response } from "express";
 import {
   deleteUser,
   getUser,
@@ -6,8 +6,10 @@ import {
   postUser,
   putUser,
 } from "../controllers/userController";
+import mongoose from "mongoose";
 import { authenticateToken } from "../middlewares/jwt";
-const router = express.Router();
+
+const router = Router();
 
 /**
  * @swagger
@@ -35,6 +37,13 @@ const router = express.Router();
  *         password: password
  *         role: ROLE_USER
  */
+
+const validateObjectId = (req: Request, res: Response, next: Function) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(400).json({ message: 'Invalid ID format' });
+  }
+  next();
+};
 
 /**
  * @swagger
@@ -125,7 +134,7 @@ router.post("/", authenticateToken, postUser);
  *      500:
  *        description: Server error
  */
-router.get("/:id", authenticateToken, getUser);
+router.get("/:id", authenticateToken, validateObjectId, getUser);
 
 /**
  * @swagger
@@ -160,7 +169,7 @@ router.get("/:id", authenticateToken, getUser);
  *      500:
  *        description: Server error
  */
-router.put("/:id", authenticateToken, putUser);
+router.put("/:id", authenticateToken, validateObjectId, putUser);
 
 /**
  * @swagger
@@ -195,6 +204,6 @@ router.put("/:id", authenticateToken, putUser);
  *      500:
  *        description: Server error
  */
-router.delete("/:id", authenticateToken, deleteUser);
+router.delete("/:id", authenticateToken, validateObjectId, deleteUser);
 
 export default router;

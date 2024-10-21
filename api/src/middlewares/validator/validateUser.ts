@@ -1,7 +1,8 @@
+import { Request, Response, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
 import logger from "../../config/logger";
 
-const validateUser = [
+const validateUser: Array<(req: Request, res: Response, next: NextFunction) => void> = [
   // Validation de l'email
   body("email").isEmail().withMessage("E-mail valide obligatoire"),
   // Validation du mot de passe
@@ -13,11 +14,12 @@ const validateUser = [
     .matches(/[@$!%*?&]/).withMessage('Le mot de passe doit contenir au moins un caractère spécial (@, $, !, %, *, ?, & etc.)'),
 
   // Vérification des erreurs de validation
-  (req: any, res: any, next: any) => {
+  (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       logger.http(`${req.method} ${req.url} - ${res.statusCode}`);
-      return res.status(400).json({ errors: errors.array() });
+      res.status(400).json({ errors: errors.array() });
+      return;
     }
     next();
   }

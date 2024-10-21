@@ -1,30 +1,31 @@
+import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.model';
 
-const auth = async (req: any, res: any, next: any) => {
+const auth = async (req: Request, res: Response, next: NextFunction) => {
   const jwtToken = req.cookies["jwtToken"];
   if (!jwtToken) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    res.status(401).json({ message: 'No token, authorization denied' });
+    return;
   }
 
   if (!process.env.JWT_SECRET) {
-    return res.status(500).json({ message: 'JWT_SECRET is not defined' });
+    res.status(500).json({ message: 'JWT_SECRET is not defined' });
+    return;
   }
 
   jwt.verify(jwtToken, process.env.JWT_SECRET, async (err: any, decoded: any) => {
     if (err) {
-      return res.status(401).json({ message: 'Token is not valid' });
+      res.status(401).json({ message: 'Token is not valid' });
+      return;
     }
 
-    console.log(await User.findById(decoded.id));
-    console.log(req.user);
+    const { id, email, role } = await User.findById(decoded.id).select('id email role');
+    req.user = { id, email, role };
 
-    // const { id, email, role } = await User.findById(decoded.id);
-    // req.user = { id, email, role };
-
-    // if (role !== 'ROLE_ADMIN') {
-    //   return res.status(403).json({ message: 'You are not authorized to access this route' });
-    // }
+    if (role !== 'ROLE_ADMIN') {
+      res.status(403).json({ message: 'You are not authorized to access this route' });
+    }
 
     next();
   });

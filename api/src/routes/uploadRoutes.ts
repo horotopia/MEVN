@@ -1,9 +1,9 @@
-import express from "express";
+import { Router, Request, Response } from "express";
 import multer from "multer";
 import path from "node:path";
 import { authenticateToken } from "../middlewares/jwt";
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -57,9 +57,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.post("/", authenticateToken, upload.single("image"), async (req: any, res: any) => {
+router.post("/", authenticateToken, upload.single("image"), async (req: Request, res: Response) => {
     if (!req.file) {
-        return res.status(400).send("Aucun fichier sélectionné.");
+        res.status(400).send("Aucun fichier sélectionné.");
     }
     res.status(200).send("Fichier uploadé avec succès.");
 });

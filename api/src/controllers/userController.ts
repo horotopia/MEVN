@@ -1,29 +1,34 @@
+import { Request, Response, NextFunction } from "express";
 import logger from "../config/logger";
-import { User } from "../models/user.model";
+import { User } from '../models/user.model';
 
-const getUsers = async (req: any, res: any, next: any) => {
+const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await User.find();
 
     res.status(200).setHeader("Content-Type", "application/json").json(result);
-  } catch (err: any) {
-    logger.error(`Error retrieving users: ${err}`);
-    res.status(500).json({ message: err.message });
+  } catch (err: unknown) {
+    if (err instanceof SyntaxError) {
+      logger.error(`Error retrieving users: ${err}`);
+      res.status(500).json({ message: err.message });
+    }
   }
 };
 
-const postUser = async (req: any, res: any, next: any) => {
+const postUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await User.create(req.body);
 
     res.status(201).setHeader("Content-Type", "application/json").json(result);
-  } catch (err: any) {
-    logger.error(`Error displaying user: ${err}`);
-    res.status(500).json({ message: err.message });
+  } catch (err: unknown) {
+    if (err instanceof SyntaxError) {
+      logger.error(`Error displaying user: ${err}`);
+      res.status(500).json({ message: err.message });
+    }
   }
 };
 
-const getUser = async (req: any, res: any, next: any) => {
+const getUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await User.findById(req.params.id);
     if (!result) {
@@ -32,14 +37,15 @@ const getUser = async (req: any, res: any, next: any) => {
     }
 
     res.status(200).setHeader("Content-Type", "application/json").json(result);
-  } catch (err: any) {
-    // throw new Error(`Error retrieving user: ${err.message}`)
-    logger.error(`Error retrieving user: ${err}`);
-    res.status(500).json({ message: err.message });
+  } catch (err: unknown) {
+    if (err instanceof SyntaxError) {
+      logger.error(`Error retrieving user: ${err}`);
+      res.status(500).json({ message: err.message });
+    }
   }
 };
 
-const putUser = async (req: any, res: any, next: any) => {
+const putUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -51,14 +57,15 @@ const putUser = async (req: any, res: any, next: any) => {
     }
 
     res.status(200).setHeader("Content-Type", "application/json").json(result);
-  } catch (err: any) {
-    // throw new Error(`Error updating user: ${err.message}`)
-    logger.error(`Error updating user: ${err}`);
-    res.status(500).json({ message: err.message });
+  } catch (err: unknown) {
+    if (err instanceof SyntaxError) {
+      logger.error(`Error updating user: ${err}`);
+      res.status(500).json({ message: err.message });
+    }
   }
 };
 
-const deleteUser = async (req: any, res: any, next: any) => {
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.params.id;
 
   try {
@@ -71,9 +78,11 @@ const deleteUser = async (req: any, res: any, next: any) => {
     await user.remove();
 
     res.json({ success: true, message: "User deleted successfully" });
-  } catch (err: any) {
-    logger.error(`Error deleting user: ${err}`);
-    res.status(500).json({ message: err.message });
+  } catch (err: unknown) {
+    if (err instanceof SyntaxError) {
+      logger.error(`Error deleting user: ${err}`);
+      res.status(500).json({ message: err.message });
+    }
   }
 };
 

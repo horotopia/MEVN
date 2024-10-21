@@ -30,7 +30,7 @@ configureHelmet(app);
 app.use(
   compression({
       // Compress all HTTP responses
-      filter: (req: any, res: any) => {
+      filter: (req: Request, res: Response) => {
         if (req.headers["x-no-compression"]) {
             return false;
         }
@@ -52,7 +52,7 @@ app.use(errorHandler);
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
-app.get("/", (req: any, res: any) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 

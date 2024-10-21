@@ -1,11 +1,6 @@
 import express from "express";
-import {
-  loginUser,
-  logoutUser,
-  registerUser,
-} from "../controllers/authController";
+import { loginUser, registerUser } from "../controllers/authController";
 import hashPassword from "../middlewares/bcrypt";
-import { authenticateToken } from "../middlewares/jwt";
 import { validateNoToken } from "../middlewares/validate";
 import validateUser from "../middlewares/validator/validateUser";
 const userRouter = express.Router();
@@ -100,21 +95,5 @@ userRouter.post(
  *         description: Server error
  */
 userRouter.post("/login", validateNoToken, loginUser);
-
-/**
- * @swagger
- * /api/auth/logout:
- *   post:
- *     summary: logout a user
- *     tags: [Auth]
- *     responses:
- *       200:
- *         description: User logged out successfully
- *       400:
- *         description: Bad request
- *       500:
- *         description: Server error
- */
-userRouter.get("/logout", authenticateToken, logoutUser);
 
 export default userRouter;
