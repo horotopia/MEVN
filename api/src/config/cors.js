@@ -3,7 +3,7 @@ import logger from './logger.js';
 
 const configureCORS = (app) => {
   const corsOptions = {
-    origin: 'http://localhost:5000',
+    origin: ['http://localhost:5000','http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     Credentials: true,
