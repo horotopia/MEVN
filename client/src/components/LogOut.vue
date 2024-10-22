@@ -22,16 +22,3 @@ export default {
 <template>
     <router-link to="/logout"> Deconnexion</router-link>
 </template>
-  
-<style scoped>
-    footer {
-    height: 100px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #1d1d1d;
-    padding: 1rem 2rem;
-    color: white;
-    }
-</style>
-  

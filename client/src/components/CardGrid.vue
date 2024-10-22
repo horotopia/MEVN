@@ -1,15 +1,15 @@
 <template>
-    <div class="pokemon-grid">
-      <div v-for="(pokemon, index) in pokemonProducts" :key="index" class="card">
-        <img :src="pokemon.image" alt="Image du produit" class="card-img">
-        <div class="card-body">
-          <h3>{{ pokemon.name }}</h3>
-          <p class="card-description">{{ pokemon.description }}</p>
-          <p class="card-price">{{ pokemon.price }} €</p>
-        </div>
+  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 p-5 mt-16 mb-20">
+    <div v-for="(pokemon, index) in pokemonProducts" :key="index" class="bg-gray-100 border border-gray-300 rounded-lg p-5 text-center transition-transform transform hover:scale-105 hover:border-orange-500">
+      <img :src="pokemon.image" alt="Image du produit" class="w-full h-auto mb-4">
+      <div>
+        <h3 class="text-xl font-semibold mb-2">{{ pokemon.name }}</h3>
+        <p class="text-sm text-gray-600 mb-2">{{ pokemon.description }}</p>
+        <p class="text-lg font-bold">{{ pokemon.price }} €</p>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   export default {
@@ -52,54 +52,4 @@
     }
   };
   </script>
-  
-  <style scoped>
-  /* Styles pour la grille des produits */
-  .pokemon-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    justify-items: center;
-    margin: 60px 0 80px 0;
-  }
-  
-  .card {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    width: 300px;
-    text-align: center;
-    transition: transform 0.3s ease;
-  }
-  
-  .card:hover {
-    transform: scale(1.05);
-    border-color: rgb(251, 87, 6);
-  }
-  
-  .card-img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 15px;
-  }
-  
-  .card-body h3 {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
-  }
-  
-  .card-description {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 10px;
-  }
-  
-  .card-price {
-    font-size: 1.1rem;
-    color: #000;
-    font-weight: bold;
-  }
-  </style>
   
