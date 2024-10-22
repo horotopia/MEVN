@@ -1,23 +1,37 @@
 <template>
-  <section class="loginForm">
-    <div class="login-container">
+  <section class="w-full">
+    <div class="max-w-md mx-auto mt-12 p-6 bg-gray-100 border border-gray-300 rounded-lg">
       <!-- Affichage du message d'erreur -->
-      <div v-if="errorMessage" class="error-message">
+      <div v-if="errorMessage" class="text-red-500 font-bold mb-4">
         {{ errorMessage }}
       </div>
-  
+
       <form @submit.prevent="submitLogin">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" v-model="email" id="email" required />
+        <div class="mb-4">
+          <label for="email" class="block mb-2">Email</label>
+          <input
+            type="email"
+            v-model="email"
+            id="email"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
         </div>
-  
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <input type="password" v-model="password" id="password" required />
+
+        <div class="mb-4">
+          <label for="password" class="block mb-2">Mot de passe</label>
+          <input
+            type="password"
+            v-model="password"
+            id="password"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
         </div>
-  
-        <button type="submit">Se connecter</button>
+
+        <button type="submit" class="w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700">
+          Se connecter
+        </button>
       </form>
     </div>
   </section>
@@ -69,59 +83,3 @@
     }
   };
   </script>
-
-
-  
-  <style scoped>
-  .loginForm{
-    width: 100%;
-    height: auto;
-  }
-
-  .login-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #218838;
-  }
-  
-  /* Style pour le message d'erreur */
-  .error-message {
-    color: red;
-    margin-bottom: 15px;
-    font-weight: bold;
-  }
-  </style>
-  

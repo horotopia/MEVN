@@ -19,47 +19,20 @@
 </script>
 
 <template>
-    <div class="navbar">
-      <div class="logo">
-        <router-link to="/"><img class="logoImg" src="../assets/img/POKESHOP_LOGO.png" alt="Logo Pokeshop" /></router-link>
-      </div>
+  <div class="bg-red-500 p-4 flex justify-between items-center">
+    <div class="logo">
+      <router-link to="/">
+        <img class="w-2/5" src="../assets/img/POKESHOP_LOGO.png" alt="Logo Pokeshop" />
+      </router-link>
     </div>
-    <nav class="sousNav">
-      <ul>
-        <li><router-link to=""> Pokémon</router-link> | </li>
-        <li><router-link to=""> Pokéball</router-link> | </li>
-        <li><router-link to=""> Accéssoires</router-link> | </li>
-        <li><router-link to="/login"> Login</router-link> | </li>
-        <button @click="logout">Déconnexion</button>
-      </ul>
-    </nav>
-  </template>
-  
-  
-  <style scoped>
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #c73d3d;
-    padding: 1rem 2rem;
-    color: white;
-  }
-  
-  .sousNav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ff5353;
-  }
-
-  ul{
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .logoImg {
-    width: 40%;
-  }
-  </style>
-  
+  </div>
+  <nav class="bg-red-400 py-2">
+    <ul class="flex space-x-2 justify-center items-center">
+      <li><router-link to="" class="hover:underline"> Pokémon</router-link> | </li>
+      <li><router-link to="" class="hover:underline"> Pokéball</router-link> | </li>
+      <li><router-link to="" class="hover:underline"> Accéssoires</router-link> | </li>
+      <li><router-link to="/login" class="hover:underline"> Login</router-link> | </li>
+      <button @click="logout" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">Déconnexion</button>
+    </ul>
+  </nav>
+</template>
