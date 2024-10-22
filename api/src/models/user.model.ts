@@ -39,7 +39,7 @@ interface IUser {
     email: string;
     password: string;
     role: string;
-    _not_hashed_password: string;
+    _not_hashed_password: string;   
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -84,10 +84,8 @@ userSchema.pre('save', async function (next) {
         const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
         user.password = await bcrypt.hash(user._not_hashed_password, salt);
         return next();
-    } catch (err: unknown) {
-        if (err instanceof SyntaxError) {
-            return next(err);
-        }
+    } catch (err: Error | any) {
+        return next(err);
     }
 });
 

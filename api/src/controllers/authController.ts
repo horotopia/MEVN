@@ -22,11 +22,9 @@ const registerUser = async (req: Request, res: Response) => {
 		// Stockage du JWT dans un cookie HttpOnly
 		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
     res.status(201).json({ jwtToken });
-  } catch (err: unknown) {
-    if (err instanceof SyntaxError) {
-      logger.error(`Error registering user ${email}: ${err}`);
-      res.status(500).json({ message: err.message });
-    }
+  } catch (err: Error | any) {
+    logger.error(`Error registering user ${email}: ${err}`);
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -49,11 +47,9 @@ const loginUser = async (req: Request, res: Response) => {
 		// Stockage du JWT dans un cookie HttpOnly
 		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
     res.json({ message: 'Connexion réussie', jwtToken });
-  } catch (err: unknown) {
-    if (err instanceof SyntaxError) {
-      logger.error(`Error logging in user ${email}: ${err}`);
-      res.status(500).json({ message: err.message });
-    }
+  } catch (err: Error | any) {-
+    logger.error(`Error logging in user ${email}: ${err}`);
+    res.status(500).json({ message: err.message });
   }
 };
 

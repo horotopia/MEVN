@@ -29,7 +29,6 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
       logger.http(`${req.method} ${req.url} - ${res.statusCode}: Token invalide`);
       res.status(403).json({ message: 'Token invalide' });
     }
-    // req.user = user;
     next();
   });
 };

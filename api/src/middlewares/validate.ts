@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import mongoose from "mongoose";
 import { validationResult } from "express-validator";
 
 const validate = (req: Request, res: Response, next: NextFunction) => {
@@ -20,4 +21,12 @@ const validateNoToken = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export { validate, validateNoToken };
+const validateObjectId = (req: Request, res: Response, next: Function) => {
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(401).json({ message: 'Invalid ID format' });
+  }
+  next();
+};
+
+export { validate, validateNoToken, validateObjectId };

@@ -6,8 +6,8 @@ import {
   postUser,
   putUser,
 } from "../controllers/userController";
-import mongoose from "mongoose";
 import { authenticateToken } from "../middlewares/jwt";
+import { validateObjectId } from "../middlewares/validate";
 
 const router = Router();
 
@@ -37,13 +37,6 @@ const router = Router();
  *         password: password
  *         role: ROLE_USER
  */
-
-const validateObjectId = (req: Request, res: Response, next: Function) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    res.status(400).json({ message: 'Invalid ID format' });
-  }
-  next();
-};
 
 /**
  * @swagger
