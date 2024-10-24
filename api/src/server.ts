@@ -1,10 +1,10 @@
+import compression from "compression";
 import cookieParser from "cookie-parser";
-import { config } from "dotenv";
+import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 
 // Configurations
-import configureCompression from "./config/compression";
 import configureCORS from "./config/cors";
 import connectDB from "./config/database";
 import configureHelmet from "./config/helmet";
@@ -15,19 +15,35 @@ import swaggerSpec from "./config/swagger";
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
-import { AuthController } from "./controllers/auth.controller";
-import { ProductController } from "./controllers/product.controller";
-import { UserController } from "./controllers/user.controller";
-
+import addressRoutes from "./routes/addressRoutes";
+import authRoutes from "./routes/authRoutes";
+import avisRoutes from "./routes/avisRoutes";
+import cartsRoutes from "./routes/cartsRoutes";
+import favorisRoutes from "./routes/favorisRoutes";
+import ordersRoutes from "./routes/ordersRoutes";
+import picturesRoutes from "./routes/picturesRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
+import userRoutes from "./routes/userRoutes";
 
-config();
+dotenv.config();
 const app: Express = express();
 
 // config
 configureCORS(app);
 configureHelmet(app);
-configureCompression(app);
+
+app.use(
+  compression({
+    // Compress all HTTP responses
+    filter: (req: Request, res: Response) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+    threshold: 0,
+  })
+);
 
 // Security
 app.use(express.json());
@@ -45,13 +61,15 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
-console.log("Server Mevn");
-const authController = new AuthController();
-app.use("/api/auth", authController.buildRouter());
-const userController = new UserController();
-app.use("/api/users", userController.buildRouter());
-const productController = new ProductController();
-app.use("/api/product", productController.buildRouter());
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+
+app.use("/api/addresses", addressRoutes);
+app.use("/api/avis", avisRoutes);
+app.use("/api/carts", cartsRoutes);
+app.use("/api/favoris", favorisRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/pictures", picturesRoutes);
 
 app.use("/api/upload", uploadRoutes);
 
