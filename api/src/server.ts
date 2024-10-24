@@ -1,4 +1,3 @@
-import compression from "compression";
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -9,6 +8,7 @@ import swaggerSpec from "./config/swagger";
 import connectDB from "./config/database";
 import logger from "./config/logger";
 import configureCORS from "./config/cors";
+import configureCompression from "./config/compression";
 import configureHelmet from "./config/helmet";
 
 // Middlewares
@@ -26,19 +26,7 @@ const app: Express = express();
 // config
 configureCORS(app);
 configureHelmet(app);
-
-app.use(
-  compression({
-      // Compress all HTTP responses
-      filter: (req: Request, res: Response) => {
-        if (req.headers["x-no-compression"]) {
-            return false;
-        }
-        return compression.filter(req, res);
-      },
-      threshold: 0,
-  })
-);
+configureCompression(app);
 
 // Security
 app.use(express.json());

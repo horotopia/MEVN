@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import logger from "../config/logger";
-import { User, IUserDocument } from '../models/user.model';
-import mongoose from 'mongoose';
+import { User } from '../models/user.model';
 
-const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+const getUsers = async (req: Request, res: Response) => {
   try {
     const result = await User.find();
 
@@ -14,7 +13,7 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const postUser = async (req: Request, res: Response, next: NextFunction) => {
+const postUser = async (req: Request, res: Response) => {
   try {
     const result = await User.create(req.body);
 
@@ -25,7 +24,7 @@ const postUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getUser = async (req: Request, res: Response, next: NextFunction) => {
+const getUser = async (req: Request, res: Response) => {
   try {
     const result = await User.findById(req.params.id);
     if (!result) {
@@ -40,7 +39,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const putUser = async (req: Request, res: Response, next: NextFunction) => {
+const putUser = async (req: Request, res: Response) => {
   try {
     const result = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -58,7 +57,7 @@ const putUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+const deleteUser = async (req: Request, res: Response) => {
   const userId = req.params.id;
 
   try {
