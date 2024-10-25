@@ -5,7 +5,6 @@ const SALT_WORK_FACTOR = 10;
 
 /**
  * @swagger
- *
  * components:
  *   schemas:
  *     Users:

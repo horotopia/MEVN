@@ -1,5 +1,42 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Orders:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - items
+ *         - totalAmount
+ *         - status
+ *       properties:
+ *         userId:
+ *           type: string
+ *           description: L'identifiant de l'utilisateur
+ *         items:
+ *           type: object
+ *           description: Les produits de la commande
+ *         totalAmount:
+ *           type: number
+ *           description: Le montant total de la commande
+ *         status:
+ *           type: string
+ *           description: Le statut de la commande
+ *       example:
+ *         userId: 5f4f6d7e5e5c5b5a5a4a5a5a
+ *         items: [
+ *           {
+ *             productId: 5f4f6d7e5e5c5b5a5a4a5a5a,
+ *             quantity: 2,
+ *             price: 10
+ *           }
+ *         ]
+ *         totalAmount: 20
+ *         status: pending
+ */
+
 export interface IOrder extends Document {
     userId: mongoose.Types.ObjectId;
     items: {
