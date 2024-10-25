@@ -2,7 +2,6 @@ import mongoose, { Schema, Document } from "mongoose";
 
 /**
  * @swagger
- *
  * components:
  *   schemas:
  *     Cart:
@@ -17,7 +16,7 @@ import mongoose, { Schema, Document } from "mongoose";
  *           type: string
  *           description: L'identifiant de l'utilisateur
  *        items:
- *          type: string
+ *          type: object
  *          description: Les produits du panier
  *        createdAt:
  *          type: string

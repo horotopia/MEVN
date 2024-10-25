@@ -2,7 +2,6 @@ import mongoose, { Schema, Document } from "mongoose";
 
 /**
  * @swagger
- *
  * components:
  *   schemas:
  *     Addresses:

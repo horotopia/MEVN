@@ -11,6 +11,7 @@ const router = Router();
 
 /**
  * @swagger
+ * 
  * components:
  *   schemas:
  *     Addresses:
@@ -66,14 +67,6 @@ const router = Router();
  *              type: array
  *              items:
  *                $ref: '#/components/schemas/Addresses'
- *      400:
- *        description: Bad request
- *      401:
- *        description: Unauthorized
- *      403:
- *        description: Forbidden
- *      404:
- *        description: Not found
  *      500:
  *        description: Server error
  */
