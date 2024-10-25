@@ -1,5 +1,5 @@
 import express from "express";
-import { loginUser, registerUser } from "../controllers/authController";
+import { loginUser, registerUser } from "../controllers/auth.controller";
 import hashPassword from "../middlewares/bcrypt";
 import { validateNoToken } from "../middlewares/validate";
 import validateUser from "../middlewares/validator/validateUser";

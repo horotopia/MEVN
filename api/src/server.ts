@@ -15,15 +15,15 @@ import configureHelmet from "./config/helmet";
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
-import addressRoutes from "./routes/addressRoutes";
-import authRoutes from "./routes/authRoutes";
-import avisRoutes from "./routes/avisRoutes";
-import cartsRoutes from "./routes/cartsRoutes";
-import favorisRoutes from "./routes/favorisRoutes";
-import ordersRoutes from "./routes/ordersRoutes";
-import picturesRoutes from "./routes/picturesRoutes";
-import uploadRoutes from "./routes/uploadRoutes";
-import userRoutes from "./routes/userRoutes";
+import addressRoutes from "./routes/address.routes";
+import authRoutes from "./routes/auth.routes";
+import avisRoutes from "./routes/avis.routes";
+import cartsRoutes from "./routes/carts.routes";
+import favorisRoutes from "./routes/favoris.routes";
+import ordersRoutes from "./routes/orders.routes";
+import picturesRoutes from "./routes/pictures.routes";
+import uploadRoutes from "./routes/upload.routes";
+import userRoutes from "./routes/user.routes";
 
 dotenv.config();
 const app: Express = express();

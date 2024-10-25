@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { getCartsByUserId,
-    getCartById,
-    createCart,
-    updateCart,
-    deleteCart
-} from '../controllers/cartController';
+import {
+    getAvisByUserId,
+    getAvisById,
+    createAvis,
+    updateAvis,
+    deleteAvis
+} from "../controllers/avis.controller";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from '../middlewares/validate';
-import swagger from '../config/swagger';
 
 const router = Router();
 
@@ -16,33 +16,39 @@ const router = Router();
  * 
  * components:
  *   schemas:
- *     Cart:
+ *     Avis:
  *       required:
  *         - userId
- *         - items
+ *         - productId
+ *         - rating
+ *         - comment
  *       properties:
  *         userId:
  *           type: string
  *           description: L'identifiant de l'utilisateur
- *         items:
- *           type: object
- *           description: Les produits du panier
- *       example:
- *         userId: 5f4f6d7e5e5c5b5a5a4a5a5a
- *         items: [
- *           {
- *             productId: 5f4f6d7e5e5c5b5a5a4a5a5a,
- *             quantity: 2
- *           }
- *         ]
+ *         productId:
+ *           type: string
+ *           description: L'identifiant du produit
+ *         rating:
+ *           type: number
+ *           description: La note donnée par l'utilisateur
+ *         comment:
+ *           type: string
+ *           description: Le commentaire de l'utilisateur
+ *         createdAt:
+ *           type: string
+ *           description: La date de création de l'avis
+ *         updatedAt:
+ *           type: string
+ *           description: La date de mise à jour de l'avis
  */
 
 /**
  * @swagger
- * /api/cart/user/{userId}:
+ * /api/avis/user/{userId}:
  *  get:
  *    summary: Get avis by user id
- *    tags: [Cart]
+ *    tags: [Avis]
  *    parameters:
  *      - in: path
  *        name: userId
@@ -56,68 +62,68 @@ const router = Router();
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Cart'
+ *            $ref: '#/components/schemas/Avis'
  *      500:
  *        description: Server error
  */
-router.get('/user/:id', authenticateToken, validateObjectId, getCartsByUserId);
+router.get('/user/:id', authenticateToken, validateObjectId, getAvisByUserId);
 
 /**
  * @swagger
- * /api/cart/{id}:
+ * /api/avis/{id}:
  *  get:
- *    summary: Get cart by id
- *    tags: [Cart]
+ *    summary: Get avis by id
+ *    tags: [Avis]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the cart to get
+ *        description: ID of the user to get
  *    responses:
  *      200:
- *        description: Get cart by id
+ *        description: Get avis by id
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Cart'
+ *            $ref: '#/components/schemas/Avis'
  *      500:
  *        description: Server error
  */
-router.get('/:id', authenticateToken, validateObjectId, getCartById);
+router.get('/:id', authenticateToken, validateObjectId, getAvisById);
 
 /**
  * @swagger
- * /api/cart/{id}:
+ * /api/avis/{id}:
  *  post:
- *    summary: Create cart
- *    tags: [Cart]
+ *    summary: Create avis
+ *    tags: [Avis]
  *    requestBody:
  *      content:
  *        application/json:
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/components/schemas/Cart'
+ *              $ref: '#/components/schemas/Avis'
  *    responses:
  *      200:
- *        description: Create cart
+ *        description: Create avis
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Cart'
+ *            $ref: '#/components/schemas/Avis'
  *      500:
  *        description: Server error
  */
-router.post('/', authenticateToken, createCart);
+router.post('/', authenticateToken, createAvis);
 
 /**
  * @swagger
- * /api/cart/{id}:
+ * /api/avis/{id}:
  *  put:
- *    summary: Update cart by id
- *    tags: [Cart]
+ *    summary: Update avis by id
+ *    tags: [Avis]
  *    parameters:
  *      - in: path
  *        name: id
@@ -131,42 +137,42 @@ router.post('/', authenticateToken, createCart);
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/components/schemas/Cart'
+ *              $ref: '#/components/schemas/Avis'
  *    responses:
  *      200:
- *        description: Update cart
+ *        description: Update avis
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Cart'
+ *            $ref: '#/components/schemas/Avis'
  *      500:
  *        description: Server error
  */
-router.put('/:id', authenticateToken, validateObjectId, updateCart);
+router.put('/:id', authenticateToken, validateObjectId, updateAvis);
 
 /**
  * @swagger
- * /api/cart/{id}:
+ * /api/avis/{id}:
  *  delete:
- *    summary: Delete cart by id
- *    tags: [Cart]
+ *    summary: Delete avis by id
+ *    tags: [Avis]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the cart to delete
+ *        description: ID of the avis to delete
  *    responses:
  *      200:
- *        description: Delete cart
+ *        description: Delete avis
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Cart'
+ *            $ref: '#/components/schemas/Avis'
  *      500:
  *        description: Server error
  */
-router.delete('/:id', authenticateToken, validateObjectId, deleteCart);
+router.delete('/:id', authenticateToken, validateObjectId, deleteAvis);
 
 export default router;

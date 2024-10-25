@@ -4,7 +4,7 @@ import {
     postAddress,
     updateAddress,
     deleteAddress
-} from "../controllers/addressController";
+} from "../controllers/address.controller";
 import { authenticateToken } from "../middlewares/jwt";
 
 const router = Router();
