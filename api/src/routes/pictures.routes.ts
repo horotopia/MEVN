@@ -5,7 +5,7 @@ import {
     createPicture,
     updatePicture,
     deletePicture
-} from '../controllers/picturesController';
+} from '../controllers/pictures.controller';
 import { authenticateToken } from '../middlewares/jwt';
 import { validateObjectId } from '../middlewares/validate';
 

@@ -1,27 +1,23 @@
 import { Router } from 'express';
-import {
-    getAvisByUserId,
-    getAvisById,
-    createAvis,
-    updateAvis,
-    deleteAvis
-} from "../controllers/avisController";
-import { authenticateToken } from "../middlewares/jwt";
+import { getFavorisByUserId,
+    getFavorisById,
+    createFavoris,
+    updateFavoris,
+    deleteFavoris
+} from '../controllers/favoris.controller';
+import { authenticateToken } from '../middlewares/jwt';
 import { validateObjectId } from '../middlewares/validate';
 
 const router = Router();
 
 /**
  * @swagger
- * 
  * components:
  *   schemas:
- *     Avis:
+ *     Favoris:
  *       required:
  *         - userId
  *         - productId
- *         - rating
- *         - comment
  *       properties:
  *         userId:
  *           type: string
@@ -29,101 +25,92 @@ const router = Router();
  *         productId:
  *           type: string
  *           description: L'identifiant du produit
- *         rating:
- *           type: number
- *           description: La note donnée par l'utilisateur
- *         comment:
- *           type: string
- *           description: Le commentaire de l'utilisateur
- *         createdAt:
- *           type: string
- *           description: La date de création de l'avis
- *         updatedAt:
- *           type: string
- *           description: La date de mise à jour de l'avis
+ *       example:
+ *         userId: 5f4f6d7e5e5c5b5a5a4a5a5a
+ *         productId: 5f4f6d7e5e5c5b5a5a4a5a5a
  */
 
 /**
  * @swagger
- * /api/avis/user/{userId}:
+ * /api/favoris/user/{userId}:
  *  get:
- *    summary: Get avis by user id
- *    tags: [Avis]
+ *    summary: Get favoris by user id
+ *    tags: [Favoris]
  *    parameters:
  *      - in: path
  *        name: userId
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the user to get
+ *        description: ID of the favoris to get
  *    responses:
  *      200:
- *        description: Get avis by user id
+ *        description: Get favoris by user id
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Avis'
+ *            $ref: '#/components/schemas/Favoris'
  *      500:
  *        description: Server error
  */
-router.get('/user/:id', authenticateToken, validateObjectId, getAvisByUserId);
+router.get('/user/:id', authenticateToken, validateObjectId, getFavorisByUserId);
 
 /**
  * @swagger
- * /api/avis/{id}:
+ * /api/favoris/{id}:
  *  get:
- *    summary: Get avis by id
- *    tags: [Avis]
+ *    summary: Get favoris by id
+ *    tags: [Favoris]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the user to get
+ *        description: ID of the favoris to get
  *    responses:
  *      200:
- *        description: Get avis by id
+ *        description: Update cart
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Avis'
+ *            $ref: '#/components/schemas/Favoris'
  *      500:
  *        description: Server error
  */
-router.get('/:id', authenticateToken, validateObjectId, getAvisById);
+router.get('/:id', authenticateToken, validateObjectId, getFavorisById);
 
 /**
  * @swagger
- * /api/avis/{id}:
+ * /api/favoris:
  *  post:
- *    summary: Create avis
- *    tags: [Avis]
+ *    summary: Create favoris
+ *    tags: [Favoris]
  *    requestBody:
  *      content:
  *        application/json:
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/components/schemas/Avis'
+ *              $ref: '#/components/schemas/Favoris'
  *    responses:
  *      200:
- *        description: Create avis
+ *        description: Create favoris
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Avis'
+ *            $ref: '#/components/schemas/Favoris'
  *      500:
  *        description: Server error
  */
-router.post('/', authenticateToken, createAvis);
+router.post('/', authenticateToken, createFavoris);
 
 /**
  * @swagger
- * /api/avis/{id}:
+ * /api/favoris/{id}:
  *  put:
- *    summary: Update avis by id
- *    tags: [Avis]
+ *    summary: Update favoris by id
+ *    tags: [Favoris]
  *    parameters:
  *      - in: path
  *        name: id
@@ -137,42 +124,42 @@ router.post('/', authenticateToken, createAvis);
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/components/schemas/Avis'
+ *              $ref: '#/components/schemas/Favoris'
  *    responses:
  *      200:
- *        description: Update avis
+ *        description: Update cart
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Avis'
+ *            $ref: '#/components/schemas/Favoris'
  *      500:
  *        description: Server error
  */
-router.put('/:id', authenticateToken, validateObjectId, updateAvis);
+router.put('/:id', authenticateToken, validateObjectId, updateFavoris);
 
 /**
  * @swagger
- * /api/avis/{id}:
+ * /api/favoris/{id}:
  *  delete:
- *    summary: Delete avis by id
- *    tags: [Avis]
+ *    summary: Delete favoris by id
+ *    tags: [Favoris]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the avis to delete
+ *        description: ID of the avis to update
  *    responses:
  *      200:
- *        description: Delete avis
+ *        description: Delete favoris
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Avis'
+ *            $ref: '#/components/schemas/Favoris'
  *      500:
  *        description: Server error
  */
-router.delete('/:id', authenticateToken, validateObjectId, deleteAvis);
+router.delete('/:id', authenticateToken, validateObjectId, deleteFavoris);
 
 export default router;

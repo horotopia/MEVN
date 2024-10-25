@@ -1,181 +1,172 @@
 import { Router } from 'express';
-import { getOrdersByUserId,
-    getOrderById,
-    createOrders,
-    updateOrders,
-    deleteOrders
-} from '../controllers/ordersController';
-import { authenticateToken } from '../middlewares/jwt';
+import { getCartsByUserId,
+    getCartById,
+    createCart,
+    updateCart,
+    deleteCart
+} from '../controllers/cart.controller';
+import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from '../middlewares/validate';
+import swagger from '../config/swagger';
 
 const router = Router();
 
 /**
  * @swagger
+ * 
  * components:
  *   schemas:
- *     Orders:
+ *     Cart:
  *       required:
  *         - userId
  *         - items
- *         - totalAmount
- *         - status
  *       properties:
  *         userId:
  *           type: string
  *           description: L'identifiant de l'utilisateur
  *         items:
  *           type: object
- *           description: Les produits de la commande
- *         totalAmount:
- *           type: number
- *           description: Le montant total de la commande
- *         status:
- *           type: string
- *           description: Le statut de la commande
+ *           description: Les produits du panier
  *       example:
  *         userId: 5f4f6d7e5e5c5b5a5a4a5a5a
  *         items: [
  *           {
  *             productId: 5f4f6d7e5e5c5b5a5a4a5a5a,
- *             quantity: 2,
- *             price: 10
+ *             quantity: 2
  *           }
  *         ]
- *         totalAmount: 20
- *         status: pending
  */
 
 /**
  * @swagger
- * /api/orders/user/{userId}:
+ * /api/cart/user/{userId}:
  *  get:
- *    summary: Get orders by user id
- *    tags: [Orders]
+ *    summary: Get avis by user id
+ *    tags: [Cart]
  *    parameters:
  *      - in: path
  *        name: userId
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the orders to get
+ *        description: ID of the user to get
  *    responses:
  *      200:
- *        description: User orders
+ *        description: Get avis by user id
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Oders'
+ *            $ref: '#/components/schemas/Cart'
  *      500:
  *        description: Server error
  */
-router.get('/user/:id', authenticateToken, validateObjectId, getOrdersByUserId);
+router.get('/user/:id', authenticateToken, validateObjectId, getCartsByUserId);
 
 /**
  * @swagger
- * /api/orders/{id}:
+ * /api/cart/{id}:
  *  get:
- *    summary: Get orders by id
- *    tags: [Orders]
+ *    summary: Get cart by id
+ *    tags: [Cart]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the orders to get
+ *        description: ID of the cart to get
  *    responses:
  *      200:
- *        description: Orders by id
+ *        description: Get cart by id
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Oders'
+ *            $ref: '#/components/schemas/Cart'
  *      500:
  *        description: Server error
  */
-router.get('/:id', authenticateToken, validateObjectId, getOrderById);
+router.get('/:id', authenticateToken, validateObjectId, getCartById);
 
 /**
  * @swagger
- * /api/orders:
+ * /api/cart/{id}:
  *  post:
- *    summary: Create orders
- *    tags: [Orders]
+ *    summary: Create cart
+ *    tags: [Cart]
  *    requestBody:
  *      content:
  *        application/json:
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/components/schemas/Oders'
+ *              $ref: '#/components/schemas/Cart'
  *    responses:
  *      200:
- *        description: Create orders
+ *        description: Create cart
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Oders'
+ *            $ref: '#/components/schemas/Cart'
  *      500:
  *        description: Server error
  */
-router.post('/', authenticateToken, createOrders);
+router.post('/', authenticateToken, createCart);
 
 /**
  * @swagger
- * /api/orders/{id}:
+ * /api/cart/{id}:
  *  put:
- *    summary: Update orders
- *    tags: [Orders]
+ *    summary: Update cart by id
+ *    tags: [Cart]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the orders to get
+ *        description: ID of the avis to update
  *    requestBody:
  *      content:
  *        application/json:
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/components/schemas/Oders'
+ *              $ref: '#/components/schemas/Cart'
  *    responses:
  *      200:
- *        description: Update orders
+ *        description: Update cart
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Oders'
+ *            $ref: '#/components/schemas/Cart'
  *      500:
  *        description: Server error
  */
-router.put('/:id', authenticateToken, validateObjectId, updateOrders);
+router.put('/:id', authenticateToken, validateObjectId, updateCart);
 
 /**
  * @swagger
- * /api/orders/{id}:
+ * /api/cart/{id}:
  *  delete:
- *    summary: Delete orders
- *    tags: [Orders]
+ *    summary: Delete cart by id
+ *    tags: [Cart]
  *    parameters:
  *      - in: path
  *        name: id
  *        schema:
  *          type: string
  *        required: true
- *        description: ID of the orders to get
+ *        description: ID of the cart to delete
  *    responses:
  *      200:
- *        description: Delete orders
+ *        description: Delete cart
  *        content:
  *          application/json:
  *          schema:
- *            $ref: '#/components/schemas/Oders'
+ *            $ref: '#/components/schemas/Cart'
  *      500:
  *        description: Server error
  */
-router.delete('/:id', authenticateToken, validateObjectId, deleteOrders);
+router.delete('/:id', authenticateToken, validateObjectId, deleteCart);
 
 export default router;
