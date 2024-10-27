@@ -12,7 +12,7 @@ import {
 } from "../controllers/productController";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
-// import { validateRoleAdmin } from "../middlewares/validateRole";
+import validateRoleAdmin from "../middlewares/validator/validateRole";
 
 const router = Router();
 
@@ -44,7 +44,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/p/d/{id}:
+ * /api/d/{id}:
  * get:
  *   summary: Delete product by id
  *   tags: [Products]
@@ -69,15 +69,16 @@ const router = Router();
  *       description: Internal server error
  */
 router.deleteProduct(
-  "/p/d/:id",
+  "/d/:id",
   authenticateToken,
-  validateObjectId, // validateRoleAdmin,
+  validateObjectId,
+  validateRoleAdmin,
   deleteProduct
 );
 
 /**
  * @swagger
- * /api/p/{id}:
+ * /api/{id}:
  * get:
  *   summary: Get product by id
  *   tags: [Products]
@@ -101,11 +102,11 @@ router.deleteProduct(
  *     500:
  *       description: Internal server error
  */
-router.getProduct("/p/:id", authenticateToken, validateObjectId, getProduct);
+router.getProduct("/:id", authenticateToken, validateObjectId, getProduct);
 
 /**
  * @swagger
- * /api/products:
+ * /apiroducts:
  * get:
  *   summary: Get all products
  *   tags: [Products]
@@ -129,15 +130,11 @@ router.getProduct("/p/:id", authenticateToken, validateObjectId, getProduct);
  *     500:
  *       description: Internal server error
  */
-router.getProducts(
-  "/products",
-  authenticateToken, // validateRoleAdmin,
-  getProducts
-);
+router.getProducts("/all", authenticateToken, validateRoleAdmin, getProducts);
 
 /**
  * @swagger
- * /api/p/c/{category}:
+ * /api/c/{category}:
  * get:
  *   summary: Get all products of a category
  *   tags: [Products]
@@ -162,14 +159,14 @@ router.getProducts(
  *       description: Internal server error
  */
 router.getProductsByCategory(
-  "/p/c/:category",
+  "/c/:category",
   authenticateToken,
   getProductsByCategory
 );
 
 /**
  * @swagger
- * /api/p/e/{evolutionLevel}:
+ * /api/e/{evolutionLevel}:
  * get:
  *   summary: Get all products of an evolution level
  *   tags: [Products]
@@ -194,14 +191,14 @@ router.getProductsByCategory(
  *       description: Internal server error
  */
 router.getProductsByEvolutionLevel(
-  "/p/e/:evolutionLevel",
+  "/e/:evolutionLevel",
   authenticateToken,
   getProductsByEvolutionLevel
 );
 
 /**
  * @swagger
- * /api/p/t/{type}:
+ * /api/t/{type}:
  * get:
  *   summary: Get all products of a type
  *   tags: [Products]
@@ -225,11 +222,11 @@ router.getProductsByEvolutionLevel(
  *     500:
  *       description: Internal server error
  */
-router.getProductsByType("/p/t/:type", authenticateToken, getProductsByType);
+router.getProductsByType("/t/:type", authenticateToken, getProductsByType);
 
 /**
  * @swagger
- * /api/p/stock:
+ * /api/stock:
  * get:
  *   summary: Get all products in stock
  *   tags: [Products]
@@ -253,11 +250,11 @@ router.getProductsByType("/p/t/:type", authenticateToken, getProductsByType);
  *     500:
  *       description: Internal server error
  */
-router.getProductsInStock("/p/stock", authenticateToken, getProductsInStock);
+router.getProductsInStock("/stock", authenticateToken, getProductsInStock);
 
 /**
  * @swagger
- * /api/p/create:
+ * /api/create:
  * get:
  *   summary: create a product
  *   tags: [Products]
@@ -282,14 +279,15 @@ router.getProductsInStock("/p/stock", authenticateToken, getProductsInStock);
  *       description: Internal server error
  */
 router.postProduct(
-  "/p/create",
-  authenticateToken, // validateRoleAdmin,
+  "/create",
+  authenticateToken,
+  validateRoleAdmin,
   postProduct
 );
 
 /**
  * @swagger
- * /api/products:
+ * /apiroducts:
  * get:
  *   summary: Update a product
  *   tags: [Products]
@@ -313,10 +311,6 @@ router.postProduct(
  *     500:
  *       description: Internal server error
  */
-router.putProduct(
-  "/p/u/:id",
-  authenticateToken, // validateRoleAdmin,
-  putProduct
-);
+router.putProduct("/u/:id", authenticateToken, validateRoleAdmin, putProduct);
 
 export default router;

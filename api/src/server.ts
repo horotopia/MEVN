@@ -1,21 +1,22 @@
-import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import express, { Express, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 
 // Configurations
-import swaggerSpec from "./config/swagger";
-import connectDB from "./config/database";
-import logger from "./config/logger";
-import configureCORS from "./config/cors";
 import configureCompression from "./config/compression";
+import configureCORS from "./config/cors";
+import connectDB from "./config/database";
 import configureHelmet from "./config/helmet";
+import logger from "./config/logger";
+import swaggerSpec from "./config/swagger";
 
 // Middlewares
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
 import authRoutes from "./routes/authRoutes";
+import productRoutes from "./routes/productRoutes";
 import userRoutes from "./routes/userRoutes";
 
 import uploadRoutes from "./routes/uploadRoutes";
@@ -46,6 +47,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/product", productRoutes);
 
 app.use("/api/upload", uploadRoutes);
 
