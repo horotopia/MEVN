@@ -12,6 +12,7 @@ import {
 } from "../controllers/productController";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import validateRoleAdmin from "../middlewares/validator/validateRole";
 
 const router = Router();
 
@@ -26,78 +27,36 @@ const router = Router();
  *         name: id
  *         schema:
  *           type: string
- *         required: true
- *         description: ID of the product to get
- *     responses:
- *       200:
- *         description: Product deleted
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Not found
- *       500:
- *         description: Internal server error
- */
-router.delete("/d/:id", authenticateToken, validateObjectId, deleteProduct);
-
-/**
- * @swagger
- * /api/product/{id}:
- *   get:
- *     summary: Get product by id
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
+ *           description: The name of the product
+ *         description:
  *           type: string
- *         required: true
- *         description: ID of the product to get
- *     responses:
- *       200:
- *         description: Product found
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Not found
- *       500:
- *         description: Internal server error
+ *           description: The description of the product
+ *         price:
+ *           type: number
+ *           description: The price of the product
+ *         image:
+ *           type: string
+ *           description: The image of the product
+ *       example:
+ *         name: Product 1
+ *         description: Description of product 1
+ *         price: 10
+ *         image: image1.png
  */
-router.get("/:id", authenticateToken, validateObjectId, getProduct);
 
 /**
  * @swagger
- * /api/product/all:
- *   get:
- *     summary: Get all products
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
+ * /api/d/{id}:
+ * get:
+ *   summary: Delete product by id
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: Product deleted
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
  *       400:
@@ -111,21 +70,27 @@ router.get("/:id", authenticateToken, validateObjectId, getProduct);
  *       500:
  *         description: Internal server error
  */
-router.get("/all", authenticateToken, getProducts);
+router.deleteProduct(
+  "/d/:id",
+  authenticateToken,
+  validateObjectId,
+  validateRoleAdmin,
+  deleteProduct
+);
 
 /**
  * @swagger
- * /api/product/c/{category}:
- *   get:
- *     summary: Get all products of a category
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
+ * /api/{id}:
+ * get:
+ *   summary: Get product by id
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: Product found
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
  *       400:
@@ -139,21 +104,21 @@ router.get("/all", authenticateToken, getProducts);
  *       500:
  *         description: Internal server error
  */
-router.get("/c/:category", authenticateToken, getProductsByCategory);
+router.getProduct("/:id", authenticateToken, validateObjectId, getProduct);
 
 /**
  * @swagger
- * /api/product/e/{evolutionLevel}:
- *   get:
- *     summary: Get all products of an evolution level
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
+ * /apiroducts:
+ * get:
+ *   summary: Get all products
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: List of products
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
  *       400:
@@ -167,7 +132,67 @@ router.get("/c/:category", authenticateToken, getProductsByCategory);
  *       500:
  *         description: Internal server error
  */
-router.get(
+router.getProducts("/all", authenticateToken, validateRoleAdmin, getProducts);
+
+/**
+ * @swagger
+ * /api/c/{category}:
+ * get:
+ *   summary: Get all products of a category
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: List of products
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
+ */
+router.getProductsByCategory(
+  "/c/:category",
+  authenticateToken,
+  getProductsByCategory
+);
+
+/**
+ * @swagger
+ * /api/e/{evolutionLevel}:
+ * get:
+ *   summary: Get all products of an evolution level
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: List of products
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
+ */
+router.getProductsByEvolutionLevel(
   "/e/:evolutionLevel",
   authenticateToken,
   getProductsByEvolutionLevel
@@ -175,17 +200,17 @@ router.get(
 
 /**
  * @swagger
- * /api/product/t/{type}:
- *   get:
- *     summary: Get all products of a type
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
+ * /api/t/{type}:
+ * get:
+ *   summary: Get all products of a type
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: List of products
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
  *       400:
@@ -199,21 +224,21 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.get("/t/:type", authenticateToken, getProductsByType);
+router.getProductsByType("/t/:type", authenticateToken, getProductsByType);
 
 /**
  * @swagger
- * /api/product/stock:
- *   get:
- *     summary: Get all products in stock
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
+ * /api/stock:
+ * get:
+ *   summary: Get all products in stock
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: List of products
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
  *       400:
@@ -227,16 +252,17 @@ router.get("/t/:type", authenticateToken, getProductsByType);
  *       500:
  *         description: Internal server error
  */
-router.get("/stock", authenticateToken, getProductsInStock);
+router.getProductsInStock("/stock", authenticateToken, getProductsInStock);
 
 /**
  * @swagger
- * /api/product/create:
- *   post:
- *     summary: create a product
- *     tags: [Products]
- *     requestBody:
- *       required: true
+ * /api/create:
+ * get:
+ *   summary: create a product
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: Product created
  *       content:
  *         application/json:
  *           schema:
@@ -271,28 +297,26 @@ router.get("/stock", authenticateToken, getProductsInStock);
  *       500:
  *         description: Internal server error
  */
-router.post("/create", authenticateToken, postProduct);
+router.postProduct(
+  "/create",
+  authenticateToken,
+  validateRoleAdmin,
+  postProduct
+);
 
 /**
  * @swagger
- * /api/product/u/{id}:
- *   put:
- *     summary: Update a product
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID of the product to get
- *     responses:
- *       200:
- *         description: Product updated
- *         content:
- *           application/json:
- *             schema:
- *               type: array
+ * /apiroducts:
+ * get:
+ *   summary: Update a product
+ *   tags: [Products]
+ *   responses:
+ *     200:
+ *       description: Product updated
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
  *       400:
@@ -306,6 +330,6 @@ router.post("/create", authenticateToken, postProduct);
  *       500:
  *         description: Internal server error
  */
-router.put("/u/:id", authenticateToken, putProduct);
+router.putProduct("/u/:id", authenticateToken, validateRoleAdmin, putProduct);
 
 export default router;
