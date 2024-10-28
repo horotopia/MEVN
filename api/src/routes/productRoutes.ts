@@ -20,55 +20,140 @@ const router = Router();
  * @swagger
  * components:
  *   schemas:
- *     Product:
+ *     Products:
  *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: The name of the product
- *         description:
- *           type: string
- *           description: The description of the product
- *         price:
- *           type: number
- *           description: The price of the product
- *         image:
- *           type: string
- *           description: The image of the product
- *       example:
- *         name: Product 1
- *         description: Description of product 1
- *         price: 10
- *         image: image1.png
+ *   required:
+ *     - name
+ *     - description
+ *     - type
+ *     - evolutionLevel
+ *     - evolutionReference
+ *     - weight
+ *     - height
+ *     - age
+ *     - price
+ *     - category
+ *     - stock
+ *     - createdAt
+ *     - updatedAt
+ *   properties:
+ *     name:
+ *       type: string
+ *       description: Le nom du produit
+ *       required: true
+ *       trim: true
+ *       maxLength: 100
+ *     description:
+ *       type: string
+ *       description: La description du produit
+ *       required: true
+ *       maxLength: 500
+ *     type:
+ *       type: string
+ *       description: Le type du produit
+ *       required: true
+ *       enum: [feu, eau, plante, électricité]
+ *       default: feu
+ *     evolutionLevel:
+ *       type: number
+ *       description: Le niveau d'évolution du produit
+ *       required: true
+ *       min: 1
+ *       max: 3
+ *     evolutionReference:
+ *       type: string
+ *       description: La référence de l'évolution du produit
+ *       required: true
+ *       trim: true
+ *       maxLength: 100
+ *     weight:
+ *       type: number
+ *       description: Le poids du produit en grammes
+ *       required: true
+ *       min: 0
+ *     height:
+ *       type: number
+ *       description: La taille du produit en centimètres
+ *       required: true
+ *       min: 0
+ *     age:
+ *       type: number
+ *       description: L'âge du produit
+ *       required: true
+ *       min: 0
+ *     price:
+ *       type: number
+ *       description: Le prix du produit en €
+ *       required: true
+ *       min: 0
+ *     category:
+ *       type: string
+ *       description: La catégorie du produit
+ *       required: true
+ *       enum: [pokémon, pokéball, baie, objets, médicaments]
+ *       default: pokémon
+ *     stock:
+ *       type: number
+ *       description: Le stock du produit
+ *       default: 0
+ *     createdAt:
+ *       type: Date
+ *       description: La date de création du produit
+ *       default: Date.now
+ *     updatedAt:
+ *       type: Date
+ *       description: La date de modification du produit
+ *       default: Date.now
+ *   example:
+ *     name: Pikachu
+ *     description: Pokémon électrique
+ *     type: électricité
+ *     evolutionLevel: 2
+ *     evolutionReference: Pichu
+ *     weight: 6000
+ *     height: 40
+ *     age: 4
+ *     price: 50_000
+ *     category: pokémon
+ *     stock: 5
+ *     createdAt: 2021-09-01T00:00:00.000Z
+ *     updatedAt: 2021-09-01T00:00:00.000Z
  */
 
 /**
  * @swagger
- * /api/d/{id}:
- * get:
- *   summary: Delete product by id
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: Product deleted
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/d/{id}:
+ *   delete:
+ *     summary: Supprime un produit par son identifiant
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the product to get
+ *     responses:
+ *       200:
+ *         description: Product deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.deleteProduct(
+router.delete(
   "/d/:id",
   authenticateToken,
   validateObjectId,
@@ -78,119 +163,122 @@ router.deleteProduct(
 
 /**
  * @swagger
- * /api/{id}:
- * get:
- *   summary: Get product by id
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: Product found
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/{id}:
+ *   get:
+ *     summary: Get product by id
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the product to get
+ *     responses:
+ *       200:
+ *         description: Product found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.getProduct("/:id", authenticateToken, validateObjectId, getProduct);
+router.get("/:id", authenticateToken, validateObjectId, getProduct);
 
 /**
  * @swagger
- * /apiroducts:
- * get:
- *   summary: Get all products
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: List of products
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/all:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.getProducts("/all", authenticateToken, validateRoleAdmin, getProducts);
+router.get("/all", authenticateToken, validateRoleAdmin, getProducts);
 
 /**
  * @swagger
- * /api/c/{category}:
- * get:
- *   summary: Get all products of a category
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: List of products
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/c/{category}:
+ *   get:
+ *     summary: Get all products of a category
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.getProductsByCategory(
-  "/c/:category",
-  authenticateToken,
-  getProductsByCategory
-);
+router.get("/c/:category", authenticateToken, getProductsByCategory);
 
 /**
  * @swagger
- * /api/e/{evolutionLevel}:
- * get:
- *   summary: Get all products of an evolution level
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: List of products
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/e/{evolutionLevel}:
+ *   get:
+ *     summary: Get all products of an evolution level
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.getProductsByEvolutionLevel(
+router.get(
   "/e/:evolutionLevel",
   authenticateToken,
   getProductsByEvolutionLevel
@@ -198,119 +286,121 @@ router.getProductsByEvolutionLevel(
 
 /**
  * @swagger
- * /api/t/{type}:
- * get:
- *   summary: Get all products of a type
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: List of products
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/t/{type}:
+ *   get:
+ *     summary: Get all products of a type
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.getProductsByType("/t/:type", authenticateToken, getProductsByType);
+router.get("/t/:type", authenticateToken, getProductsByType);
 
 /**
  * @swagger
- * /api/stock:
- * get:
- *   summary: Get all products in stock
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: List of products
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/stock:
+ *   get:
+ *     summary: Get all products in stock
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.getProductsInStock("/stock", authenticateToken, getProductsInStock);
+router.get("/stock", authenticateToken, getProductsInStock);
 
 /**
  * @swagger
- * /api/create:
- * get:
- *   summary: create a product
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: Product created
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/create:
+ *   post:
+ *     summary: create a product
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Product created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.postProduct(
-  "/create",
-  authenticateToken,
-  validateRoleAdmin,
-  postProduct
-);
+router.post("/create", authenticateToken, validateRoleAdmin, postProduct);
 
 /**
  * @swagger
- * /apiroducts:
- * get:
- *   summary: Update a product
- *   tags: [Products]
- *   responses:
- *     200:
- *       description: Product updated
- *       content:
- *         application/json:
- *           schema:
- *             type: array
+ * /api/product/u/{id}:
+ *   put:
+ *     summary: Update a product
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the product to get
+ *     responses:
+ *       200:
+ *         description: Product updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *     400:
- *       description: Bad request
- *     401:
- *       description: Unauthorized
- *     403:
- *       description: Forbidden
- *     404:
- *       description: Not found
- *     500:
- *       description: Internal server error
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
  */
-router.putProduct("/u/:id", authenticateToken, validateRoleAdmin, putProduct);
+router.put("/u/:id", authenticateToken, validateRoleAdmin, putProduct);
 
 export default router;
