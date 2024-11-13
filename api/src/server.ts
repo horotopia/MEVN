@@ -17,6 +17,7 @@ import errorHandler from "./middlewares/errorHandler";
 // Routes
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
+import mailRoutes from './routes/mailRoutes';
 
 import uploadRoutes from "./routes/uploadRoutes";
 
@@ -48,6 +49,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 app.use("/api/upload", uploadRoutes);
+
+app.use('/api/mail', mailRoutes);
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;
