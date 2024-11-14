@@ -43,7 +43,7 @@ const loginUser = async (req, res) => {
     const jwtToken = generateToken({ id: user._id });
 
 		// Stockage du JWT dans un cookie HttpOnly
-		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
+		res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: false ,sameSite: 'Lax', maxAge: 24 * 60 * 60 * 1000 });
     res.json({ message: 'Connexion réussie', jwtToken });
   } catch (error) {
     logger.error(`Error logging in user ${email}: ${error}`);
@@ -53,8 +53,12 @@ const loginUser = async (req, res) => {
 
 // /api/auth/logout
 const logoutUser = async (req, res) => {
-  res.clearCookie("jwtToken");
-  res.status(200).json({ message: "User logged out successfully" });
+  res.clearCookie("jwtToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Utiliser 'secure' en production
+    sameSite: 'Strict'
+  });
+  return res.status(200).json({ message: "User logged out successfully" });
 };
 
 export {
