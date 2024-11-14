@@ -44,9 +44,9 @@ import Cookies from 'js-cookie';
                 method: 'GET',
                 credentials: 'include', 
                 headers: {
-                'content-type': 'application/json',
-               'Authorization': `Bearer ${jwtToken}`,
-                Accept: '*/*'
+                  'content-type': 'application/json',
+                  'Authorization': `Bearer ${jwtToken}`,
+                  'Accept': '*/*'
                 }
             });
 

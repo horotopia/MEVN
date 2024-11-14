@@ -3,7 +3,7 @@ import logger from "../config/logger";
 import { Address } from "../models/address.model";
 import { User } from '../models/user.model';
 
-const getUsers = async (res: Response) => {
+const getUsers = async (req: Request, res: Response) => {
   try {
     const result = await User.find();
 
