@@ -18,7 +18,10 @@ import FooTer from './FooTer.vue';
   
         fetch('http://localhost:5000/api/auth/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          },
           body: JSON.stringify({ email: this.email, password: this.password }),
           credentials: 'include'
         })
@@ -36,7 +39,7 @@ import FooTer from './FooTer.vue';
           // Redirection vers la page admin
           this.$router.push('/admin');
         } else {
-          this.errorMessage = 'crotte';
+          this.errorMessage = 'Erreur de connexion';
         }
       })
         .catch(error => {
