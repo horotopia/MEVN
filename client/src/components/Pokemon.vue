@@ -2,16 +2,15 @@
 
 import NavBar from './NavBar.vue';
 import FooTer from './FooTer.vue';
+import PokemonList from './PokemonList.vue';
 
 export default{
-  components: { NavBar, FooTer },
+  components: { NavBar, FooTer, PokemonList },
 }
 </script>
 
 <template>
   <NavBar />
-  <div class="text-center mt-5">
-    <h1 class="text-xl font-bold">Bienvenue sur la page d'accueil</h1>
-  </div>
+    <PokemonList />
   <FooTer />
 </template>
