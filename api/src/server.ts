@@ -15,10 +15,15 @@ import configureHelmet from "./config/helmet";
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
-import authRoutes from "./routes/authRoutes";
-import userRoutes from "./routes/userRoutes";
-
-import uploadRoutes from "./routes/uploadRoutes";
+import addressRoutes from "./routes/address.routes";
+import authRoutes from "./routes/auth.routes";
+import avisRoutes from "./routes/avis.routes";
+import cartsRoutes from "./routes/carts.routes";
+import favorisRoutes from "./routes/favoris.routes";
+import ordersRoutes from "./routes/orders.routes";
+import picturesRoutes from "./routes/pictures.routes";
+import uploadRoutes from "./routes/upload.routes";
+import userRoutes from "./routes/user.routes";
 
 dotenv.config();
 const app: Express = express();
@@ -46,6 +51,13 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+
+app.use("/api/addresses", addressRoutes);
+app.use("/api/avis", avisRoutes);
+app.use("/api/carts", cartsRoutes);
+app.use("/api/favoris", favorisRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/pictures", picturesRoutes);
 
 app.use("/api/upload", uploadRoutes);
 

@@ -5,7 +5,6 @@ const SALT_WORK_FACTOR = 10;
 
 /**
  * @swagger
- *
  * components:
  *   schemas:
  *     Users:
@@ -34,12 +33,12 @@ const SALT_WORK_FACTOR = 10;
  *         role: ROLE_USER
  */
 
-interface IUser {
+interface IUser extends Document {
     name: string;
     email: string;
     password: string;
     role: string;
-    _not_hashed_password: string;   
+    _not_hashed_password: string;
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -68,6 +67,8 @@ const userSchema: Schema<IUserDocument> = new Schema({
     _not_hashed_password: {
         type: String,
     }
+}, {
+    timestamps: true
 });
 
 userSchema.virtual('not_hashed_password').set(function (password) {
