@@ -178,7 +178,7 @@ router.put("/:id", authenticateToken, validateObjectId, putUser);
  *        description: ID of the user to get
  *    responses:
  *      200:
- *        description: List of users
+ *        description: Deleted user
  *        content:
  *          application/json:
  *            schema:
