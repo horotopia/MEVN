@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import logger from "../config/logger";
 import { Address } from "../models/address.model";
 import { User } from '../models/user.model';
