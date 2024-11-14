@@ -1,7 +1,8 @@
 import cors from 'cors';
-import logger from './logger.js';
+import { Application } from 'express';
+import logger from './logger';
 
-const configureCORS = (app) => {
+const configureCORS = (app: Application) => {
   const corsOptions = {
     origin: ['http://localhost:5000','http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],

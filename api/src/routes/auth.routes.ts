@@ -1,13 +1,8 @@
 import express from "express";
-import {
-  loginUser,
-  logoutUser,
-  registerUser,
-} from "../controllers/authController.js";
-import hashPassword from "../middlewares/bcrypt.js";
-import { authenticateToken } from "../middlewares/jwt.js";
-import { validateNoToken } from "../middlewares/validate.js";
-import validateUser from "../middlewares/validator/validateUser.js";
+import { loginUser, registerUser } from "../controllers/auth.controller";
+import hashPassword from "../middlewares/bcrypt";
+import { validateNoToken } from "../middlewares/validate";
+import validateUser from "../middlewares/validator/validateUser";
 const userRouter = express.Router();
 
 /**
@@ -100,21 +95,5 @@ userRouter.post(
  *         description: Server error
  */
 userRouter.post("/login", validateNoToken, loginUser);
-
-/**
- * @swagger
- * /api/auth/logout:
- *   post:
- *     summary: logout a user
- *     tags: [Auth]
- *     responses:
- *       200:
- *         description: User logged out successfully
- *       400:
- *         description: Bad request
- *       500:
- *         description: Server error
- */
-userRouter.get("/logout", authenticateToken, logoutUser);
 
 export default userRouter;
