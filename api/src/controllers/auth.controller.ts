@@ -49,10 +49,15 @@ const loginUser = async (req: Request, res: Response) => {
     const jwtToken = generateToken({ id: user._id });
 
     // Stockage du JWT dans un cookie HttpOnly
-    res.cookie("jwtToken", jwtToken, { httpOnly: true, secure: true });
+    res.cookie("jwtToken", jwtToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     res.json({ message: "Connexion réussie", jwtToken });
   } catch (err: Error | any) {
-    -logger.error(`Error logging in user ${email}: ${err}`);
+    logger.error(`Error logging in user ${email}: ${err}`);
     res.status(500).json({ message: err.message });
   }
 };
