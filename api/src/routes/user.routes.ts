@@ -1,11 +1,11 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import {
   deleteUser,
   getUser,
   getUsers,
   postUser,
   putUser,
-} from "../controllers/userController";
+} from "../controllers/user.controller";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
 
@@ -16,7 +16,6 @@ const router = Router();
  * components:
  *   schemas:
  *     User:
- *       type: object
  *       properties:
  *         name:
  *           type: string
@@ -179,7 +178,7 @@ router.put("/:id", authenticateToken, validateObjectId, putUser);
  *        description: ID of the user to get
  *    responses:
  *      200:
- *        description: List of users
+ *        description: Deleted user
  *        content:
  *          application/json:
  *            schema:
