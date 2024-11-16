@@ -1,5 +1,12 @@
-import express from "express";
-import { sendMail } from "../services/mailService";
+import express from 'express';
+import {
+    sendConfirmationEmail,
+    sendPasswordResetEmail,
+    sendInvoiceEmail,
+    sendInvitationToResetPasswordEmail,
+} from '../controllers/mailController';
+
+
 
 const router = express.Router();
 
@@ -38,20 +45,10 @@ const router = express.Router();
  *                   example: "Erreur lors de l'envoi de l'e-mail."
  */
 
-router.post('/send-confirmation', async (req, res) => {
-    const { email, username } = req.body;
-    const confirmationLink = 'http://localhost:3000/confirmation';
 
-    try {
-        await sendMail(email, 'Confirme ton inscription',
-            `<h1>Bienvenue, ${username} !</h1>
-            <p>Confirme ton inscription en cliquant ici :</p>
-            <a href="${confirmationLink}">Lien de Confirmation</a>`);
-        res.status(200).json({ message: 'E-mail envoyé avec succès !' });
-    } catch (error) {
-        res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'envoi de l\'e-mail.' });
-
-    }
-});
+router.post('/send-confirmation', sendConfirmationEmail);
+router.post('/send-password-reset', sendPasswordResetEmail);
+router.post('/send-invoice', sendInvoiceEmail);
+router.post('/send-invitation-reset', sendInvitationToResetPasswordEmail);
 
 export default router;
