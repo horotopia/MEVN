@@ -40,7 +40,12 @@ const swaggerOptions: SwaggerOptions = {
       },
     ],
   },
-  apis: ["src/routes/*.ts", "src/models/*.ts", `./swagger.js`],
+  apis: [
+    "src/routes/*.ts",
+    "src/models/*.ts",
+    "src/services/*.js",
+    `./swagger.js`,
+  ],
 };
 
 export default swaggerJsdoc(swaggerOptions);
