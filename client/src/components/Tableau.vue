@@ -31,7 +31,7 @@ import Cookies from 'js-cookie';
   export default {
     data() {
       return {
-        users: [],
+        users: [], 
       };
     },
     methods: {
@@ -54,7 +54,7 @@ import Cookies from 'js-cookie';
             }
 
             const data = await response.json();
-            this.users = data;
+            this.users = data; 
         } catch (error) {
             console.error('Erreur lors de la récupération des utilisateurs', error);
         }
