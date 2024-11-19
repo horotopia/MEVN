@@ -1,49 +1,41 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Accueil from '../components/Accueil.vue';
-import Login from '../components/LoginForm.vue';
-import Register from '../components/RegisterForm.vue';
-import Admin from '../components/Admin.vue';
-import UserTable from '../components/UserTable.vue';
-import PokemonList from '../components/PokemonList.vue';
-import PokemonDetail from '../components/PokemonDetail.vue';
+import DefaultLayout from '../Layouts/DefaultLayout.vue'
+import AuthLayout from '../Layouts/AuthLayout.vue'
+import Home from '../pages/Home.vue';
+import Login from '../pages/Login.vue';
+import Register from '../pages/Register.vue';
+import Dashboard from '../pages/Dashboard.vue';
+import PokemonDetails from '../pages/PokemonDetails.vue';
+import Pokemon from '../pages/Pokemon.vue';
+import Pokeball from '../pages/Pokeball.vue';
+import Accessoires from '../pages/Accessoires.vue';
+import PokemonInfo from '../components/PokemonInfo.vue';
 
 const routes = [
   {
     path: '/',
-    name: 'Accueil',
-    component: Accueil
+    component: DefaultLayout,
+    children: [
+      { path: '', name: 'Home', component: Home },
+      { path: 'pokemon', name: 'Pokemon', component: Pokemon },
+      { path: 'pokemon/:id', name: 'PokemonDetails', component: PokemonDetails, props: true },
+      { path: 'pokeball', name: 'Pokeball', component: Pokeball },
+      { path: 'accessoires', name: 'Accessoires', component: Accessoires },
+    ]
   },
   {
-    path: '/pokemon',
-    name: 'PokemonList',
-    component: PokemonList
+    path: '/',
+    component: AuthLayout,
+    children: [
+      { path: 'login', name: 'Login', component: Login },
+      { path: 'register', name: 'Register', component: Register }
+    ]
   },
   {
-    path: '/pokemon/:id',
-    name: 'PokemonDetail',
-    component: PokemonDetail,
-    props: true
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register
-  },
-  {
-    path: '/admin',
-    name: 'Admin',
-    component: Admin,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/admin/users',
-    name: 'UserTable',
-    component: UserTable
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    // meta: { requiresAuth: true }
   },
 ];
 
