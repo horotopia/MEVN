@@ -3,17 +3,13 @@ services:
     container_name: api
     build:
       context: ./api
+      target: ${CONTEXT:-development}
     env_file: ./api/.env
-    environment:
-      - API_HOST
-      - API_PORT
-      - MODE_ENV
-      - MONGO_HOST
-      - MONGO_PORT
-      - MONGO_DB
-      - JWT_SECRET
+    volumes:
+      - ./api:/api
     ports:
       - 5000:5000
+      - 8081:80
     depends_on:
       - mongodb
     networks:
@@ -23,25 +19,41 @@ services:
     image: mongo
     container_name: mongodb
     env_file: ./mongo/.env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
     ports:
       - 27017:27017
     volumes:
-      - ./mongo/db:/data/db
+      - ./mongo/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongo_db:/data/db
     networks:
       - mevn
+
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    container_name: mongo-express
+    restart: always
+    env_file: ./mongo/.env
+    ports:
+      - 8082:8081
+    networks:
+      - mevn
+    depends_on:
+      - mongodb
 
   client:
     container_name: client
     build:
       context: ./client
+      target: ${CONTEXT:-development}
+    volumes:
+      - ./client:/app
     ports:
-      - 3000:3000
+      - 3000:5173
+      - 8080:80
     networks:
       - mevn
 
 networks:
   mevn:
+
+volumes:
+  mongo_db:
