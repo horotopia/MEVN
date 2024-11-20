@@ -3,17 +3,14 @@ export default {
   name : 'LogOut',
   methods: {
     logout() {
-      // Supprimer le cookie 'jwtToken'
       this.deleteCookie('jwtToken');
 
-      // Effacer également les données du localStorage si tu en utilises
       localStorage.removeItem('jwtToken');
 
-      // Rediriger vers la page de connexion
       this.$router.push('/login');
     },
     deleteCookie(name) {
-      document.cookie = name + '=; Max-Age=-99999999;'; // Supprime le cookie
+      document.cookie = name + '=; Max-Age=-99999999;'; 
     }
   }
 };
