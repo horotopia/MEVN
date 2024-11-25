@@ -1,5 +1,5 @@
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import express, { Express, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 
@@ -15,13 +15,13 @@ import swaggerSpec from "./config/swagger";
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
+import { ProductController } from "./controllers/productController";
 import authRoutes from "./routes/authRoutes";
-import productRoutes from "./routes/productRoutes";
 import userRoutes from "./routes/userRoutes";
 
 import uploadRoutes from "./routes/uploadRoutes";
 
-dotenv.config();
+config();
 const app: Express = express();
 
 // config
@@ -47,7 +47,8 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/product", productRoutes);
+const productController = new ProductController();
+app.use("/api/product", productController.buildRouter());
 
 app.use("/api/upload", uploadRoutes);
 
