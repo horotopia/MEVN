@@ -1,129 +1,187 @@
-import { Request, Response } from "express";
-import { Product } from "../models/product.model";
+import { Request, Response, Router } from "express";
+import logger from "../config/logger";
+import { MongooseService } from "../services/mongoose/mongoose.service";
 
-// Récupérer tous les produits
-const getProducts = async (req: Request, res: Response) => {
-  const [error, products] = await Product.find()
-    .then((products) => [null, products])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  products ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(products);
-};
-
-// Récupérer tous les produits en stock
-const getProductsInStock = async (req: Request, res: Response) => {
-  const [error, products] = await Product.find({ stock: { $gt: 0 } })
-    .then((products) => [null, products])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  products ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(products);
-};
-
-// Récupérer tous les produit d'une catégorie en stock
-const getProductsByCategory = async (req: Request, res: Response) => {
-  const [error, products] = await Product.find({
-    category: req.params.category,
-    stock: { $gt: 0 },
-  })
-    .then((products) => [null, products])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  products ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(products);
-};
-
-// Récupérer tous les produits d'un type en stock
-const getProductsByType = async (req: Request, res: Response) => {
-  const [error, products] = await Product.find({
-    type: req.params.type,
-    stock: { $gt: 0 },
-  })
-    .then((products) => [null, products])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  products ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(products);
-};
-
-// Récupérer tous les produits d'un niveau d'évolution en stock
-const getProductsByEvolutionLevel = async (req: Request, res: Response) => {
-  const [error, products] = await Product.find({
-    evolutionLevel: req.params.level,
-    stock: { $gt: 0 },
-  })
-    .then((products) => [null, products])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  products ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(products);
-};
-
-// Récupérer un produit par son ID
-const getProduct = async (req: Request, res: Response) => {
-  const [error, product] = await Product.findById(req.params.id)
-    .then((product) => [null, product])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  product ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(product);
-};
-
-// Ajouter un produit
-const postProduct = async (req: Request, res: Response) => {
-  const [error, product] = await Product.create(req.body)
-    .then((product) => [null, product])
-    .catch((error) => [error, null]);
-
-  error ?? res.status(500).json({ message: error.message });
-  product ?? res.status(404).json({ message: "Aucun produit créé." });
-  res.status(201).json(product);
-};
-
-// Modifier un produit
-const putProduct = async (req: Request, res: Response) => {
-  const [error, product] = await Product.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
+export class ProductController {
+  async createProduct(req: Request, res: Response) {
+    if (
+      !req.body ||
+      !req.body.name ||
+      !req.body.description ||
+      !req.body.type ||
+      !req.body.evolutionLevel ||
+      !req.body.evolutionReference ||
+      !req.body.weight ||
+      !req.body.height ||
+      !req.body.age ||
+      !req.body.price ||
+      !req.body.category ||
+      !req.body.stock
+    ) {
+      res.status(400).end();
+      return;
     }
-  )
-    .then((product) => [null, product])
-    .catch((error) => [error, null]);
+    const mongooseService = await MongooseService.get();
+    try {
+      const product = await mongooseService.productService.createProduct({
+        name: req.body.name,
+        description: req.body.description,
+        type: req.body.type,
+        evolutionLevel: req.body.evolutionLevel,
+        evolutionReference: req.body.evolutionReference,
+        weight: req.body.weight,
+        height: req.body.height,
+        age: req.body.age,
+        price: req.body.price,
+        category: req.body.category,
+        stock: req.body.stock,
+      });
+      res.status(201).json(product);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.name === "MongooseError" &&
+        error.message.startsWith("E11000 duplicate key")
+      ) {
+        logger.http("409: ", error.message);
+        res.status(409).end();
+        return;
+      }
+      logger.error(error);
+      res.status(500).end();
+      return;
+    }
+  }
 
-  error ?? res.status(500).json({ message: error.message });
-  product ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(product);
-};
+  async getOneProduct(req: Request, res: Response) {
+    if (!req.params.id) {
+      res.status(400).end();
+      return;
+    }
+    const mongooseService = await MongooseService.get();
+    try {
+      const product = await mongooseService.productService.findProductById(
+        req.params.id
+      );
+      if (!product) {
+        res.status(404).end();
+        return;
+      }
+      res.status(200).json(product);
+      return;
+    } catch (error) {
+      logger.error(error);
+      res.status(500).end();
+    }
+  }
 
-// Supprimer un produit
-const deleteProduct = async (req: Request, res: Response) => {
-  const [error, product] = await Product.findByIdAndDelete(req.params.id)
-    .then((product) => [null, product])
-    .catch((error) => [error, null]);
+  async getProducts(req: Request, res: Response) {
+    const mongooseService = await MongooseService.get();
+    try {
+      const products = await mongooseService.productService.findAllProducts();
+      if (!products) {
+        res.status(404).end();
+        return;
+      }
+      res.status(200).json(products);
+      return;
+    } catch (error) {
+      logger.error(error);
+      res.status(500).end();
+      return;
+    }
+  }
 
-  error ?? res.status(500).json({ message: error.message });
-  product ?? res.status(404).json({ message: "Aucun produit trouvé." });
-  res.status(200).json(product);
-};
+  async getProductByAttribute(req: Request, res: Response) {
+    if (!req.params.attribute || !req.params.value) {
+      res.status(400).end();
+      return;
+    }
+    const mongooseService = await MongooseService.get();
+    try {
+      const products =
+        await mongooseService.productService.findProductsByAttribute(
+          req.params.attribute,
+          req.params.value
+        );
+      if (!products) {
+        res.status(404).end();
+        return;
+      }
+      res.status(200).json(products);
+      return;
+    } catch (error) {
+      logger.error(error);
+      res.status(500).end();
+      return;
+    }
+  }
 
-export {
-  deleteProduct,
-  getProduct,
-  getProducts,
-  getProductsByCategory,
-  getProductsByEvolutionLevel,
-  getProductsByType,
-  getProductsInStock,
-  postProduct,
-  putProduct,
-};
+  async updateProduct(req: Request, res: Response) {
+    if (!req.params.id || !req.body) {
+      res.status(400).end();
+      return;
+    }
+    const mongooseService = await MongooseService.get();
+    try {
+      const product = await mongooseService.productService.updateProduct({
+        _id: req.params.id,
+        name: req.body.name,
+        description: req.body.description,
+        type: req.body.type,
+        evolutionLevel: req.body.evolutionLevel,
+        evolutionReference: req.body.evolutionReference,
+        weight: req.body.weight,
+        height: req.body.height,
+        age: req.body.age,
+        price: req.body.price,
+        category: req.body.category,
+        stock: req.body.stock,
+      });
+      if (!product) {
+        res.status(404).end();
+        return;
+      }
+      res.status(200).json(product);
+      return;
+    } catch (error) {
+      logger.error(error);
+      res.status(500).end();
+      return;
+    }
+  }
+
+  async deleteProduct(req: Request, res: Response) {
+    if (!req.params.id) {
+      res.status(400).end();
+      return;
+    }
+    const mongooseService = await MongooseService.get();
+    try {
+      const product = await mongooseService.productService.deleteProduct(
+        req.params.id
+      );
+      if (!product) {
+        res.status(404).end();
+        return;
+      }
+      res.status(200).json(product);
+      return;
+    } catch (error) {
+      logger.error(error);
+      res.status(500).end();
+      return;
+    }
+  }
+
+  buildRouter(): Router {
+    const router = Router();
+    router.post("/", this.createProduct.bind(this));
+    router.get("/:id", this.getOneProduct.bind(this));
+    router.get("/", this.getProducts.bind(this));
+    router.get("/:attribute/:value", this.getProductByAttribute.bind(this));
+    router.put("/:id", this.updateProduct.bind(this));
+    router.delete("/:id", this.deleteProduct.bind(this));
+    return router;
+  }
+}

@@ -12,113 +12,8 @@ import {
 } from "../controllers/productController";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
-import validateRoleAdmin from "../middlewares/validator/validateRole";
 
 const router = Router();
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     Products:
- *       type: object
- *   required:
- *     - name
- *     - description
- *     - type
- *     - evolutionLevel
- *     - evolutionReference
- *     - weight
- *     - height
- *     - age
- *     - price
- *     - category
- *     - stock
- *     - createdAt
- *     - updatedAt
- *   properties:
- *     name:
- *       type: string
- *       description: Le nom du produit
- *       required: true
- *       trim: true
- *       maxLength: 100
- *     description:
- *       type: string
- *       description: La description du produit
- *       required: true
- *       maxLength: 500
- *     type:
- *       type: string
- *       description: Le type du produit
- *       required: true
- *       enum: [feu, eau, plante, électricité]
- *       default: feu
- *     evolutionLevel:
- *       type: number
- *       description: Le niveau d'évolution du produit
- *       required: true
- *       min: 1
- *       max: 3
- *     evolutionReference:
- *       type: string
- *       description: La référence de l'évolution du produit
- *       required: true
- *       trim: true
- *       maxLength: 100
- *     weight:
- *       type: number
- *       description: Le poids du produit en grammes
- *       required: true
- *       min: 0
- *     height:
- *       type: number
- *       description: La taille du produit en centimètres
- *       required: true
- *       min: 0
- *     age:
- *       type: number
- *       description: L'âge du produit
- *       required: true
- *       min: 0
- *     price:
- *       type: number
- *       description: Le prix du produit en €
- *       required: true
- *       min: 0
- *     category:
- *       type: string
- *       description: La catégorie du produit
- *       required: true
- *       enum: [pokémon, pokéball, baie, objets, médicaments]
- *       default: pokémon
- *     stock:
- *       type: number
- *       description: Le stock du produit
- *       default: 0
- *     createdAt:
- *       type: Date
- *       description: La date de création du produit
- *       default: Date.now
- *     updatedAt:
- *       type: Date
- *       description: La date de modification du produit
- *       default: Date.now
- *   example:
- *     name: Pikachu
- *     description: Pokémon électrique
- *     type: électricité
- *     evolutionLevel: 2
- *     evolutionReference: Pichu
- *     weight: 6000
- *     height: 40
- *     age: 4
- *     price: 50_000
- *     category: pokémon
- *     stock: 5
- *     createdAt: 2021-09-01T00:00:00.000Z
- *     updatedAt: 2021-09-01T00:00:00.000Z
- */
 
 /**
  * @swagger
@@ -153,13 +48,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.delete(
-  "/d/:id",
-  authenticateToken,
-  validateObjectId,
-  validateRoleAdmin,
-  deleteProduct
-);
+router.delete("/d/:id", authenticateToken, validateObjectId, deleteProduct);
 
 /**
  * @swagger
@@ -222,7 +111,7 @@ router.get("/:id", authenticateToken, validateObjectId, getProduct);
  *       500:
  *         description: Internal server error
  */
-router.get("/all", authenticateToken, validateRoleAdmin, getProducts);
+router.get("/all", authenticateToken, getProducts);
 
 /**
  * @swagger
@@ -346,15 +235,31 @@ router.get("/stock", authenticateToken, getProductsInStock);
  *   post:
  *     summary: create a product
  *     tags: [Products]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
+ *           example:
+ *             name: Pikachu
+ *             description: Pokémon électrique
+ *             type: électricité
+ *             evolutionLevel: 2
+ *             evolutionReference: Pichu
+ *             weight: 6000
+ *             height: 40
+ *             age: 4
+ *             price: 50000
+ *             category: pokémon
+ *             stock: 5
  *     responses:
  *       200:
  *         description: Product created
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/Product'
  *       400:
  *         description: Bad request
  *       401:
@@ -366,7 +271,7 @@ router.get("/stock", authenticateToken, getProductsInStock);
  *       500:
  *         description: Internal server error
  */
-router.post("/create", authenticateToken, validateRoleAdmin, postProduct);
+router.post("/create", authenticateToken, postProduct);
 
 /**
  * @swagger
@@ -401,6 +306,6 @@ router.post("/create", authenticateToken, validateRoleAdmin, postProduct);
  *       500:
  *         description: Internal server error
  */
-router.put("/u/:id", authenticateToken, validateRoleAdmin, putProduct);
+router.put("/u/:id", authenticateToken, putProduct);
 
 export default router;
