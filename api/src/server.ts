@@ -23,7 +23,7 @@ import picturesRoutes from "./routes/picturesRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
 import userRoutes from "./routes/userRoutes";
 
-dotenv.config();
+config();
 const app: Express = express();
 
 // config
