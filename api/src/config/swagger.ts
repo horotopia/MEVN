@@ -1,5 +1,7 @@
+import { config } from "dotenv";
 import swaggerJsdoc, { Options } from "swagger-jsdoc";
 
+config();
 interface SwaggerInfo {
   title: string;
   version: string;
@@ -41,10 +43,10 @@ const swaggerOptions: SwaggerOptions = {
     ],
   },
   apis: [
-    "src/routes/*.ts",
     "src/models/*.ts",
-    "src/services/*.js",
-    `./swagger.js`,
+    "src/controllers/*.ts",
+    "src/services/*.ts",
+    "./swagger.js",
   ],
 };
 

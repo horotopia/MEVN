@@ -1,13 +1,18 @@
-import { Request, Response, NextFunction } from "express";
-import logger from '../config/logger';
+import { NextFunction, Request, Response } from "express";
+import logger from "../config/logger";
 
-const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   logger.error({
     message: err.message,
     stack: err.stack,
     url: req.originalUrl,
     method: req.method,
-    ip: req.ip
+    ip: req.ip,
   });
 
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
@@ -15,7 +20,7 @@ const errorHandler = (err: Error, req: Request, res: Response, next: NextFunctio
 
   res.json({
     message: err.message,
-    ...(process.env.NODE_ENV === 'production' ? null : { stack: err.stack })
+    ...(process.env.MODE_ENV === "production" ? null : { stack: err.stack }),
   });
 };
 

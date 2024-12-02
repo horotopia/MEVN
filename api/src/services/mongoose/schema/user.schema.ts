@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { Product } from "../../../models/product.interface";
+import { User } from "../../../models";
 
 /**
  * @swagger
@@ -93,72 +93,30 @@ import { Product } from "../../../models/product.interface";
  *         stock: 5
  */
 
-export const productSchema = new Schema<Product>(
+export const userSchema = new Schema<User>(
   {
     name: {
       type: String,
       required: true,
-      trim: true,
-      maxlength: 100,
     },
-    description: {
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    password: {
       type: String,
       required: true,
-      maxlength: 500,
     },
-    type: {
+    role: {
       type: String,
-      required: true,
-      enum: ["feu", "eau", "plante", "électricité"],
-      default: "feu",
-    },
-    evolutionLevel: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 3,
-    },
-    evolutionReference: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 100,
-    },
-    weight: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    height: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    age: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    category: {
-      type: String,
-      required: true,
-      enum: ["pokémon", "pokéball", "baie", "objets", "médicaments"], // Exemples de catégories
-      default: "pokémon",
-    },
-    stock: {
-      type: Number,
-      default: 0,
-      min: 0,
+      enum: ["ROLE_USER", "ROLE_STORE_KEEPER", "ROLE_ADMIN", "ROLE_COMPTA"],
+      default: "ROLE_USER",
     },
   },
   {
     timestamps: true,
-    collection: "products",
-    versionKey: false,
+    collection: "users",
+    versionKey: false, // pour enlever le __v
   }
 );

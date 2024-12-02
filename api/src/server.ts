@@ -15,9 +15,9 @@ import swaggerSpec from "./config/swagger";
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
-import { ProductController } from "./controllers/productController";
-import authRoutes from "./routes/authRoutes";
-import userRoutes from "./routes/userRoutes";
+import { AuthController } from "./controllers/auth.controller";
+import { ProductController } from "./controllers/product.controller";
+import { UserController } from "./controllers/user.controller";
 
 import uploadRoutes from "./routes/uploadRoutes";
 
@@ -45,8 +45,11 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+console.log("Server Mevn");
+const authController = new AuthController();
+app.use("/api/auth", authController.buildRouter());
+const userController = new UserController();
+app.use("/api/users", userController.buildRouter());
 const productController = new ProductController();
 app.use("/api/product", productController.buildRouter());
 

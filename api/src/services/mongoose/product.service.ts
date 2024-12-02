@@ -41,9 +41,9 @@ export class ProductService {
   }
 
   // update
-  async updateProduct(product: UpdateProduct): Promise<Product> {
+  async updateProduct(id: string, product: UpdateProduct): Promise<Product> {
     const res = await this.model.findByIdAndUpdate(
-      product._id,
+      id,
       { $set: product },
       {
         new: true,

@@ -1,6 +1,5 @@
 import express from "express";
 import { loginUser, registerUser } from "../controllers/authController";
-import hashPassword from "../middlewares/bcrypt";
 import { validateNoToken } from "../middlewares/validate";
 import validateUser from "../middlewares/validator/validateUser";
 const userRouter = express.Router();
@@ -53,13 +52,7 @@ const userRouter = express.Router();
  *       500:
  *         description: Server error
  */
-userRouter.post(
-  "/register",
-  validateUser,
-  validateNoToken,
-  hashPassword,
-  registerUser
-);
+userRouter.post("/register", validateUser, validateNoToken, registerUser);
 
 /**
  * @swagger

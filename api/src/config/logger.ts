@@ -1,12 +1,12 @@
+import { config } from "dotenv";
 import winston from "winston";
-import dotenv from "dotenv";
 
 import "winston-daily-rotate-file";
 
-dotenv.config();
+config();
 
 // Set the log level based on the environment
-const level = process.env.NODE_ENV === "development" ? "debug" : "info";
+const level = process.env.MODE_ENV === "development" ? "debug" : "info";
 
 interface Logger {
   error: (message: string) => void;
