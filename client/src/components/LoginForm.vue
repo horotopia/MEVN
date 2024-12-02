@@ -31,7 +31,7 @@
         if (data.jwtToken) {
           localStorage.setItem('jwtToken', data.jwtToken);
 
-          this.$router.push('/admin');
+          this.$router.push('/dashboard');
         } else {
           this.errorMessage = 'Erreur de connexion';
         }

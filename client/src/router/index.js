@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DefaultLayout from '../Layouts/DefaultLayout.vue'
 import AuthLayout from '../Layouts/AuthLayout.vue'
-import Home from '../pages/Home.vue';
-import Login from '../pages/Login.vue';
-import Register from '../pages/Register.vue';
-import Dashboard from '../pages/Dashboard.vue';
-import PokemonDetails from '../pages/PokemonDetails.vue';
-import Pokemon from '../pages/Pokemon.vue';
-import Pokeball from '../pages/Pokeball.vue';
-import Accessoires from '../pages/Accessoires.vue';
-import PokemonInfo from '../components/PokemonInfo.vue';
+import AdminLayout from '../Layouts/AdminLayout.vue'
+import Home from '../pages/user/Home.vue';
+import Login from '../pages/auth/Login.vue';
+import Register from '../pages/auth/Register.vue';
+import Dashboard from '../pages/admin/Dashboard.vue';
+import PokemonDetails from '../pages/user/PokemonDetails.vue';
+import Pokemon from '../pages/user/Pokemon.vue';
+import Pokeball from '../pages/user/Pokeball.vue';
+import Accessoires from '../pages/user/Accessoires.vue';
 
 const routes = [
   {
@@ -21,6 +21,7 @@ const routes = [
       { path: 'pokemon/:id', name: 'PokemonDetails', component: PokemonDetails, props: true },
       { path: 'pokeball', name: 'Pokeball', component: Pokeball },
       { path: 'accessoires', name: 'Accessoires', component: Accessoires },
+      { path: 'panier', name: 'Panier' },
     ]
   },
   {
@@ -32,9 +33,11 @@ const routes = [
     ]
   },
   {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: Dashboard,
+    path: '/',
+    component: AdminLayout,
+    children: [
+      { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+    ]
     // meta: { requiresAuth: true }
   },
 ];
