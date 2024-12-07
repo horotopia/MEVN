@@ -81,4 +81,12 @@ export default {
 </script>
 
 <style scoped>
+.card-title {
+  font-family: var(--font-primary);
+  font-weight: 900;
+}
+
+.card-description {
+  font-family: var(--font-secondary);
+}
 </style>
