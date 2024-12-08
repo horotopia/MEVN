@@ -15,28 +15,22 @@
         <h2 class="main-title text-6xl text-white text-center py-6">POKÉMON LES PLUS POPULAIRE</h2>
       </div>
 
-      <div class="bg-white p-8">
+      <div class="bg-white p-8 mb-16">
         <div class="flex flex-wrap gap-6 justify-center">
           <CardPokémon
             pokemonName="mewtwo"
-            title="MEWTWO"
             price="1200€"
             bgColor="bg-purple-500"
-            description="Un Pokémon Psy vicieux et dangereux créé par l'homme. Ses yeux froids et brillants pétrifient de peur chaque adversaire."
           />
           <CardPokémon
             pokemonName="pikachu"
-            title="PIKACHU"
             price="14€"
             bgColor="bg-yellow-300"
-            description="Sa queue est dressée quand il est aux aguets. Si vous tirez dessus, il vous mordra."
           />
           <CardPokémon
             pokemonName="empoleon"
-            title="PINGOLÉON"
             price="300€"
             bgColor="bg-blue-900"
-            description="Il nage aussi vite qu'un hors-bord. Le tranchant de ses ailes peut fendre un bloc de glace à la dérive."
           />
         </div>
       </div>
@@ -46,7 +40,7 @@
 
 <script>
 import CardPokémon from "@/components/CardPokémon.vue";
-import ImageCarrousel from "@/components/Carrousel.vue";
+import ImageCarrousel from "@/components/Carousel.vue";
 
 export default {
   name: "HomePage",

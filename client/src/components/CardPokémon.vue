@@ -5,9 +5,9 @@
   <img :src="image" alt="Image Pokémon" class="h-full w-full pb-2 object-contain" />
 </div>
       <div :class="`${bgColor} absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 transform border-l-2 border-r-2 border-gray-300 text-center font-bold text-white`">
-      {{ title }}
+        {{ pokemonFrenchName || pokemonName.toUpperCase() }}
       </div>
-      <div class="absolute top-[calc(50%+1rem-4px)] h-32 w-full pt-3 border-b-2 border-gray-300 bg-white text-center">{{ description }}</div>
+      <div class="absolute top-[calc(50%+1rem-4px)] h-32 w-full pt-3 border-b-2 border-gray-300 bg-white text-center">{{ pokemonDescription }}</div>
       <div class="absolute top-[calc(87%-1px)] flex h-[calc(3rem+4px)] w-full items-center justify-between rounded-bl-xl rounded-br-xl border-b-2 border-gray-300 bg-white px-2">
         <span class="text-xl font-bold text-black">{{ price }}</span>
         <button class="rounded-full border-2 border-gray-300 bg-white px-3 py-0.5 font-bold text-black" @click="onButtonClick">
@@ -29,17 +29,9 @@ export default {
       type: String,
       required: true,
     },
-    title: {
-      type: String,
-      default: "POKÉMON",
-    },
     price: {
       type: String,
       default: "0€",
-    },
-    description: {
-      type: String,
-      default: "Description du Pokémon",
     },
     bgColor: {
       type: String,
@@ -49,25 +41,46 @@ export default {
   data() {
     return {
       image: "",
+      pokemonDescription: "Chargement...",
+      pokemonFrenchName: "",
     };
   },
   watch: {
     pokemonName: {
       immediate: true,
       handler() {
-        this.fetchPokemon();
+        this.fetchPokemonData();
       },
     },
   },
   methods: {
-    async fetchPokemon() {
+    async fetchPokemonData() {
       try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${this.pokemonName.toLowerCase()}`);
         const data = await response.json();
         this.image = data.sprites.other["official-artwork"].front_default;
+
+        const speciesResponse = await fetch(data.species.url);
+        const speciesData = await speciesResponse.json();
+        
+        const frenchName = speciesData.names.find(
+          name => name.language.name === "fr"
+        );
+        this.pokemonFrenchName = frenchName ? frenchName.name.toUpperCase() : "";
+
+        const frenchDescription = speciesData.flavor_text_entries.find(
+          entry => entry.language.name === "fr"
+        );
+        
+        this.pokemonDescription = frenchDescription 
+          ? frenchDescription.flavor_text.replace(/\f/g, ' ') 
+          : "Description non disponible";
+
       } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon :", error);
         this.image = "";
+        this.pokemonDescription = "Erreur de chargement";
+        this.pokemonFrenchName = "";
       }
     },
     onButtonClick() {
