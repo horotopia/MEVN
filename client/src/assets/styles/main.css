@@ -5,7 +5,7 @@
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
-  font-weight: 900; /* ExtraBold/Black */
+  font-weight: 800;
 }
 
 body, p, span, div, button {

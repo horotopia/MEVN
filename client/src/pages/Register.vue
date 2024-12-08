@@ -1,14 +1,16 @@
 <script>
-
 import RegisterForm from '../components/RegisterForm.vue';
 
-  export default {
-    components: {  RegisterForm },
-  };
+export default {
+  name: 'RegisterPage',
+  components: { RegisterForm },
+};
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-100">
-    <RegisterForm />
+  <div class="min-h-screen flex flex-col bg-gray-50">
+    <div class="flex-grow">
+      <RegisterForm />
+    </div>
   </div>
 </template>
