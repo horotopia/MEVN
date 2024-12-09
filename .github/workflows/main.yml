@@ -23,16 +23,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          # cache: "npm, yarn"
 
       - name: Install API dependencies
         run: cd api && npm ci # Installe les dépendances du projet
 
-      - name: Install Client dependencies
-        run: cd api && npm ci # Installe les dépendances du projet
+      - name: Lint
+        run: npm run lint # Commande pour lancer votre linter, modifiez selon votre script de lint
 
       - name: Build
         run: npm run build --if-present
 
       - name: Run tests
-        run: npm run test # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
+        run: npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
+
+      - name: Install Client dependencies
+        run: cd ../client && npm ci # Installe les dépendances du projet
+
+      - name: Lint
+        run: npm run lint # Commande pour lancer votre linter, modifiez selon votre script de lint
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Run tests
+        run: npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
