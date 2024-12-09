@@ -25,8 +25,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           # cache: "npm, yarn"
 
-      - name: Install dependencies
-        run: npm ci # Installe les dépendances du projet
+      - name: Install API dependencies
+        run: cd api && npm ci # Installe les dépendances du projet
+
+      - name: Install Client dependencies
+        run: cd api && npm ci # Installe les dépendances du projet
 
       - name: Build
         run: npm run build --if-present
