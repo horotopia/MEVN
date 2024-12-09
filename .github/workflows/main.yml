@@ -28,22 +28,22 @@ jobs:
         run: cd api && npm ci # Installe les dépendances du projet
 
       - name: Lint
-        run: npm run lint # Commande pour lancer votre linter, modifiez selon votre script de lint
+        run: cd api && npm run lint # Commande pour lancer votre linter, modifiez selon votre script de lint
 
       - name: Build
-        run: npm run build --if-present
+        run: cd api && npm run build --if-present
 
       - name: Run tests
-        run: npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
+        run: cd api && npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
 
       - name: Install Client dependencies
-        run: cd ../client && npm ci # Installe les dépendances du projet
+        run: cd client && npm ci # Installe les dépendances du projet
 
       - name: Lint
-        run: npm run lint # Commande pour lancer votre linter, modifiez selon votre script de lint
+        run: cd client && npm run lint # Commande pour lancer votre linter, modifiez selon votre script de lint
 
       - name: Build
-        run: npm run build --if-present
+        run: cd client && npm run build --if-present
 
       - name: Run tests
-        run: npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
+        run: cd client && npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
