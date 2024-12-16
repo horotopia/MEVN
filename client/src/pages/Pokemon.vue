@@ -65,10 +65,14 @@
     <main class="flex-1 p-6">
       <div class="-mx-6 mb-6">
         <div class="max-w-[1400px] mx-auto">
-          <div class="bg-[#ff4c4c] shadow-md py-4 text-center">
-            <h1 class="text-3xl font-extrabold text-white uppercase tracking-wider">
-              Catalogue Pokémon
-            </h1>
+          <div class="banner-container relative">
+            <div class="bg-red-500 shadow-md py-6 text-center relative overflow-hidden transition-all duration-300 hover:bg-gradient-to-r hover:from-red-500 hover:via-red-500 hover:to-red-500">
+              <div class="absolute inset-0 bg-[#ff4c4c] opacity-10"></div>
+              <div class="rainbow-gradient absolute inset-0 opacity-0 transition-opacity duration-300"></div>
+              <h1 class="text-4xl font-extrabold text-white uppercase tracking-wider relative z-10">
+                Catalogue Pokémon
+              </h1>
+            </div>
           </div>
         </div>
       </div>
@@ -288,5 +292,32 @@ export default {
 
 .pokemon-grid-enter-from {
   transform: translateX(20px);
+}
+
+.rainbow-gradient {
+  background: linear-gradient(
+    124deg,
+    #ff2400,
+    #e81d1d,
+    #e8b71d,
+    #e3e81d,
+    #1de840,
+    #1ddde8,
+    #2b1de8,
+    #dd00f3,
+    #dd00f3
+  );
+  background-size: 1800% 1800%;
+}
+
+.banner-container:hover .rainbow-gradient {
+  opacity: 0.8;
+  animation: rainbow 8s ease infinite;
+}
+
+@keyframes rainbow { 
+  0% { background-position: 0% 82% }
+  50% { background-position: 100% 19% }
+  100% { background-position: 0% 82% }
 }
 </style>

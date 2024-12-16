@@ -23,7 +23,7 @@
             v-for="type in types" 
             :key="type.original"
             @click.prevent.stop="$emit('filtrer-par-type', type.original)"
-            class="rounded-md px-6 py-1 font-extrabold text-white uppercase"
+            class="rounded-md px-6 py-1 font-extrabold text-white uppercase w-32 text-center"
             :class="[getTypeColor(type.original)]"
           >
             {{ type.translated }}
