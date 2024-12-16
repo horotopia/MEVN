@@ -11,8 +11,11 @@ import Pokemon from '../pages/user/Pokemon.vue';
 import Pokeball from '../pages/user/Pokeball.vue';
 import Accessoires from '../pages/user/Accessoires.vue';
 import MentionsLegales from '../pages/MentionsLegales.vue';
-import Cgv from '../pages/Cgv.vue'
-import Politique from '../pages/Politique.vue'
+import Cgv from '../pages/Cgv.vue';
+import Politique from '../pages/Politique.vue';
+import Panier from '../pages/user/Panier.vue';
+import Contact from '../pages/user/contact.vue';
+import Chart from '../pages/admin/Chart.vue';
 
 const routes = [
   {
@@ -27,7 +30,8 @@ const routes = [
       { path: 'mentions-legales', name: 'MentionsLégales', component: MentionsLegales },
       { path: 'conditions-generales-de-vente', name: 'ConditionsGeneraleDeVente', component: Cgv },
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },
-      { path: 'panier', name: 'Panier' },
+      { path: 'panier', name: 'Panier', component: Panier },
+      { path: 'contact', name: 'Contact', component: Contact },
     ]
   },
   {
@@ -43,6 +47,7 @@ const routes = [
     component: AdminLayout,
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+      { path: 'chart', name: 'Chart', component: Chart },
     ]
     // meta: { requiresAuth: true }
   },
