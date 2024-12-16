@@ -43,9 +43,8 @@ const swaggerOptions: SwaggerOptions = {
     ],
   },
   apis: [
-    "src/models/*.ts",
     "src/controllers/*.ts",
-    "src/services/*.ts",
+    "src/services/mongoose/schema/*.ts",
     "./swagger.js",
   ],
 };

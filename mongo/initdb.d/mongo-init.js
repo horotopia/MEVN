@@ -12,7 +12,6 @@ db.createUser({
 });
 
 db.createCollection("users");
-
 db.users.insertMany([
   {
     name: "LeGrizzly",
@@ -195,5 +194,44 @@ db.product.insertMany([
     price: 60000,
     category: "pokémon",
     stock: 5,
+  },
+]);
+
+db.createCollection("address");
+db.address.insertMany([
+  {
+    street: "1 rue de la paix",
+    city: "Paris",
+    postalCode: "75000",
+    country: "France",
+    userId: ObjectId("60f4b6e1e9f0f4001f6b3b4f"),
+  },
+  {
+    street: "2 rue de la liberté",
+    city: "Lyon",
+    postalCode: "69000",
+    country: "France",
+    userId: ObjectId("60f4b6e1e9f0f4001f6b3b50"),
+  },
+  {
+    street: "3 rue de la fraternité",
+    city: "Marseille",
+    postalCode: "13000",
+    country: "France",
+    userId: ObjectId("60f4b6e1e9f0f4001f6b3b51"),
+  },
+  {
+    street: "4 rue de l'égalité",
+    city: "Bordeaux",
+    postalCode: "33000",
+    country: "France",
+    userId: ObjectId("60f4b6e1e9f0f4001f6b3b52"),
+  },
+  {
+    street: "5 rue de la justice",
+    city: "Lille",
+    postalCode: "59000",
+    country: "France",
+    userId: ObjectId("60f4b6e1e9f0f4001f6b3b53"),
   },
 ]);
