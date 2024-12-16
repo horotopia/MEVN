@@ -8,7 +8,7 @@ export default {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50">
+  <div class="min-h-screen flex flex-col bg-gray-100">
     <div class="flex-grow">
       <RegisterForm />
     </div>
