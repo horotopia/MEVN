@@ -24,6 +24,9 @@ import ordersRoutes from "./routes/orders.routes";
 import picturesRoutes from "./routes/pictures.routes";
 import uploadRoutes from "./routes/upload.routes";
 import userRoutes from "./routes/user.routes";
+import mailRoutes from './routes/mailRoutes';
+
+
 
 dotenv.config();
 const app: Express = express();
@@ -60,6 +63,8 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api/pictures", picturesRoutes);
 
 app.use("/api/upload", uploadRoutes);
+
+app.use('/api/mail', mailRoutes);
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;
