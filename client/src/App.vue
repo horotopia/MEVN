@@ -7,6 +7,8 @@
 <script>
 
 export default {
-  name: 'App'
+  mounted() {
+    document.title = "Pokeshop";
+  },
 };
 </script>
