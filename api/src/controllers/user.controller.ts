@@ -102,6 +102,7 @@ export class UserController {
   /**
    * @swagger
    * /api/users/{id}:
+   *   FIXME:
    *   put:
    *     summary: Update user by ID
    *     tags: [Users]
@@ -117,6 +118,7 @@ export class UserController {
    *       content:
    *         application/json:
    *           schema:
+   *            FIXME:
    *             type: object
    *             properties:
    *               name:

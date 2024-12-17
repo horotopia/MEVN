@@ -43,7 +43,7 @@ export class UserService {
   }
 
   // update
-  async updateUser(id: string, user: CreateUser): Promise<User> {
+  async updateUser(id: string, user: CreateUser): Promise<User | null> {
     const res = await this.model.findByIdAndUpdate(
       id,
       { $set: user },
@@ -52,9 +52,6 @@ export class UserService {
         runValidators: true,
       }
     );
-    if (!res) {
-      throw new Error("User not found");
-    }
     return res;
   }
 

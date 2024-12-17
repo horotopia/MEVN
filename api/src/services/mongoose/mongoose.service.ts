@@ -1,22 +1,41 @@
 import { config } from "dotenv";
 import { Mongoose, connect } from "mongoose";
+import { AddressService } from "./address.service";
+import { AvisService } from "./avis.service";
+import { CartsService } from "./carts.service";
+import { FavorisService } from "./favoris.service";
+import { OrdersService } from "./orders.service";
+import { PicturesService } from "./pictures.service";
 import { ProductService } from "./product.service";
 import { SessionService } from "./session.service";
 import { UserService } from "./user.service";
+
 config();
 export class MongooseService {
   private static instance?: MongooseService;
 
+  readonly addressService: AddressService;
+  readonly avisService: AvisService;
+  readonly cartsService: CartsService;
+  readonly favorisService: FavorisService;
   readonly mongoose: Mongoose;
-  readonly userService: UserService;
-  readonly sessionService: SessionService;
+  readonly ordersService: OrdersService;
+  readonly picturesService: PicturesService;
   readonly productService: ProductService;
+  readonly sessionService: SessionService;
+  readonly userService: UserService;
 
   private constructor(mongoose: Mongoose) {
     this.mongoose = mongoose;
     this.userService = new UserService(this);
     this.sessionService = new SessionService(this);
     this.productService = new ProductService(this);
+    this.picturesService = new PicturesService(this);
+    this.ordersService = new OrdersService(this);
+    this.favorisService = new FavorisService(this);
+    this.cartsService = new CartsService(this);
+    this.avisService = new AvisService(this);
+    this.addressService = new AddressService(this);
   }
 
   public static async get(): Promise<MongooseService> {

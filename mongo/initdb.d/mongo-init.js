@@ -68,7 +68,7 @@ db.product.insertMany([
   {
     name: "Bulbizarre",
     description: "Pokémon plante et poison",
-    type: "plante/poison",
+    type: "plante",
     evolutionLevel: 1,
     evolutionReference: "Herbizarre",
     weight: 6900,
@@ -107,7 +107,7 @@ db.product.insertMany([
   {
     name: "Roucool",
     description: "Pokémon vol et normal",
-    type: "vol/normal",
+    type: "vol",
     evolutionLevel: 1,
     evolutionReference: "Roucoups",
     weight: 1800,
@@ -133,7 +133,7 @@ db.product.insertMany([
   {
     name: "Jigglypuff",
     description: "Pokémon normal et fée",
-    type: "normal/fée",
+    type: "fée",
     evolutionLevel: 1,
     evolutionReference: "Wigglytuff",
     weight: 550,
@@ -159,7 +159,7 @@ db.product.insertMany([
   {
     name: "Fantominus",
     description: "Pokémon spectre et poison",
-    type: "spectre/poison",
+    type: "spectre",
     evolutionLevel: 1,
     evolutionReference: "Spectrum",
     weight: 1,

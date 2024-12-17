@@ -76,7 +76,12 @@ export class AuthController {
 
       // Stockage du JWT dans un cookie HttpOnly
       res
-        .cookie("jwtToken", jwtToken, { httpOnly: true, secure: true })
+        .cookie("jwtToken", jwtToken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+          maxAge: 24 * 60 * 60 * 1000,
+        })
         .status(201)
         .json(user);
     } catch (error) {
@@ -146,8 +151,9 @@ export class AuthController {
       req.body.password,
       user.password
     );
+    // FIXME:
     if (!passwordMatch) {
-      res.status(400).end();
+      res.status(401).end();
       return;
     }
     const session = await mongooseService.sessionService.createSession({

@@ -1,17 +1,42 @@
 import { Schema } from "mongoose";
 import { User } from "../../../models";
 
-//swagger doc pour user utilisant l'objet address
-
 /**
  * @swagger
  * components:
  *   schemas:
- *     Users:
+ *     Address:
  *       type: object
  *       required:
- *         - name
+ *         - userId
+ *       properties:
+ *         userId:
+ *           type: string
+ *           description: L'id de l'utilisateur
+ *         street:
+ *           type: string
+ *           description: La rue de l'adresse
+ *         city:
+ *           type: string
+ *           description: La ville de l'adresse
+ *         postalCode:
+ *           type: string
+ *           description: Le code postal de l'adresse
+ *         country:
+ *           type: string
+ *           description: Le pays de l'adresse
+ *       example:
+ *         userId: "643d0fd5c07b4a2e88b074c9"
+ *         street: "123 Rue de Paris"
+ *         city: "Paris"
+ *         postalCode: "75000"
+ *         country: "France"
+ *
+ *     User:
+ *       type: object
+ *       required:
  *         - email
+ *         - password
  *       properties:
  *         name:
  *           type: string
@@ -28,18 +53,19 @@ import { User } from "../../../models";
  *           default: ROLE_USER
  *           description: Le rôle de l'utilisateur
  *         address:
- *           type: object
- *             properties:
- *               userId:
- *                 type: string
- *                 description: L'id de l'utilisateur
+ *           $ref: '#/components/schemas/Address'
  *           description: L'adresse de l'utilisateur
  *       example:
  *         name: John Doe
  *         email: john.doe@toto.com
  *         password: password
  *         role: ROLE_USER
- *         address: []
+ *         address:
+ *           userId: "643d0fd5c07b4a2e88b074c9"
+ *           street: "123 Rue de Paris"
+ *           city: "Paris"
+ *           postalCode: "75000"
+ *           country: "France"
  */
 
 export const userSchema = new Schema<User>(
@@ -70,6 +96,6 @@ export const userSchema = new Schema<User>(
   {
     timestamps: true,
     collection: "users",
-    versionKey: false, // pour enlever le __v
+    versionKey: false,
   }
 );

@@ -18,15 +18,6 @@ import errorHandler from "./middlewares/errorHandler";
 import { AuthController } from "./controllers/auth.controller";
 import { ProductController } from "./controllers/product.controller";
 import { UserController } from "./controllers/user.controller";
-import addressRoutes from "./routes/address.routes";
-// import authRoutes from "./routes/auth.routes";
-import avisRoutes from "./routes/avis.routes";
-import cartsRoutes from "./routes/carts.routes";
-import favorisRoutes from "./routes/favoris.routes";
-import ordersRoutes from "./routes/orders.routes";
-import picturesRoutes from "./routes/pictures.routes";
-import uploadRoutes from "./routes/upload.routes";
-// import userRoutes from "./routes/user.routes";
 
 config();
 const app: Express = express();
@@ -70,15 +61,6 @@ const userController = new UserController();
 app.use("/api/users", userController.buildRouter());
 const productController = new ProductController();
 app.use("/api/product", productController.buildRouter());
-
-app.use("/api/addresses", addressRoutes);
-app.use("/api/avis", avisRoutes);
-app.use("/api/carts", cartsRoutes);
-app.use("/api/favoris", favorisRoutes);
-app.use("/api/orders", ordersRoutes);
-app.use("/api/pictures", picturesRoutes);
-
-app.use("/api/upload", uploadRoutes);
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;
