@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import { Carts } from "../../../models";
 
 /**
- //* @swagger
+ * @swagger
  * components:
  *   schemas:
  *     Cart:
@@ -14,9 +14,19 @@ import { Carts } from "../../../models";
  *         userId:
  *           type: string
  *           description: L'identifiant de l'utilisateur
- *        items:
- *          type: object
- *          description: Les produits du panier
+ *         items:
+ *           type: array
+ *           description: Les produits du panier
+ *           items:
+ *             type: object
+ *             properties:
+ *               productId:
+ *                 type: string
+ *                 description: L'identifiant du produit
+ *               quantity:
+ *                 type: integer
+ *                 description: La quantité du produit
+ *                 minimum: 1
  */
 
 export const cartsSchema = new Schema<Carts>(

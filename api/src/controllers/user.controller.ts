@@ -1,5 +1,4 @@
-import { Request, Response, Router } from "express";
-import logger from "../config/logger";
+import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
 import { MongooseService } from "../services/mongoose/mongoose.service";
@@ -36,25 +35,27 @@ export class UserController {
    *      500:
    *        description: Server error
    */
-  async getOneUser(req: Request, res: Response) {
-    if (!req.params.id) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async getOneUser(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params.id) {
+        res.status(400);
+        throw new Error("Missing id parameter");
+      }
+      const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.findUserById(
         req.params.id
       );
       if (!user) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("User not found");
       }
       res.status(200).json(user);
       return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -82,20 +83,21 @@ export class UserController {
    *      500:
    *        description: Server error
    */
-  async getUsers(req: Request, res: Response) {
-    const mongooseService = await MongooseService.get();
+  async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
+      const mongooseService = await MongooseService.get();
       const users = await mongooseService.userService.findAllUsers();
       if (!users) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("Users not found");
       }
       res.status(200).json(users);
       return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -152,28 +154,29 @@ export class UserController {
    *       500:
    *         description: Internal server error - Something went wrong
    */
-  async updateUser(req: Request, res: Response) {
-    if (!req.params.id || !req.body) {
-      res.status(400).end();
-      return;
-    }
-    const body = req.body;
-    const mongooseService = await MongooseService.get();
+  async updateUser(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params.id || !req.body) {
+        res.status(400);
+        throw new Error("Missing id parameter or body");
+      }
+      const body = req.body;
+      const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.updateUser(
         req.params.id,
         req.body
       );
       if (!user) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("User not found");
       }
       res.status(200).json(user);
       return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -210,24 +213,25 @@ export class UserController {
    *      500:
    *        description: Server error
    */
-  async deleteUser(req: Request, res: Response) {
-    if (!req.params.id) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params.id) {
+        res.status(400);
+        throw new Error("Missing id parameter");
+      }
+      const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.deleteUser(req.params.id);
       if (!user) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("User not found");
       }
       res.status(200).json(user);
       return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 

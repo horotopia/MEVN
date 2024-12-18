@@ -1,5 +1,6 @@
-import { Request, Response, Router } from "express";
-import logger from "../config/logger";
+import { NextFunction, Request, Response, Router } from "express";
+import { authenticateToken } from "../middlewares/jwt";
+import { validateObjectId } from "../middlewares/validate";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
 export class ProductController {
@@ -45,26 +46,26 @@ export class ProductController {
    *       500:
    *         description: Internal server error
    */
-  async createProduct(req: Request, res: Response) {
-    if (
-      !req.body ||
-      !req.body.name ||
-      !req.body.description ||
-      !req.body.type ||
-      !req.body.evolutionLevel ||
-      !req.body.evolutionReference ||
-      !req.body.weight ||
-      !req.body.height ||
-      !req.body.age ||
-      !req.body.price ||
-      !req.body.category ||
-      !req.body.stock
-    ) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
+      if (
+        !req.body ||
+        !req.body.name ||
+        !req.body.description ||
+        !req.body.type ||
+        !req.body.evolutionLevel ||
+        !req.body.evolutionReference ||
+        !req.body.weight ||
+        !req.body.height ||
+        !req.body.age ||
+        !req.body.price ||
+        !req.body.category ||
+        !req.body.stock
+      ) {
+        res.status(400);
+        throw new Error("Missing required fields");
+      }
+      const mongooseService = await MongooseService.get();
       const product = await mongooseService.productService.createProduct({
         name: req.body.name,
         description: req.body.description,
@@ -85,13 +86,12 @@ export class ProductController {
         error.name === "MongooseError" &&
         error.message.startsWith("E11000 duplicate key")
       ) {
-        logger.http("409: ", error.message);
-        res.status(409).end();
-        return;
+        res.status(409);
       }
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -128,25 +128,27 @@ export class ProductController {
    *       500:
    *         description: Internal server error
    */
-  async getOneProduct(req: Request, res: Response) {
-    if (!req.params.id) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async getOneProduct(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params || !req.params.id) {
+        res.status(400);
+        throw new Error("Missing required fields");
+      }
+      const mongooseService = await MongooseService.get();
       const product = await mongooseService.productService.findProductById(
         req.params.id
       );
       if (!product) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("Product not found");
       }
       res.status(200).json(product);
       return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -174,20 +176,16 @@ export class ProductController {
    *       500:
    *         description: Internal server error
    */
-  async getProducts(req: Request, res: Response) {
-    const mongooseService = await MongooseService.get();
+  async getProducts(req: Request, res: Response, next: NextFunction) {
     try {
+      const mongooseService = await MongooseService.get();
       const products = await mongooseService.productService.findAllProducts();
-      if (!products) {
-        res.status(404).end();
-        return;
-      }
       res.status(200).json(products);
-      return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -230,28 +228,28 @@ export class ProductController {
    *       500:
    *         description: Internal server error
    */
-  async getProductByAttribute(req: Request, res: Response) {
-    if (!req.params.attribute || !req.params.value) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async getProductByAttribute(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params.attribute || !req.params.value) {
+        res.status(400);
+        throw new Error("Missing required fields");
+      }
+      const mongooseService = await MongooseService.get();
       const products =
         await mongooseService.productService.findProductsByAttribute(
           req.params.attribute,
           req.params.value
         );
       if (!products) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("Product not found");
       }
       res.status(200).json(products);
-      return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -304,27 +302,27 @@ export class ProductController {
    *       500:
    *         description: Internal server error
    */
-  async updateProduct(req: Request, res: Response) {
-    if (!req.params.id || !req.body) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params.id || !req.body) {
+        res.status(400);
+        throw new Error("Missing required fields");
+      }
+      const mongooseService = await MongooseService.get();
       const product = await mongooseService.productService.updateProduct(
         req.params.id,
         req.body
       );
       if (!product) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("Product not found");
       }
       res.status(200).json(product);
-      return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -359,38 +357,53 @@ export class ProductController {
    *       500:
    *         description: Internal server error
    */
-  async deleteProduct(req: Request, res: Response) {
-    if (!req.params.id) {
-      res.status(400).end();
-      return;
-    }
-    const mongooseService = await MongooseService.get();
+  async deleteProduct(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!req.params.id) {
+        res.status(400);
+        throw new Error("Missing required fields");
+      }
+      const mongooseService = await MongooseService.get();
       const product = await mongooseService.productService.deleteProduct(
         req.params.id
       );
       if (!product) {
-        res.status(404).end();
-        return;
+        res.status(404);
+        throw new Error("Product not found");
       }
-      res.status(200).json(product);
+      res.status(204);
       return;
     } catch (error) {
-      logger.error(error);
-      res.status(500).end();
-      return;
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
   buildRouter(): Router {
-    console.log("Building product router");
     const router = Router();
-    router.post("/", this.createProduct.bind(this));
-    router.get("/:id", this.getOneProduct.bind(this));
+    router.post(
+      "/",
+      authenticateToken,
+      validateObjectId,
+      this.createProduct.bind(this)
+    );
+    router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
     router.get("/", this.getProducts.bind(this));
     router.get("/:attribute/:value", this.getProductByAttribute.bind(this));
-    router.put("/:id", this.updateProduct.bind(this));
-    router.delete("/:id", this.deleteProduct.bind(this));
+    router.put(
+      "/:id",
+      authenticateToken,
+      validateObjectId,
+      this.updateProduct.bind(this)
+    );
+    router.delete(
+      "/:id",
+      authenticateToken,
+      validateObjectId,
+      this.deleteProduct.bind(this)
+    );
     return router;
   }
 }

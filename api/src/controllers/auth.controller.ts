@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { generateToken } from "../middlewares/jwt";
 import { sessionMiddleware } from "../middlewares/session.middleware";
 import { MongooseService } from "../services/mongoose";
@@ -53,19 +53,19 @@ export class AuthController {
    *       500:
    *         description: Server error
    */
-  async register(req: Request, res: Response) {
-    if (
-      !req.body ||
-      typeof req.body.name !== "string" ||
-      typeof req.body.email !== "string" ||
-      typeof req.body.password !== "string"
-    ) {
-      res.status(400).end();
-      return;
-    }
-    const bcryptInstance = new Bcrypt();
-    const mongooseService = await MongooseService.get();
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
+      if (
+        !req.body ||
+        typeof req.body.name !== "string" ||
+        typeof req.body.email !== "string" ||
+        typeof req.body.password !== "string"
+      ) {
+        res.status(400);
+        throw new Error("Email and password are required");
+      }
+      const bcryptInstance = new Bcrypt();
+      const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.createUser({
         name: req.body.name,
         email: req.body.email,
@@ -90,10 +90,12 @@ export class AuthController {
         error.name === "MongoServerError" &&
         error.message.startsWith("E11000 duplicate key")
       ) {
-        res.status(409).end();
-        return;
+        res.status(409);
       }
-      res.status(500).end();
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
   }
 
@@ -130,38 +132,45 @@ export class AuthController {
    *       404:
    *         description: User not found
    */
-  async login(req: Request, res: Response) {
-    if (
-      !req.body ||
-      typeof req.body.email !== "string" ||
-      typeof req.body.password !== "string"
-    ) {
-      res.status(400).end();
-      return;
-    }
-    const bcryptInstance = new Bcrypt();
-    const mongooseService = await MongooseService.get();
+  async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (
+        !req.body ||
+        typeof req.body.email !== "string" ||
+        typeof req.body.password !== "string"
+      ) {
+        res.status(400);
+        throw new Error("Email and password are required");
+      }
+      const bcryptInstance = new Bcrypt();
+      const mongooseService = await MongooseService.get();
 
-    const user = await mongooseService.userService.findUser(req.body.email);
-    if (user === null) {
-      res.status(404).end();
-      return;
+      const user = await mongooseService.userService.findUser(req.body.email);
+      if (user === null) {
+        res.status(401);
+        throw new Error("Invalid credentials");
+      }
+      const passwordMatch = await bcryptInstance.comparePassword(
+        req.body.password,
+        user.password
+      );
+      if (!passwordMatch) {
+        res.status(401);
+        throw new Error("Invalid credentials");
+      }
+      const session = await mongooseService.sessionService.createSession({
+        user: user,
+        userAgent: req.header("user-agent") || "unknown",
+        expirationDate: new Date(new Date().getTime() + 1_296_000_000),
+      });
+      res.status(201).json(session);
+    } catch (error) {
+      // si status code n'est pas défini on renvoie une erreur 500
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
-    const passwordMatch = await bcryptInstance.comparePassword(
-      req.body.password,
-      user.password
-    );
-    // FIXME:
-    if (!passwordMatch) {
-      res.status(401).end();
-      return;
-    }
-    const session = await mongooseService.sessionService.createSession({
-      user: user,
-      userAgent: req.header("user-agent") || "unknown",
-      expirationDate: new Date(new Date().getTime() + 1_296_000_000),
-    });
-    res.status(201).json(session);
   }
 
   async me(req: Request, res: Response) {

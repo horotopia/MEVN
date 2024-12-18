@@ -39,42 +39,47 @@ winston.addColors(colors);
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    (info) => `${info.level}: ${info.message}, timestamp : ${info.timestamp}`
-  )
+  winston.format.errors({ stack: true }),
+  winston.format.printf((info) => {
+    const stack = info.stack ? `\nStack trace: ${info.stack}` : "";
+    return `${info.level}: ${info.message}, timestamp : ${info.timestamp}${stack}`;
+  })
 );
 
-// Define log transports
+// Function to create the transports
+const createDailyRotateFile = (filename: string, level?: string) =>
+  new winston.transports.DailyRotateFile({
+    filename: `logs/${filename}-%DATE%.log`,
+    level,
+    datePattern: "YYYY-MM-DD",
+    zippedArchive: true,
+    maxFiles: "14d",
+  });
+
+// Define the transports
 const transports = [
   new winston.transports.Console(),
-  new winston.transports.DailyRotateFile({
-    filename: "logs/api-combined-%DATE%.log",
-    datePattern: "YYYY-MM-DD",
-    zippedArchive: true,
-    maxFiles: "14d",
-  }),
-  new winston.transports.DailyRotateFile({
-    filename: "logs/api-error-%DATE%.log",
-    level: "error",
-    datePattern: "YYYY-MM-DD",
-    zippedArchive: true,
-    maxFiles: "14d",
-  }),
-  new winston.transports.DailyRotateFile({
-    filename: "logs/api-info-%DATE%.log",
-    level: "info",
-    datePattern: "YYYY-MM-DD",
-    zippedArchive: true,
-    maxFiles: "14d",
-  }),
+  createDailyRotateFile("api-combined"),
+  createDailyRotateFile("api-error", "error"),
+  createDailyRotateFile("api-info", "info"),
+  createDailyRotateFile("api-http", "http"),
 ];
 
 // Create the logger instance
 const logger = winston.createLogger({
-  level: level,
+  level,
   levels,
   format,
   transports,
+});
+
+logger.exceptions.handle(
+  new winston.transports.Console(),
+  createDailyRotateFile("api-exceptions")
+);
+
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
 });
 
 export default logger;

@@ -1,11 +1,6 @@
-import { Request, Response, Router } from "express";
-import logger from "../config/logger";
-import { authenticateToken } from "../middlewares/jwt";
-import { validateObjectId } from "../middlewares/validate";
-import { MongooseService } from "../services/mongoose/mongoose.service";
+import { Router } from "express";
 
 export class OrdersController {
-
   // TODO:
   // créer un order
   // obtenir un order
@@ -15,7 +10,7 @@ export class OrdersController {
   // suppr un pas ?
   // anonymiser tous les orders du user (suppression du compte)
 
-  buildRoutes(): Router {
+  buildRouter(): Router {
     const router = Router();
     // routes
     return router;

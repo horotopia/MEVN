@@ -18,7 +18,7 @@ export class PicturesService {
     this.model = mongoose.model("Pictures", picturesSchema);
   }
 
-  async createPictures(pictures: CreateOrUpdatePictures): Promise<Pictures> {
+  async createPicture(pictures: CreateOrUpdatePictures): Promise<Pictures> {
     const res = await this.model.create(pictures);
     return res;
   }

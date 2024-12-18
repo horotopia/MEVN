@@ -1,32 +1,55 @@
-import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
+import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
+import mongoose from "mongoose";
 
+// Vérifier que les données envoyées sont valides
 const validate = (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      throw new Error("Invalid data");
+    }
+    next();
+  } catch (error) {
+    if (!res.statusCode) {
+      res.status(500);
+    }
+    next(error);
   }
-  next();
 };
 
 // Vérifier que l'utilisateur n'a pas de token
 const validateNoToken = (req: Request, res: Response, next: NextFunction) => {
   const jwtToken = req.cookies["jwtToken"];
-  if (jwtToken) {
-    res
-      .status(401)
-      .json({ message: "Token already generated, authorization denied" });
+  try {
+    if (jwtToken) {
+      res.status(401);
+      throw new Error("You are already logged in");
+    }
+    next();
+  } catch (error) {
+    if (!res.statusCode) {
+      res.status(500);
+    }
+    next(error);
   }
-  next();
 };
 
 const validateObjectId = (req: Request, res: Response, next: Function) => {
   const id = req.params.id;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(401).json({ message: 'Invalid ID format' });
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(401);
+      throw new Error("Invalid ID format");
+    }
+    next();
+  } catch (error) {
+    if (!res.statusCode) {
+      res.status(500);
+    }
+    next(error);
   }
-  next();
 };
 
 export { validate, validateNoToken, validateObjectId };
