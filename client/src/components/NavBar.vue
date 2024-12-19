@@ -15,6 +15,7 @@
       <li><router-link to="/pokemon" class="hover:underline"> Pokémon</router-link> | </li>
       <li><router-link to="/pokeball" class="hover:underline"> Pokéball</router-link> | </li>
       <li><router-link to="/accessoires" class="hover:underline"> Accéssoires</router-link> | </li>
+      <li><router-link to="/contact" class="hover:underline"> Contact</router-link> | </li>
       <li><router-link to="/login" class="hover:underline"> Login</router-link> | </li>
     </ul>
   </nav>
