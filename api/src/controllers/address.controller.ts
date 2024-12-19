@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import { validateRoleUser } from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
 export class AddressController {
@@ -295,18 +296,33 @@ export class AddressController {
 
   buildRouter(): Router {
     const router = Router();
-    router.post("/", authenticateToken, this.createAddress);
-    router.get("/:userId", authenticateToken, this.getAllAddressesByUserId);
-    router.put("/:id", authenticateToken, validateObjectId, this.updateAddress);
+    router.post("/", authenticateToken, validateRoleUser, this.createAddress);
+    router.get(
+      "/:userId",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.getAllAddressesByUserId
+    );
+    router.put(
+      "/:id",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.updateAddress
+    );
     router.delete(
       "/:id",
       authenticateToken,
+      validateRoleUser,
       validateObjectId,
       this.deleteAddress
     );
     router.delete(
       "/u/:userId",
       authenticateToken,
+      validateRoleUser,
+      validateObjectId,
       this.deleteAllAddressesByUserId
     );
     return router;

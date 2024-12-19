@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { generateToken } from "../middlewares/jwt";
 import { sessionMiddleware } from "../middlewares/session.middleware";
+import validateCreateUser from "../middlewares/validator/validateUser";
 import { MongooseService } from "../services/mongoose";
 import { Bcrypt } from "../utils";
 
@@ -57,7 +58,6 @@ export class AuthController {
     try {
       if (
         !req.body ||
-        typeof req.body.name !== "string" ||
         typeof req.body.email !== "string" ||
         typeof req.body.password !== "string"
       ) {
@@ -67,7 +67,6 @@ export class AuthController {
       const bcryptInstance = new Bcrypt();
       const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.createUser({
-        name: req.body.name,
         email: req.body.email,
         password: await bcryptInstance.hashPassword(req.body.password),
       });
@@ -179,7 +178,7 @@ export class AuthController {
 
   buildRouter(): Router {
     const router = Router();
-    router.post("/register", this.register.bind(this));
+    router.post("/register", validateCreateUser, this.register.bind(this));
     router.post("/login", this.login.bind(this));
     router.get("/me", sessionMiddleware(), this.me.bind(this));
     return router;

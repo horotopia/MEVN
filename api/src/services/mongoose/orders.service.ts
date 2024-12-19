@@ -18,7 +18,14 @@ export class OrdersService {
     this.model = mongoose.model("Orders", ordersSchema);
   }
 
-  async createOrders(order: CreateOrUpdateOrders): Promise<Orders> {
+  async createOrder(order: CreateOrUpdateOrders): Promise<Orders> {
+    let totalAmount = 0;
+    order.items.forEach((item: any) => {
+      totalAmount += item.quantity * item.price;
+    });
+    if (totalAmount !== order.totalAmount) {
+      throw new Error("Invalid total amount");
+    }
     const res = await this.model.create(order);
     return res;
   }
@@ -35,6 +42,32 @@ export class OrdersService {
 
   async findAllOrdersByStatus(status: string): Promise<Orders[]> {
     const res = await this.model.find({ status });
+    return res;
+  }
+
+  async findAllOrders(): Promise<Orders[]> {
+    const res = await this.model.find();
+    return res;
+  }
+
+  // update something in order
+  async updateOrder(
+    id: string,
+    order: CreateOrUpdateOrders
+  ): Promise<Orders | null> {
+    const res = await this.model.findByIdAndUpdate(
+      id,
+      { $set: order },
+      { new: true, runValidators: true }
+    );
+    return res;
+  }
+
+  async deleteOrder(id: string): Promise<Orders | null> {
+    const res = await this.model.findByIdAndDelete(id);
+    if (!res) {
+      throw new Error("Order not found");
+    }
     return res;
   }
 

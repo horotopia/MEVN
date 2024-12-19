@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import { validateRoleAdmin } from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose";
 
 export class PicturesController {
@@ -11,15 +12,40 @@ export class PicturesController {
    *     summary: Créer une picture
    *     tags: [Pictures]
    *     description: Créer une picture dans le système.
+   *     operationId: uploadFile
    *     requestBody:
    *       required: true
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: '#/components/schemas/Pictures'
+   *             type: object
+   *               properties:
+   *                 userId:
+   *                   type: string
+   *                   description: L'identifiant unique de l'utilisateur
+   *                 name:
+   *                   type: string
+   *                   description: Le nom de la picture
+   *                 description:
+   *                   type: string
+   *                   description: La description de la picture
+   *               required:
+   *                 - userId
+   *                 - name
    *     responses:
    *       201:
    *         description: Créé avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: string
+   *                   description: L'ID de la picture créée
+   *                 name:
+   *                   type: string
+   *                   description: Le nom de la picture
    *       400:
    *         description: Requête invalide
    *       401:
@@ -341,7 +367,12 @@ export class PicturesController {
     const router = Router();
     router.post("/", authenticateToken, this.createPicture);
     router.get("/:id", authenticateToken, validateObjectId, this.getPicture);
-    router.get("/u/:userId", authenticateToken, this.getAllPicturesByUserId);
+    router.get(
+      "/u/:userId",
+      authenticateToken,
+      validateObjectId,
+      this.getAllPicturesByUserId
+    );
     router.put("/:id", authenticateToken, validateObjectId, this.updatePicture);
     router.delete(
       "/:id",
@@ -352,6 +383,8 @@ export class PicturesController {
     router.delete(
       "/u/:userId",
       authenticateToken,
+      validateRoleAdmin,
+      validateObjectId,
       this.deleteAllPicturesByUserId
     );
     return router;

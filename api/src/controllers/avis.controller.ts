@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import {
+  validateRoleAdminOrUser,
+  validateRoleUser,
+} from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
 export class AvisController {
@@ -351,12 +355,36 @@ export class AvisController {
 
   buildRouter(): Router {
     const router = Router();
-    router.post("/", authenticateToken, this.createAvis);
-    router.get("/u/:userId", authenticateToken, this.getAvisByUserId);
-    router.get("/p/:productId", authenticateToken, this.getAvisByProductId);
-    router.put("/:id", authenticateToken, validateObjectId, this.updateAvis);
-    router.delete("/:id", authenticateToken, validateObjectId, this.deleteAvis);
-    router.delete("/u/:userId", authenticateToken, this.deleteAvisByUserId);
+    router.post("/", authenticateToken, validateRoleUser, this.createAvis);
+    router.get(
+      "/u/:userId",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.getAvisByUserId
+    );
+    router.get("/p/:productId", validateObjectId, this.getAvisByProductId);
+    router.put(
+      "/:id",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.updateAvis
+    );
+    router.delete(
+      "/:id",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.deleteAvis
+    );
+    router.delete(
+      "/u/:userId",
+      authenticateToken,
+      validateRoleAdminOrUser,
+      validateObjectId,
+      this.deleteAvisByUserId
+    );
     return router;
   }
 }

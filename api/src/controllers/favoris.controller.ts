@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import {
+  validateRoleAdminOrUser,
+  validateRoleUser,
+} from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
 export class FavorisController {
@@ -278,23 +282,33 @@ export class FavorisController {
 
   buildRouter(): Router {
     const router = Router();
-    router.post("/", authenticateToken, this.createFavoris);
+    router.post("/", authenticateToken, validateRoleUser, this.createFavoris);
     router.get(
       "/:id",
       authenticateToken,
+      validateRoleUser,
       validateObjectId,
       this.getFavorisById
     );
-    router.get("/u/:userId", authenticateToken, this.getAllFavorisByUserId);
+    router.get(
+      "/u/:userId",
+      authenticateToken,
+      validateRoleAdminOrUser,
+      validateObjectId,
+      this.getAllFavorisByUserId
+    );
     router.delete(
       "/:id",
       authenticateToken,
+      validateRoleUser,
       validateObjectId,
       this.deleteFavoris
     );
     router.delete(
       "/u/:userId",
       authenticateToken,
+      validateRoleAdminOrUser,
+      validateObjectId,
       this.deleteAllFavorisByUserId
     );
     return router;

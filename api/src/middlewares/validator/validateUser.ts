@@ -1,28 +1,34 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import logger from "../../config/logger";
 
-const validateUser: Array<(req: Request, res: Response, next: NextFunction) => void> = [
+const validateCreateUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   // Validation de l'email
-  body("email").isEmail().withMessage("E-mail valide obligatoire"),
+  body("email").isEmail().withMessage("E-mail valide obligatoire");
   // Validation du mot de passe
   body("password")
-    .isLength({ min: 12 }).withMessage("Le mot de passe au moins contenir 12 caractères")
-    .matches(/[a-z]/).withMessage('Le mot de passe doit contenir au moins une lettre minuscule')
-    .matches(/[A-Z]/).withMessage('Le mot de passe doit contenir au moins une lettre majuscule')
-    .matches(/\d/).withMessage('Le mot de passe doit contenir au moins un chiffre')
-    .matches(/[@$!%*?&]/).withMessage('Le mot de passe doit contenir au moins un caractère spécial (@, $, !, %, *, ?, & etc.)'),
+    .isLength({ min: 12 })
+    .withMessage("Le mot de passe au moins contenir 12 caractères")
+    .matches(/[a-z]/)
+    .withMessage("Le mot de passe doit contenir au moins une lettre minuscule")
+    .matches(/[A-Z]/)
+    .withMessage("Le mot de passe doit contenir au moins une lettre majuscule")
+    .matches(/\d/)
+    .withMessage("Le mot de passe doit contenir au moins un chiffre")
+    .matches(/[@$!%*?&]/)
+    .withMessage(
+      "Le mot de passe doit contenir au moins un caractère spécial (@, $, !, %, *, ?, & etc.)"
+    );
 
   // Vérification des erreurs de validation
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      logger.http(`${req.method} ${req.url} - ${res.statusCode}`);
-      res.status(400).json({ errors: errors.array() });
-      return;
-    }
-    next();
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ errors: errors.array() });
   }
-];
+  next(errors);
+};
 
-export default validateUser;
+export default validateCreateUser;

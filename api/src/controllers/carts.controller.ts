@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import {
+  validateRoleAdminOrUser,
+  validateRoleUser,
+} from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
 export class CartsController {
@@ -398,30 +402,35 @@ export class CartsController {
     router.get(
       "/:id",
       authenticateToken,
+      validateRoleUser,
       validateObjectId,
       this.get.bind(this)
     );
     router.get(
       "/u/:id",
       authenticateToken,
+      validateRoleAdminOrUser,
       validateObjectId,
       this.get.bind(this)
     );
     router.put(
       "/:id",
       authenticateToken,
+      validateRoleUser,
       validateObjectId,
       this.create.bind(this)
     );
     router.delete(
       "/:id",
       authenticateToken,
+      validateRoleUser,
       validateObjectId,
       this.create.bind(this)
     );
     router.delete(
       "/u/:id",
       authenticateToken,
+      validateRoleAdminOrUser,
       validateObjectId,
       this.create.bind(this)
     );

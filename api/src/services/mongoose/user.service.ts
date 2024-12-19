@@ -3,7 +3,8 @@ import { User } from "../../models/user.interface";
 import { MongooseService } from "./mongoose.service";
 import { userSchema } from "./schema";
 
-export type CreateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
+export type CreateUser = Omit<User, "_id" | "name" | "createdAt" | "updatedAt">;
+export type UpdateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 
 export class UserService {
   readonly mongooseService: MongooseService;
@@ -43,7 +44,7 @@ export class UserService {
   }
 
   // update
-  async updateUser(id: string, user: CreateUser): Promise<User | null> {
+  async updateUser(id: string, user: UpdateUser): Promise<User | null> {
     const res = await this.model.findByIdAndUpdate(
       id,
       { $set: user },

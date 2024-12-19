@@ -5,6 +5,7 @@ import { IUserDocument, User } from "../models/user.model";
 
 config();
 
+// FIXME: Remoce this middleware
 const auth = async (req: Request, res: Response, next: NextFunction) => {
   const jwtToken = req.cookies["jwtToken"];
   if (!jwtToken) {

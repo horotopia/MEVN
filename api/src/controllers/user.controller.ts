@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { authenticateToken } from "../middlewares/jwt";
 import { validateObjectId } from "../middlewares/validate";
+import {
+  validateRoleAdmin,
+  validateRoleAdminOrUserId,
+  validateUserId,
+} from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
 export class UserController {
@@ -240,19 +245,26 @@ export class UserController {
     router.get(
       "/:id",
       authenticateToken,
-      validateObjectId,
+      validateUserId,
       this.getOneUser.bind(this)
     );
-    router.get("/", authenticateToken, this.getUsers.bind(this));
+    router.get(
+      "/",
+      authenticateToken,
+      validateRoleAdmin,
+      this.getUsers.bind(this)
+    );
     router.put(
       "/:id",
       authenticateToken,
+      validateRoleAdminOrUserId,
       validateObjectId,
       this.updateUser.bind(this)
     );
     router.delete(
       "/:id",
       authenticateToken,
+      validateRoleAdminOrUserId,
       validateObjectId,
       this.deleteUser.bind(this)
     );

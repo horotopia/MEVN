@@ -48,6 +48,7 @@ export class AddressService {
     return res;
   }
 
+  // FIXME: Change this method to delete all addresses by userId
   async anonymise(userId: string): Promise<void> {
     const res = await this.model.updateMany(
       { userId },
