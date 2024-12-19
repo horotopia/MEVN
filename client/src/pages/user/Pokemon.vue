@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import PokemonCard from '../components/PokemonCard.vue'
+import PokemonCard from '../../components/PokemonCard.vue'
 
 export default {
   name: 'PokemonPage',

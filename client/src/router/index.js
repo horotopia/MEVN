@@ -15,7 +15,8 @@ import Cgv from '../pages/Cgv.vue';
 import Politique from '../pages/Politique.vue';
 import Panier from '../pages/user/Panier.vue';
 import Contact from '../pages/user/contact.vue';
-import Chart from '../pages/admin/Chart.vue';
+import SettingsCard from '../components/Dashboard/SettingsCard.vue'
+import Clients from '../pages/admin/Clients.vue'
 
 const routes = [
   {
@@ -47,7 +48,8 @@ const routes = [
     component: AdminLayout,
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
-      { path: 'chart', name: 'Chart', component: Chart },
+      { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
+      { path: 'dashboard/clients', name: 'Clients', component: Clients },
     ]
     // meta: { requiresAuth: true }
   },
