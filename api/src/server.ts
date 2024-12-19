@@ -1,48 +1,69 @@
-import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
+import compression from "compression";
 import cookieParser from "cookie-parser";
+import { config } from "dotenv";
+import express, { Express, NextFunction, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 
 // Configurations
-import swaggerSpec from "./config/swagger";
-import connectDB from "./config/database";
-import logger from "./config/logger";
 import configureCORS from "./config/cors";
-import configureCompression from "./config/compression";
+import connectDB from "./config/database";
 import configureHelmet from "./config/helmet";
+import logger from "./config/logger";
+import swaggerSpec from "./config/swagger";
 
 // Middlewares
 import errorHandler from "./middlewares/errorHandler";
 
 // Routes
-import addressRoutes from "./routes/address.routes";
-import authRoutes from "./routes/auth.routes";
-import avisRoutes from "./routes/avis.routes";
-import cartsRoutes from "./routes/carts.routes";
-import favorisRoutes from "./routes/favoris.routes";
-import ordersRoutes from "./routes/orders.routes";
-import picturesRoutes from "./routes/pictures.routes";
-import uploadRoutes from "./routes/upload.routes";
-import userRoutes from "./routes/user.routes";
-import mailRoutes from './routes/mailRoutes';
+import {
+  AddressController,
+  AuthController,
+  AvisController,
+  CartsController,
+  FavorisController,
+  OrdersController,
+  PicturesController,
+  ProductController,
+  UserController,
+} from "./controllers";
 
-
-
-dotenv.config();
+config();
 const app: Express = express();
 
 // config
 configureCORS(app);
 configureHelmet(app);
-configureCompression(app);
+
+app.use(
+  compression({
+    // Compress all HTTP responses
+    filter: (req: Request, res: Response) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+    threshold: 0,
+  })
+);
 
 // Security
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Error handling
-app.use(errorHandler);
+// traque des requêtes
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (process.env.MODE_ENV === "development") {
+    logger.http(`${req.method} ${req.url}`, {
+      method: req.method,
+      url: req.url,
+      ip: req.ip,
+      userAgent: req.headers["user-agent"],
+    });
+  }
+  next();
+});
 
 // Swagger
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -52,19 +73,27 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+const addressController = new AddressController();
+app.use("/api/address", addressController.buildRouter());
+const authController = new AuthController();
+app.use("/api/auth", authController.buildRouter());
+const avisController = new AvisController();
+app.use("/api/avis", avisController.buildRouter());
+const cartsController = new CartsController();
+app.use("/api/carts", cartsController.buildRouter());
+const favorisController = new FavorisController();
+app.use("/api/favoris", favorisController.buildRouter());
+const ordersController = new OrdersController();
+app.use("/api/orders", ordersController.buildRouter());
+const picturesController = new PicturesController();
+app.use("/api/pictures", picturesController.buildRouter());
+const productController = new ProductController();
+app.use("/api/product", productController.buildRouter());
+const userController = new UserController();
+app.use("/api/users", userController.buildRouter());
 
-app.use("/api/addresses", addressRoutes);
-app.use("/api/avis", avisRoutes);
-app.use("/api/carts", cartsRoutes);
-app.use("/api/favoris", favorisRoutes);
-app.use("/api/orders", ordersRoutes);
-app.use("/api/pictures", picturesRoutes);
-
-app.use("/api/upload", uploadRoutes);
-
-app.use('/api/mail', mailRoutes);
+// Middleware d'erreurs global
+app.use(errorHandler(logger));
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;

@@ -1,5 +1,7 @@
+import { config } from "dotenv";
 import swaggerJsdoc, { Options } from "swagger-jsdoc";
 
+config();
 interface SwaggerInfo {
   title: string;
   version: string;
@@ -25,36 +27,6 @@ interface SwaggerOptions extends Options {
 const hostname: string = process.env.API_HOST || "localhost";
 const port: string | number = process.env.API_PORT || 5000;
 
-/**
- * @swagger
- *
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       required:
- *         - name
- *         - email
- *       properties:
- *         name:
- *           type: string
- *           description: Le nom de l'utilisateur
- *         email:
- *           type: string
- *           description: L'email de l'utilisateur
- *         password:
- *           type: string
- *           description: Le mot de passe de l'utilisateur
- *         role:
- *           type: string
- *           enum: [ROLE_USER, ROLE_STORE_KEEPER, ROLE_ADMIN, ROLE_COMPTA]
- *           default: ROLE_USER
- *       example:
- *         name: John Doe
- *         email: john.doe@toto.com
- *         password: password
- *         role: ROLE_USER
- */
 const swaggerOptions: SwaggerOptions = {
   definition: {
     openapi: "3.0.0",
@@ -70,7 +42,7 @@ const swaggerOptions: SwaggerOptions = {
       },
     ],
   },
-  apis: ["src/routes/*.ts", "../models/*.ts", `./swagger.js`]
+  apis: ["src/controllers/*.ts", "src/services/mongoose/schema/*.ts"],
 };
 
 export default swaggerJsdoc(swaggerOptions);
