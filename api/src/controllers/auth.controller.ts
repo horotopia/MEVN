@@ -66,15 +66,15 @@ export class AuthController {
         password: await bcryptInstance.hashPassword(req.body.password),
       });
       // Create token
-      const jwtToken = generateToken({ id: user._id });
+      const jwtToken = generateToken(user);
 
       // Stockage du JWT dans un cookie HttpOnly
+      console.log(jwtToken);
       res
         .cookie("jwtToken", jwtToken, {
           httpOnly: true,
-          secure: false,
-          sameSite: "lax",
-          maxAge: 24 * 60 * 60 * 1000,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
         })
         .status(201)
         .json(user);
