@@ -1,26 +1,20 @@
 import { config } from "dotenv";
-import swaggerJsdoc, { Options } from "swagger-jsdoc";
+import swaggerJsdoc from "swagger-jsdoc";
 
 config();
-interface SwaggerInfo {
-  title: string;
-  version: string;
-  description: string;
-}
-
-interface SwaggerServer {
-  url: string;
-  description: string;
-}
-
-interface SwaggerDefinition {
-  openapi: string;
-  info: SwaggerInfo;
-  servers: SwaggerServer[];
-}
-
-interface SwaggerOptions extends Options {
-  definition: SwaggerDefinition;
+interface SwaggerOptions {
+  definition: {
+    openapi: string;
+    info: {
+      title: string;
+      version: string;
+      description: string;
+    };
+    servers: {
+      url: string;
+      description: string;
+    }[];
+  };
   apis: string[];
 }
 
@@ -37,12 +31,30 @@ const swaggerOptions: SwaggerOptions = {
     },
     servers: [
       {
-        url: `http://${hostname}:${port}`,
+        url: `http://${hostname || "localhost"}:${port || 5000}`,
         description: "Development server",
       },
     ],
   },
-  apis: ["src/controllers/*.ts", "src/services/mongoose/schema/*.ts"],
+  apis: [
+    "src/controllers/*.ts",
+    "src/services/mongoose/schema/address.schema.ts",
+    "src/services/mongoose/schema/avis.schema.ts",
+    "src/services/mongoose/schema/carts.schema.ts",
+    "src/services/mongoose/schema/favoris.schema.ts",
+    "src/services/mongoose/schema/orders.schema.ts",
+    "src/services/mongoose/schema/pictures.schema.ts",
+    "src/services/mongoose/schema/product.schema.ts",
+    "src/services/mongoose/schema/session.schema.ts",
+    "src/services/mongoose/schema/user.schema.ts",
+  ],
 };
 
-export default swaggerJsdoc(swaggerOptions);
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+if (!swaggerSpec) {
+  throw new Error(
+    "Erreur lors de la configuration de Swagger : swaggerSpec est undefined."
+  );
+}
+
+export default swaggerSpec;

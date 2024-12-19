@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import { Avis } from "../../../models";
 
 /**
-// * @swagger
+ * @swagger
  * components:
  *   schemas:
  *     Avis:
@@ -18,21 +18,20 @@ import { Avis } from "../../../models";
  *         userId:
  *           type: string
  *           description: L'identifiant de l'utilisateur
- *        productId:
- *          type: string
- *          description: L'identifiant du produit
- *        rating:
- *          type: number
- *          description: La note donnée par l'utilisateur
- *        comment:
- *          type: string
- *          description: Le commentaire de l'utilisateur
- *        createdAt:
- *          type: string
- *          description: La date de création de l'avis
- *        updatedAt:
- *          type: string
- *          description: La date de mise à jour de l'avis
+ *         productId:
+ *           type: string
+ *           description: L'identifiant du produit
+ *         rating:
+ *           type: number
+ *           description: La note donnée par l'utilisateur
+ *         comment:
+ *           type: string
+ *           description: Le commentaire de l'utilisateur
+ *       example:
+ *         userId: 5f4f6d7e5e5c5b5a5a4a5a5a
+ *         productId: 5f4f6d7e5e5c5b5a5a4a5a5a
+ *         rating: 5
+ *         comment: "Super produit !"
  */
 
 export const avisSchema = new Schema<Avis>(
