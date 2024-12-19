@@ -1,27 +1,54 @@
 <script>
-  export default {
-    name: 'LoginPage',
-    data() {
-      return {
-        email: '',
-        password: '',
-        emailError: '',
-        passwordError: '',
-      };
+export default {
+  name: 'LoginPage',
+  data() {
+    return {
+      email: '',
+      password: '',
+      emailError: '',
+      passwordError: '',
+      errorMessage: '', // Champ pour afficher une erreur globale
+    };
+  },
+  methods: {
+    checkEmail() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!this.email) {
+        this.emailError = "L'adresse e-mail est requise.";
+      } else if (!emailPattern.test(this.email)) {
+        this.emailError = "L'adresse e-mail n'est pas valide.";
+      } else {
+        this.emailError = '';
+      }
     },
-    methods: {
-      submitLogin() {
-        this.errorMessage = '';
-  
-        fetch('http://localhost:5000/api/auth/login', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-          },
-          body: JSON.stringify({ email: this.email, password: this.password }),
-          credentials: 'include'
-        })
+    checkPassword() {
+      if (!this.password) {
+        this.passwordError = "Le mot de passe est requis.";
+      } else if (this.password.length < 6) {
+        this.passwordError = "Le mot de passe doit contenir au moins 6 caractères.";
+      } else {
+        this.passwordError = '';
+      }
+    },
+    validateForm() {
+      this.checkEmail();
+      this.checkPassword();
+      return !this.emailError && !this.passwordError;
+    },
+    submitLogin() {
+      if (!this.validateForm()) {
+        return; // Ne pas envoyer si les validations échouent
+      }
+
+      fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: '*/*',
+        },
+        body: JSON.stringify({ email: this.email, password: this.password }),
+        credentials: 'include',
+      })
         .then(response => {
           if (!response.ok) {
             throw new Error('Erreur lors de la connexion');
@@ -29,21 +56,20 @@
           return response.json();
         })
         .then(data => {
-        if (data.jwtToken) {
-          localStorage.setItem('jwtToken', data.jwtToken);
-
-          this.$router.push('/dashboard');
-        } else {
-          this.errorMessage = 'Erreur de connexion';
-        }
-      })
+          if (data.jwtToken) {
+            localStorage.setItem('jwtToken', data.jwtToken);
+            this.$router.push('/dashboard');
+          } else {
+            this.errorMessage = 'Erreur de connexion : jeton non reçu.';
+          }
+        })
         .catch(error => {
-          this.errorMessage = 'Email ou mot de passe incorrect';
+          this.errorMessage = 'Email ou mot de passe incorrect.';
           console.error('Erreur de connexion', error);
         });
-      }
-    }
-  };
+    },
+  },
+};
 </script>
 
 <template>
@@ -55,7 +81,7 @@
         <h2 class="text-2xl font-bold text-center mb-10 font-primary">CONNEXION</h2>
         
         <form 
-          @submit.prevent="handleSubmit"
+          @submit.prevent="submitLogin"
           novalidate
           class="space-y-8 font-secondary font-semibold"
         >
@@ -84,6 +110,7 @@
             <input
               type="password"
               v-model="password"
+              @input="checkPassword"
               placeholder="Mot de passe"
               class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-4 focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
               :class="{ 'border-red-500': passwordError }"
@@ -91,6 +118,8 @@
             />
             <p v-if="passwordError" class="mt-1 text-sm text-red-600 font-secondary">{{ passwordError }}</p>
           </div>
+
+          <p v-if="errorMessage" class="text-center mt-4 text-red-600 font-secondary">{{ errorMessage }}</p>
 
           <button
             type="submit"
@@ -148,4 +177,3 @@ input::placeholder {
   color: #C73D3D;
 }
 </style>
-  
