@@ -23,7 +23,7 @@ import { Product } from "../../../models/product.interface";
  *           type: string
  *           description: Le type du produit
  *           required: true
- *           enum: [feu, eau, plante, électricité]
+ *           enum: [combat, acier, eau, féé, normal, psy, vol, spectre, poison, feu, électrique, plante]
  *           default: feu
  *         evolutionLevel:
  *           type: number
@@ -109,7 +109,20 @@ export const productSchema = new Schema<Product>(
     type: {
       type: String,
       required: true,
-      enum: ["feu", "eau", "plante", "électricité"],
+      enum: [
+        "combat",
+        "acier",
+        "eau",
+        "féé",
+        "normal",
+        "psy",
+        "vol",
+        "spectre",
+        "poison",
+        "feu",
+        "électrique",
+        "plante",
+      ],
       default: "feu",
     },
     evolutionLevel: {

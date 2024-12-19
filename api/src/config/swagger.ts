@@ -42,7 +42,7 @@ const swaggerOptions: SwaggerOptions = {
       },
     ],
   },
-  apis: ["src/controllers/*.ts", "src/services/**/*.ts", "./swagger.js"],
+  apis: ["src/controllers/*.ts", "src/services/mongoose/schema/*.ts"],
 };
 
 export default swaggerJsdoc(swaggerOptions);

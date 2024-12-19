@@ -19,19 +19,19 @@ export class PicturesController {
    *         application/json:
    *           schema:
    *             type: object
-   *               properties:
-   *                 userId:
-   *                   type: string
-   *                   description: L'identifiant unique de l'utilisateur
-   *                 name:
-   *                   type: string
-   *                   description: Le nom de la picture
-   *                 description:
-   *                   type: string
-   *                   description: La description de la picture
-   *               required:
-   *                 - userId
-   *                 - name
+   *             properties:
+   *               userId:
+   *                 type: string
+   *                 description: L'identifiant unique de l'utilisateur
+   *               name:
+   *                 type: string
+   *                 description: Le nom de la picture
+   *               description:
+   *                 type: string
+   *                 description: La description de la picture
+   *             required:
+   *               - userId
+   *               - name
    *     responses:
    *       201:
    *         description: Créé avec succès
