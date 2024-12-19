@@ -2,10 +2,10 @@ import { Schema } from "mongoose";
 import { Favoris } from "../../../models";
 
 /**
- //* @swagger
+ * @swagger
  * components:
  *   schemas:
- *     Favoris
+ *     Favoris:
  *       type: object
  *       required:
  *         - userId

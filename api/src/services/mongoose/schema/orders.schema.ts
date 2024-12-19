@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import { Orders } from "../../../models";
 
 /**
- //* @swagger
+ * @swagger
  * components:
  *   schemas:
  *     Orders:

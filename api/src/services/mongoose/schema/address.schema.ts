@@ -5,7 +5,7 @@ import { Address } from "../../../models";
  * @swagger
  * components:
  *   schemas:
- *     Addresses:
+ *     Address:
  *       type: object
  *       required:
  *         - userId

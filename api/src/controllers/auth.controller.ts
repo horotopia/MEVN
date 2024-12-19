@@ -19,13 +19,9 @@ export class AuthController {
    *           schema:
    *             type: object
    *             required:
-   *               - name
    *               - email
    *               - password
    *             properties:
-   *               name:
-   *                 type: string
-   *                 description: Nom de l'utilisateur
    *               email:
    *                 type: string
    *                 description: Email de l'utilisateur
@@ -33,7 +29,6 @@ export class AuthController {
    *                 type: string
    *                 description: Mot de passe de l'utilisateur
    *             example:
-   *               name: John Doe
    *               email: johndoe@example.com
    *               password: mypassword
    *     responses:
@@ -71,15 +66,15 @@ export class AuthController {
         password: await bcryptInstance.hashPassword(req.body.password),
       });
       // Create token
-      const jwtToken = generateToken({ id: user._id });
+      const jwtToken = generateToken(user);
 
       // Stockage du JWT dans un cookie HttpOnly
+      console.log(jwtToken);
       res
         .cookie("jwtToken", jwtToken, {
           httpOnly: true,
-          secure: false,
-          sameSite: "lax",
-          maxAge: 24 * 60 * 60 * 1000,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
         })
         .status(201)
         .json(user);
@@ -124,7 +119,7 @@ export class AuthController {
    *               email: johndoe@example.com
    *               password: mypassword
    *     responses:
-   *       201:
+   *       200:
    *         description: User logged in successfully and Session created
    *       400:
    *         description: Invalid credentials
