@@ -1,8 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap') layer(fonts);
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
 :root {
   --font-primary: 'Montserrat', sans-serif;
   --font-secondary: 'Open Sans', sans-serif;
 }
 
+@layer fonts {
+  /* Classes utilitaires Montserrat */
+  .montserrat-thin {
+    font-family: var(--font-primary);
+    font-weight: 100;
+  }
+
+  .montserrat-light {
+    font-family: var(--font-primary);
+    font-weight: 300;
+  }
+
+  .montserrat-regular {
+    font-family: var(--font-primary);
+    font-weight: 400;
+  }
+
+  .montserrat-medium {
+    font-family: var(--font-primary);
+    font-weight: 500;
+  }
+
+  .montserrat-semibold {
+    font-family: var(--font-primary);
+    font-weight: 600;
+  }
+
+  .montserrat-bold {
+    font-family: var(--font-primary);
+    font-weight: 700;
+  }
+
+  .montserrat-extrabold {
+    font-family: var(--font-primary);
+    font-weight: 800;
+  }
+
+  .montserrat-black {
+    font-family: var(--font-primary);
+    font-weight: 900;
+  }
+}
+
+/* Règles globales */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
   font-weight: 800;
