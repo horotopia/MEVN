@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <div class="fixed left-0 top-0 w-64 h-full bg-gray-800 p-4 text-white">
       <a href="#" class="flex items-center pb-4 border-b border-gray-700">
@@ -36,10 +36,14 @@
   
   <script>
   import Tableau from '../components/Tableau.vue';
+  import ChartBar from '@/components/Dashboard/ChartBar.vue';
+  import Chart from '@/pages/admin/Chart.vue';
   
   export default {
     components: {
-        Tableau
+         Tableau,
+         ChartBar,
+         Chart,
     },
     data() {
     return {
@@ -73,4 +77,23 @@
   }
   };
 </script>
-  
+   -->
+
+<script setup>
+import Header from '@/components/Dashboard/Header.vue'
+import Sidebar from '@/components/Dashboard/Sidebar.vue'
+</script>
+
+<template>
+  <div class="flex h-screen overflow-hidden">
+    <Sidebar />
+    <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      <Header />
+      <main>
+        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+          <router-view />
+        </div>
+      </main>
+    </div>
+  </div>
+</template>

@@ -1,8 +1,8 @@
 <template>
-      <NavBar />
-        <router-view />
-      <FooTer />
-  </template>
+  <NavBar />
+    <router-view />
+  <FooTer />
+</template>
   
   <script>
   import NavBar from '@/components/NavBar.vue';
