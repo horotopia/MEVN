@@ -17,6 +17,7 @@ import Panier from '../pages/user/Panier.vue';
 import Contact from '../pages/user/contact.vue';
 import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
+import PanierInformations from '../pages/user/PanierInformations.vue'
 
 const routes = [
   {
@@ -33,6 +34,7 @@ const routes = [
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },
       { path: 'panier', name: 'Panier', component: Panier },
       { path: 'contact', name: 'Contact', component: Contact },
+      { path: 'panier/informations', name: 'Informations', component: PanierInformations },
     ]
   },
   {
