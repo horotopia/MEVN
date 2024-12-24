@@ -65,19 +65,24 @@ export class AuthController {
         email: req.body.email,
         password: await bcryptInstance.hashPassword(req.body.password),
       });
+
+      const session = await mongooseService.sessionService.createSession({
+        user: user,
+        userAgent: req.header("user-agent") || "unknown",
+        expirationDate: new Date(new Date().getTime() + 1_296_000_000),
+      });
+
       // Create token
       const jwtToken = generateToken(user);
 
-      // Stockage du JWT dans un cookie HttpOnly
-      console.log(jwtToken);
+      user.password = "";
+
       res
-        .cookie("jwtToken", jwtToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-        })
         .status(201)
-        .json(user);
+        .json({
+          user: user,
+          jwtToken: jwtToken
+        })
     } catch (error) {
       if (
         error instanceof Error &&
@@ -157,7 +162,17 @@ export class AuthController {
         userAgent: req.header("user-agent") || "unknown",
         expirationDate: new Date(new Date().getTime() + 1_296_000_000),
       });
-      res.status(201).json(session);
+
+      const jwtToken = generateToken(user);
+
+      user.password = "";
+
+      res
+        .status(201)
+        .json({
+          user: user,
+          jwtToken: jwtToken
+        });
     } catch (error) {
       // si status code n'est pas défini on renvoie une erreur 500
       if (!res.statusCode) {

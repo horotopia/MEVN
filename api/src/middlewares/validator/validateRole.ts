@@ -11,13 +11,16 @@ const getUser = async (req: Request, res: Response) => {
     throw new Error("JWT_SECRET is not defined");
   }
 
-  const jwtToken = req.cookies["jwtToken"];
+  const authHeader = req.headers["authorization"];
+  const jwtToken = authHeader && authHeader.split(" ")[1];
+
   if (!jwtToken) {
     res.status(401);
     throw new Error("No token, authorization denied");
   }
 
   const decoded = jwt.verify(jwtToken, SECRET_KEY) as jwt.JwtPayload;
+  console.log(decoded);
 
   const mongooseService = await MongooseService.get();
   const user = await mongooseService.userService.findUserById(decoded.id);

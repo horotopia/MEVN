@@ -13,12 +13,18 @@ const generateToken = (user: any) => {
     logger.error("SECRET_KEY is not defined");
     return "";
   }
-  return jwt.sign(user, SECRET_KEY, { expiresIn: "1d" });
+  return jwt.sign({
+    id: user._id,
+    email: user.email,
+    name: user.name
+  }, SECRET_KEY, { expiresIn: "1d" });
 };
 
 // Vérification du token JWT
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const jwtToken = req.cookies["jwtToken"];
+  const authHeader = req.headers["authorization"];
+  const jwtToken = authHeader && authHeader.split(" ")[1];
+
   try {
     if (!jwtToken) {
       res.status(401);

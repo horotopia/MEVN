@@ -10,6 +10,16 @@ interface SwaggerOptions {
       version: string;
       description: string;
     };
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: string;
+          scheme: string;
+          bearerFormat: string;
+        };
+      };
+    };
+    security: { bearerAuth: string[] }[];
     servers: {
       url: string;
       description: string;
@@ -29,6 +39,18 @@ const swaggerOptions: SwaggerOptions = {
       version: "0.1.0",
       description: "E-commerce API documentation",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+    security: [{
+      bearerAuth: []
+    }],
     servers: [
       {
         url: `http://${hostname || "localhost"}:${port || 5000}`,
