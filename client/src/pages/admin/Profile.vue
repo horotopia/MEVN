@@ -1,5 +1,5 @@
 <script setup>
-import SettingsCard from '@/components/SettingsCard.vue'
+import ProfileCard from '@/components/ProfileCard.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 </script>
@@ -7,7 +7,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 <template>
   <DefaultLayout>
     <div class="mx-auto max-w-270">
-      <SettingsCard />
+      <profileCard />
     </div>
   </DefaultLayout>
 </template>

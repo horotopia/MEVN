@@ -19,22 +19,12 @@ export default {
       </div>
       
       <div class="search-container relative flex flex-1 mx-12">
-        <input 
-          type="text" 
-          placeholder="Chercher un Pokémon, une Pokéball..." 
-          class="w-full rounded-lg pr-12 pl-6 py-2 focus:outline-none text-lg placeholder-gray-600"
-        >
-        <button class="absolute right-4 top-1/2 -translate-y-1/2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
       </div>
 
       <div class="icons-container flex items-center gap-16">
         <router-link to="/panier" class="text-white flex flex-col items-center hover:opacity-80 relative">
           <div class="relative">
-            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 3H4L6 6L7 18H19L21 6H13L11 3" stroke="white" stroke-width="2"/>
               <circle cx="8" cy="21" r="2" stroke="white" stroke-width="2"/>
               <circle cx="18" cy="21" r="2" stroke="white" stroke-width="2"/>
@@ -44,16 +34,16 @@ export default {
               {{ cartItemCount }}
             </div>
           </div>
-          <span class="text-base mt-2 tracking-wide primary-font">Mon Panier</span>
+          <span class="text-xs mt-2 tracking-wide primary-font">Mon Panier</span>
         </router-link>
         
-        <router-link to="/compte" class="text-white flex flex-col items-center hover:opacity-80">
-          <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <router-link to="/login" class="text-white flex flex-col items-center hover:opacity-80">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5"/>
             <circle cx="12" cy="8" r="3.5" stroke="white" stroke-width="1.5"/>
             <path d="M6 18C6 15.5 8 13.5 12 13.5C16 13.5 18 15.5 18 18" stroke="white" stroke-width="1.5"/>
           </svg>
-          <span class="text-base mt-2 tracking-wide primary-font">Mon Compte</span>
+          <span class="text-xs mt-2 tracking-wide primary-font">Mon Compte</span>
         </router-link>
       </div>
     </div>

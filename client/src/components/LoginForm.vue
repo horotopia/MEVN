@@ -30,43 +30,43 @@ export default {
         this.passwordError = '';
       }
     },
-    validateForm() {
-      this.checkEmail();
-      this.checkPassword();
-      return !this.emailError && !this.passwordError;
-    },
-    submitLogin() {
+    async submitLogin() {
       if (!this.validateForm()) {
         return; // Ne pas envoyer si les validations échouent
       }
 
-      fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: '*/*',
-        },
-        body: JSON.stringify({ email: this.email, password: this.password }),
-        credentials: 'include',
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur lors de la connexion');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.jwtToken) {
-            localStorage.setItem('jwtToken', data.jwtToken);
-            this.$router.push('/dashboard');
-          } else {
-            this.errorMessage = 'Erreur de connexion : jeton non reçu.';
-          }
-        })
-        .catch(error => {
-          this.errorMessage = 'Email ou mot de passe incorrect.';
-          console.error('Erreur de connexion', error);
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: '*/*',
+          },
+          body: JSON.stringify({ email: this.email, password: this.password }),
+          credentials: 'include',
         });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de la connexion');
+        }
+
+        const data = await response.json();
+        if (data.jwtToken) {
+          localStorage.setItem('jwtToken', data.jwtToken);
+          localStorage.setItem('userRole', data.user.role); // Stocker le rôle de l'utilisateur
+          this.$router.push('/dashboard'); // Rediriger vers AdminLayout
+        } else {
+          this.errorMessage = 'Erreur de connexion : jeton non reçu.';
+        }
+      } catch (error) {
+        this.errorMessage = 'Email ou mot de passe incorrect.';
+        console.error('Erreur de connexion', error);
+      }
+    },
+    validateForm() {
+      this.checkEmail();
+      this.checkPassword();
+      return !this.emailError && !this.passwordError;
     },
   },
 };

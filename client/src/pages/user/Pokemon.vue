@@ -64,11 +64,13 @@
 
     <main class="flex-1 p-6">
       <div class="-mx-6 mb-6">
-        <div class="max-w-[1400px] mx-auto">
-          <div class="bg-[#ff4c4c] shadow-md py-4 text-center">
-            <h1 class="text-3xl font-extrabold text-white uppercase tracking-wider">
-              Catalogue Pokémon
-            </h1>
+        <div class="max-w-[1400px] mx-auto shadow-lg">
+          <div>
+            <input 
+          type="text" 
+          placeholder="Chercher un Pokémon, une Pokéball..." 
+          class="w-full rounded-lg pr-12 pl-6 py-2 focus:outline-none text-lg placeholder-gray-600"
+          >
           </div>
         </div>
       </div>
@@ -76,10 +78,10 @@
       <div class="text-center mb-8">
         <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
           <span class="text-sm font-extrabold text-black">
-            {{ pokemonsFiltres.length }}
+            test
           </span>
           <span class="ml-1.5 text-sm text-gray-600">
-            Pokémon{{ pokemonsFiltres.length > 1 ? 's' : '' }}
+            2 Pokémon
           </span>
         </span>
       </div>
@@ -97,13 +99,17 @@
         class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1400px] mx-auto"
         name="pokemon-grid"
       >
-        <PokemonCard 
-          v-for="pokemon in pokemonsFiltres" 
-          :key="pokemon.id"
-          v-bind="pokemon"
-          @ajouter-au-panier="gererAjoutPanier"
-          @filtrer-par-type="filtrerParType"
-        />
+      <PokemonCard
+      v-for="product in products"
+      :key="product._id"
+      :id="product._id"
+      :nom="product.name"
+      :description="product.description"
+      :image="product.image"
+      :prix="product.price"
+      :types="[product.type]"
+      @ajouter-au-panier="addToCart"
+    />
       </transition-group>
     </main>
   </div>
@@ -119,157 +125,185 @@ export default {
   },
   data() {
     return {
-      pokemonsParId: {},
-      typeSelectionne: '',
-      prixMaximum: 100,
-      chargement: true,
-      erreur: null,
-      typeTranslations: {
-        normal: 'Normal',
-        fire: 'Feu',
-        water: 'Eau',
-        grass: 'Plante',
-        electric: 'Électrik',
-        ice: 'Glace',
-        fighting: 'Combat',
-        poison: 'Poison',
-        ground: 'Sol',
-        flying: 'Vol',
-        psychic: 'Psy',
-        bug: 'Insecte',
-        rock: 'Roche',
-        ghost: 'Spectre',
-        dragon: 'Dragon',
-        dark: 'Ténèbres',
-        steel: 'Acier',
-        fairy: 'Fée'
-      },
-      typesDisponibles: [
-        { value: 'normal', label: 'Normal' },
-        { value: 'fire', label: 'Feu' },
-        { value: 'water', label: 'Eau' },
-        { value: 'grass', label: 'Plante' },
-        { value: 'electric', label: 'Électrik' },
-        { value: 'ice', label: 'Glace' },
-        { value: 'fighting', label: 'Combat' },
-        { value: 'poison', label: 'Poison' },
-        { value: 'ground', label: 'Sol' },
-        { value: 'flying', label: 'Vol' },
-        { value: 'psychic', label: 'Psy' },
-        { value: 'bug', label: 'Insecte' },
-        { value: 'rock', label: 'Roche' },
-        { value: 'ghost', label: 'Spectre' },
-        { value: 'dragon', label: 'Dragon' },
-        { value: 'dark', label: 'Ténèbres' },
-        { value: 'steel', label: 'Acier' },
-        { value: 'fairy', label: 'Fée' }
-      ]
-    }
+      products: [], // Liste des produits récupérés
+    };
   },
-  computed: {
-    pokemonsFiltres() {
-      return Object.values(this.pokemonsParId)
-        .filter(pokemon => {
-          const correspondType = !this.typeSelectionne || 
-            pokemon.types.some(type => type.original === this.typeSelectionne)
-          const correspondPrix = pokemon.prix <= this.prixMaximum
-          return correspondType && correspondPrix
-        })
-        .sort((a, b) => a.id - b.id)
+  async created() {
+    try {
+      const response = await fetch("http://localhost:5000/api/product");
+      const data = await response.json();
+
+      // Transformation des données pour le composant `PokemonCard`
+      this.products = data.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        description: item.description,
+        image: `https://via.placeholder.com/150?text=${item.name}`, // URL d'image par défaut (ajustez selon vos besoins)
+        price: item.price / 100, // Convertir en euros si nécessaire
+        type: item.type || "Inconnu", // Valeur par défaut si le type est manquant
+      }));
+    } catch (error) {
+      console.error("Erreur lors de la récupération des produits :", error);
     }
   },
   methods: {
-    obtenirCouleurType(type) {
-      const couleurs = {
-        normal: 'bg-gray-400',
-        fire: 'bg-red-500',
-        water: 'bg-blue-500',
-        grass: 'bg-green-500',
-        electric: 'bg-yellow-500',
-        ice: 'bg-blue-300',
-        fighting: 'bg-red-700',
-        poison: 'bg-purple-500',
-        ground: 'bg-yellow-600',
-        flying: 'bg-blue-400',
-        psychic: 'bg-pink-500',
-        bug: 'bg-green-600',
-        rock: 'bg-yellow-800',
-        ghost: 'bg-purple-700',
-        dragon: 'bg-purple-600',
-        dark: 'bg-gray-700',
-        steel: 'bg-gray-500',
-        fairy: 'bg-pink-400'
-      }
-      return couleurs[type] || 'bg-gray-500'
+    addToCart(product) {
+      console.log("Ajouté au panier :", product);
     },
-    async recupererPokemons() {
-      try {
-        const pokemonIds = [
-          393, 394, 395,    // Tiplouf -> Prinplouf -> Pingoléon
-          92, 93, 94,       // Fantominus -> Spectrum -> Ectoplasma
-          25,               // Pikachu
-          150,              // Mewtwo
-          63, 64, 65,       // Abra -> Kadabra -> Alakazam
-          174, 39, 40,      // Toudoudou -> Rondoudou -> Grodoudou
-          58, 59,           // Caninos -> Arkanin
-          1, 2, 3,         // Bulbizarre -> Herbizarre -> Florizarre
-          532, 533, 534,    // Charpenti -> Ouvrifier -> Bétochef
-          129, 130         // Magikarp -> Léviator
-        ];
-
-        await Promise.all(
-          pokemonIds.map(async (id) => {
-            try {
-              const [pokemonResponse, speciesResponse] = await Promise.all([
-                fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
-                fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
-              ]);
-
-              const [details, speciesData] = await Promise.all([
-                pokemonResponse.json(),
-                speciesResponse.json()
-              ]);
-
-              this.pokemonsParId[id] = {
-                id: details.id,
-                nom: speciesData.names.find(
-                  name => name.language.name === 'fr'
-                )?.name || details.name,
-                types: details.types.map(type => ({
-                  original: type.type.name,
-                  translated: this.typeTranslations[type.type.name] || type.type.name
-                })),
-                description: speciesData.flavor_text_entries.find(
-                  entry => entry.language.name === 'fr'
-                )?.flavor_text.replace(/\n|\f/g, ' ') || 'Description non disponible',
-                image: details.sprites.other['official-artwork'].front_default,
-                prix: parseFloat((Math.random() * 100).toFixed(2))
-              };
-
-            } catch (error) {
-              console.error(`Erreur lors du chargement du Pokémon ${id}:`, error);
-            }
-          })
-        );
-
-        this.chargement = false;
-      } catch (error) {
-        this.erreur = 'Erreur lors du chargement des Pokémon';
-        this.chargement = false;
-        console.error('Erreur:', error);
-      }
-    },
-    gererAjoutPanier(element) {
-      console.log('Ajouté au panier:', element)
-    },
-    filtrerParType(type) {
-      this.typeSelectionne = type
-      document.querySelector('aside').scrollIntoView({ behavior: 'smooth' })
-    }
   },
-  created() {
-    this.recupererPokemons()
-  }
+  // data() {
+  //   return {
+  //     pokemonsParId: {},
+  //     typeSelectionne: '',
+  //     prixMaximum: 100,
+  //     chargement: true,
+  //     erreur: null,
+  //     typeTranslations: {
+  //       normal: 'Normal',
+  //       fire: 'Feu',
+  //       water: 'Eau',
+  //       grass: 'Plante',
+  //       electric: 'Électrik',
+  //       ice: 'Glace',
+  //       fighting: 'Combat',
+  //       poison: 'Poison',
+  //       ground: 'Sol',
+  //       flying: 'Vol',
+  //       psychic: 'Psy',
+  //       bug: 'Insecte',
+  //       rock: 'Roche',
+  //       ghost: 'Spectre',
+  //       dragon: 'Dragon',
+  //       dark: 'Ténèbres',
+  //       steel: 'Acier',
+  //       fairy: 'Fée'
+  //     },
+  //     typesDisponibles: [
+  //       { value: 'normal', label: 'Normal' },
+  //       { value: 'fire', label: 'Feu' },
+  //       { value: 'water', label: 'Eau' },
+  //       { value: 'grass', label: 'Plante' },
+  //       { value: 'electric', label: 'Électrik' },
+  //       { value: 'ice', label: 'Glace' },
+  //       { value: 'fighting', label: 'Combat' },
+  //       { value: 'poison', label: 'Poison' },
+  //       { value: 'ground', label: 'Sol' },
+  //       { value: 'flying', label: 'Vol' },
+  //       { value: 'psychic', label: 'Psy' },
+  //       { value: 'bug', label: 'Insecte' },
+  //       { value: 'rock', label: 'Roche' },
+  //       { value: 'ghost', label: 'Spectre' },
+  //       { value: 'dragon', label: 'Dragon' },
+  //       { value: 'dark', label: 'Ténèbres' },
+  //       { value: 'steel', label: 'Acier' },
+  //       { value: 'fairy', label: 'Fée' }
+  //     ]
+  //   }
+  // },
+  // computed: {
+  //   pokemonsFiltres() {
+  //     return Object.values(this.pokemonsParId)
+  //       .filter(pokemon => {
+  //         const correspondType = !this.typeSelectionne || 
+  //           pokemon.types.some(type => type.original === this.typeSelectionne)
+  //         const correspondPrix = pokemon.prix <= this.prixMaximum
+  //         return correspondType && correspondPrix
+  //       })
+  //       .sort((a, b) => a.id - b.id)
+  //   }
+  // },
+  // methods: {
+  //   obtenirCouleurType(type) {
+  //     const couleurs = {
+  //       normal: 'bg-gray-400',
+  //       fire: 'bg-red-500',
+  //       water: 'bg-blue-500',
+  //       grass: 'bg-green-500',
+  //       electric: 'bg-yellow-500',
+  //       ice: 'bg-blue-300',
+  //       fighting: 'bg-red-700',
+  //       poison: 'bg-purple-500',
+  //       ground: 'bg-yellow-600',
+  //       flying: 'bg-blue-400',
+  //       psychic: 'bg-pink-500',
+  //       bug: 'bg-green-600',
+  //       rock: 'bg-yellow-800',
+  //       ghost: 'bg-purple-700',
+  //       dragon: 'bg-purple-600',
+  //       dark: 'bg-gray-700',
+  //       steel: 'bg-gray-500',
+  //       fairy: 'bg-pink-400'
+  //     }
+  //     return couleurs[type] || 'bg-gray-500'
+  //   },
+  //   async recupererPokemons() {
+  //     try {
+  //       const pokemonIds = [
+  //         393, 394, 395,    // Tiplouf -> Prinplouf -> Pingoléon
+  //         92, 93, 94,       // Fantominus -> Spectrum -> Ectoplasma
+  //         25,               // Pikachu
+  //         150,              // Mewtwo
+  //         63, 64, 65,       // Abra -> Kadabra -> Alakazam
+  //         174, 39, 40,      // Toudoudou -> Rondoudou -> Grodoudou
+  //         58, 59,           // Caninos -> Arkanin
+  //         1, 2, 3,         // Bulbizarre -> Herbizarre -> Florizarre
+  //         532, 533, 534,    // Charpenti -> Ouvrifier -> Bétochef
+  //         129, 130         // Magikarp -> Léviator
+  //       ];
+
+  //       await Promise.all(
+  //         pokemonIds.map(async (id) => {
+  //           try {
+  //             const [pokemonResponse, speciesResponse] = await Promise.all([
+  //               fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
+  //               fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+  //             ]);
+
+  //             const [details, speciesData] = await Promise.all([
+  //               pokemonResponse.json(),
+  //               speciesResponse.json()
+  //             ]);
+
+  //             this.pokemonsParId[id] = {
+  //               id: details.id,
+  //               nom: speciesData.names.find(
+  //                 name => name.language.name === 'fr'
+  //               )?.name || details.name,
+  //               types: details.types.map(type => ({
+  //                 original: type.type.name,
+  //                 translated: this.typeTranslations[type.type.name] || type.type.name
+  //               })),
+  //               description: speciesData.flavor_text_entries.find(
+  //                 entry => entry.language.name === 'fr'
+  //               )?.flavor_text.replace(/\n|\f/g, ' ') || 'Description non disponible',
+  //               image: details.sprites.other['official-artwork'].front_default,
+  //               prix: parseFloat((Math.random() * 100).toFixed(2))
+  //             };
+
+  //           } catch (error) {
+  //             console.error(`Erreur lors du chargement du Pokémon ${id}:`, error);
+  //           }
+  //         })
+  //       );
+
+  //       this.chargement = false;
+  //     } catch (error) {
+  //       this.erreur = 'Erreur lors du chargement des Pokémon';
+  //       this.chargement = false;
+  //       console.error('Erreur:', error);
+  //     }
+  //   },
+  //   gererAjoutPanier(element) {
+  //     console.log('Ajouté au panier:', element)
+  //   },
+  //   filtrerParType(type) {
+  //     this.typeSelectionne = type
+  //     document.querySelector('aside').scrollIntoView({ behavior: 'smooth' })
+  //   }
+  // },
+  // created() {
+  //   this.recupererPokemons()
+  // }
 }
 </script>
 

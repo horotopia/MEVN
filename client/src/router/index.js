@@ -15,6 +15,7 @@ import Cgv from '../pages/Cgv.vue';
 import Politique from '../pages/Politique.vue';
 import Panier from '../pages/user/Panier.vue';
 import Contact from '../pages/user/contact.vue';
+import ProfileCard from '../components/Dashboard/ProfileCard.vue'
 import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
@@ -48,12 +49,13 @@ const routes = [
   {
     path: '/',
     component: AdminLayout,
+    meta: { requiresAuth: true },
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+      { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
       { path: 'dashboard/clients', name: 'Clients', component: Clients },
     ]
-    // meta: { requiresAuth: true }
   },
 ];
 
@@ -64,13 +66,15 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('jwtToken');
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    const token = localStorage.getItem('jwtToken');
-        if (!token) {
+    if (!token) {
       next({ name: 'Login' });
     } else {
       next();
     }
+  } else if ((to.name === 'Login' || to.name === 'Register') && token) {
+    next({ name: 'Dashboard' });
   } else {
     next();
   }
