@@ -91,7 +91,7 @@
       
     <script>
     export default {
-      name: 'PokemonCard',
+      name: 'PokeballCard',
       props: {
         id: { type: Number, required: true },
         nom: { type: String, required: true },

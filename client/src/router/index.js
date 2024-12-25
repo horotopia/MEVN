@@ -8,7 +8,6 @@ import Register from '../pages/auth/Register.vue';
 import Dashboard from '../pages/admin/Dashboard.vue';
 import PokemonDetails from '../pages/user/PokemonDetails.vue';
 import Pokemon from '../pages/user/Pokemon.vue';
-import Pokeball from '../pages/user/Pokeball.vue';
 import Accessoires from '../pages/user/Accessoires.vue';
 import MentionsLegales from '../pages/MentionsLegales.vue';
 import Cgv from '../pages/Cgv.vue';
@@ -28,7 +27,6 @@ const routes = [
       { path: '', name: 'Home', component: Home },
       { path: 'pokemon', name: 'Pokemon', component: Pokemon },
       { path: 'pokemon/:id', name: 'PokemonDetails', component: PokemonDetails, props: true },
-      { path: 'pokeball', name: 'Pokeball', component: Pokeball },
       { path: 'accessoires', name: 'Accessoires', component: Accessoires },
       { path: 'mentions-legales', name: 'MentionsLégales', component: MentionsLegales },
       { path: 'conditions-generales-de-vente', name: 'ConditionsGeneraleDeVente', component: Cgv },

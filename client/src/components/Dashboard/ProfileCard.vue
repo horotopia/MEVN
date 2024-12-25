@@ -48,7 +48,7 @@ const updatePhoto = () => {
         class="rounded-sm border border-stroke bg-white shadow-default"
       >
         <div class="border-b border-stroke py-4 px-7">
-          <h3 class="font-medium text-black">Personal Information</h3>
+          <h3 class="font-medium text-black">Informations personelles</h3>
         </div>
         <div class="p-7">
           <form @submit.prevent="handleSubmit">
@@ -58,7 +58,7 @@ const updatePhoto = () => {
                 <label
                   class="mb-3 block text-sm font-medium text-black"
                   for="fullName"
-                  >Full Name</label
+                  >Nom Prénom</label
                 >
                 <div class="relative">
                   <span class="absolute left-4.5 top-4">
@@ -92,7 +92,7 @@ const updatePhoto = () => {
                     type="text"
                     name="fullName"
                     id="fullName"
-                    placeholder="Devid Jhon"
+                    placeholder="Arthur serenne"
                   />
                 </div>
               </div>
@@ -102,7 +102,7 @@ const updatePhoto = () => {
                 <label
                   class="mb-3 block text-sm font-medium text-black "
                   for="phoneNumber"
-                  >Phone Number</label
+                  >Numéro de téléphone</label
                 >
                 <input
                   v-model="formData.phoneNumber"
@@ -110,7 +110,7 @@ const updatePhoto = () => {
                   type="text"
                   name="phoneNumber"
                   id="phoneNumber"
-                  placeholder="+990 3343 7865"
+                  placeholder="01 02 03 04 05"
                 />
               </div>
             </div>
@@ -120,7 +120,7 @@ const updatePhoto = () => {
               <label
                 class="mb-3 block text-sm font-medium text-black"
                 for="emailAddress"
-                >Email Address</label
+                >Email</label
               >
               <div class="relative">
                 <span class="absolute left-4.5 top-4">
@@ -154,32 +154,15 @@ const updatePhoto = () => {
                   type="email"
                   name="emailAddress"
                   id="emailAddress"
-                  placeholder="devidjond45@gmail.com"
+                  placeholder="arthur.serenne@gmail.com"
                 />
               </div>
-            </div>
-
-            <!-- Username Section -->
-            <div class="mb-5.5">
-              <label
-                class="mb-3 block text-sm font-medium text-black "
-                for="Username"
-                >Username</label
-              >
-              <input
-                v-model="formData.username"
-                class="w-full rounded border border-stroke bg-gray py-3 px-4.5 font-normal text-black focus:border-primary focus-visible:outline-none"
-                type="text"
-                name="Username"
-                id="Username"
-                placeholder="devidjhon24"
-              />
             </div>
 
             <!-- Bio Section -->
             <div class="mb-5.5">
               <label class="mb-3 block text-sm font-medium text-black" for="bio"
-                >BIO</label
+                >Description</label
               >
               <div class="relative">
                 <span class="absolute left-4.5 top-4">
@@ -230,13 +213,13 @@ const updatePhoto = () => {
                 type="button"
                 @click="handleCancel"
               >
-                Cancel
+                Annuler
               </button>
               <button
                 class="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
                 type="submit"
               >
-                Save
+                Sauvegarder
               </button>
             </div>
           </form>
@@ -250,7 +233,7 @@ const updatePhoto = () => {
         class="rounded-sm border border-stroke bg-white shadow-default"
       >
         <div class="border-b border-stroke py-4 px-7 ">
-          <h3 class="font-medium text-black ">Your Photo</h3>
+          <h3 class="font-medium text-black ">Votre Photo</h3>
         </div>
         <div class="p-7">
           <form @submit.prevent="handlePhotoSubmit">
@@ -260,13 +243,13 @@ const updatePhoto = () => {
                 <img :src="userPhoto" alt="User" />
               </div>
               <div>
-                <span class="mb-1.5 font-medium text-black">Edit your photo</span>
+                <span class="mb-1.5 font-medium text-black">Modifier votre photo</span>
                 <span class="flex gap-2.5">
                   <button class="text-sm font-medium hover:text-primary" @click="deletePhoto">
-                    Delete
+                    Supprimer
                   </button>
                   <button class="text-sm font-medium hover:text-primary" @click="updatePhoto">
-                    Update
+                    Mettre à jour
                   </button>
                 </span>
               </div>
@@ -315,9 +298,9 @@ const updatePhoto = () => {
                   </svg>
                 </span>
                 <p class="text-sm font-medium">
-                  <span class="text-primary">Click to upload</span> or drag and drop
+                  <span class="text-primary">Clique pour ajouter</span> ou glisser une photo
                 </p>
-                <p class="mt-1.5 text-sm font-medium">SVG, PNG, JPG or GIF</p>
+                <p class="mt-1.5 text-sm font-medium">SVG, PNG, JPG ou GIF</p>
                 <p class="text-sm font-medium">(max, 800 X 800px)</p>
               </div>
             </div>
@@ -329,13 +312,13 @@ const updatePhoto = () => {
                 type="button"
                 @click="handlePhotoCancel"
               >
-                Cancel
+                Annuler
               </button>
               <button
                 class="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
                 type="submit"
               >
-                Save
+                Sauvegarder
               </button>
             </div>
           </form>
