@@ -171,7 +171,7 @@ export const productSchema = new Schema<Product>(
   },
   {
     timestamps: true,
-    collection: "products",
+    collection: "product",
     versionKey: false,
   }
 );
