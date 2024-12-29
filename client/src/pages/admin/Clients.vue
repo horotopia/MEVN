@@ -108,12 +108,10 @@ async function fetchUsers() {
 
 async function updateUser(item) {
     if (!item._id) {
-        console.error('ID manquant');
         return;
     }
 
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     delete item.createdAt;
     delete item.updatedAt;
@@ -139,7 +137,6 @@ async function updateUser(item) {
         }
 
         const data = await response.json();
-        console.log('Utilisateur mis à jour:', data);
 
         return data;
     } catch (error) {
@@ -153,7 +150,6 @@ async function deleteUser(item) {
     }
 
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
@@ -217,7 +213,6 @@ function closeModal() {
 }
 
 function handleSubmit(updatedItem) {
-    console.log('Updated item:', updatedItem);
     const index = tableData.value.findIndex(i => i._id === updatedItem._id);
 
     if (index !== -1) {
