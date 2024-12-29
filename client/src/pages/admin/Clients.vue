@@ -3,7 +3,7 @@
         :header="{ title: 'Liste des clients' }"
         :fields="fields"
         :data="tableData"
-        :itemsPerPage="1"
+        :itemsPerPage="5"
     >
         <template #action="{ item }">
             <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
 
@@ -181,7 +181,9 @@ async function deleteUser(item) {
     }
 }
 
-fetchUsers();
+onMounted(() => {
+    fetchUsers();
+});
 
 function editItem(item) {
     delete item.password;

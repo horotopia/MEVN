@@ -17,7 +17,7 @@ export class AddressController {
    *         application/json:
    *           schema:
    *             type: object
-   *             $ref: '#/components/schemas/Addresses'
+   *             $ref: '#/components/schemas/Address'
    *     responses:
    *       201:
    *         description: Address created successfully
@@ -25,7 +25,7 @@ export class AddressController {
    *           application/json:
    *             schema:
    *               type: object
-   *               $ref: '#/components/schemas/Addresses'
+   *               $ref: '#/components/schemas/Address'
    *       400:
    *         description: Bad request
    *       401:
@@ -95,7 +95,7 @@ export class AddressController {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/Addresses'
+   *               $ref: '#/components/schemas/Address'
    *       400:
    *         description: Bad request
    *       401:
@@ -150,14 +150,14 @@ export class AddressController {
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: '#/components/schemas/Addresses'
+   *             $ref: '#/components/schemas/Address'
    *     responses:
    *       200:
    *         description: Address updated successfully
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/Addresses'
+   *               $ref: '#/components/schemas/Address'
    *       400:
    *         description: Bad request
    *       401:
