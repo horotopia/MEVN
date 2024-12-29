@@ -42,7 +42,15 @@ const routes = [
     component: AuthLayout,
     children: [
       { path: 'login', name: 'Login', component: Login },
-      { path: 'register', name: 'Register', component: Register }
+      { path: 'register', name: 'Register', component: Register },
+      {
+        path: 'logout',
+        name: 'Logout',
+        beforeEnter(to, from, next) {
+          localStorage.removeItem('jwtToken');
+          next({ name: 'Home' });
+        }
+      }
     ]
   },
   {

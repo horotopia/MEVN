@@ -76,7 +76,11 @@ onClickOutside(target, () => {
           </router-link>
         </li>
       </ul>
-      <button
+      <!-- <button
+        class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+      > -->
+      <router-link
+        to="/logout"
         class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
       >
         <svg
@@ -97,7 +101,7 @@ onClickOutside(target, () => {
           />
         </svg>
         Se deconnecter
-      </button>
+      </router-link>
     </div>
     <!-- Dropdown End -->
   </div>
