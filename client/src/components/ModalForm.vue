@@ -1,7 +1,7 @@
 <template>
     <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-100 z-9999">
         <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 class="text-xl font-bold mb-4">{{ title }}</h2>
+            <h2 class="text-xl font-bold mb-4">{{ text.title }}</h2>
             <form @submit.prevent="handleSubmit">
                 <div v-for="(value, key) in formData" :key="key" class="mb-4">
                     <label :for="key" class="block text-sm font-medium text-gray-700">{{ key }}</label>
@@ -26,8 +26,21 @@
                     </select>
                 </div>
                 <div class="flex justify-end mt-4">
-                    <button type="button" class="btn btn-secondary mr-2" @click="close">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button
+                        type="submit"
+                        class="mr-2 p-1.5 rounded-md"
+                        :style="{ backgroundColor: text.submit?.color || '#4CAF50', color: text.submit?.textColor || '#fff' }"
+                    >
+                        {{ text.submit?.text || text.submit }}
+                    </button>
+                    <button
+                        type="button"
+                        class="p-1.5 rounded-md"
+                        :style="{ backgroundColor: text.close?.color || '#F44336', color: text.close?.textColor || '#fff' }"
+                        @click="close"
+                    >
+                        {{ text.close?.text || text.close }}
+                    </button>
                 </div>
             </form>
         </div>
@@ -41,13 +54,24 @@ export default {
             type: Boolean,
             required: true
         },
-        title: {
-            type: String,
-            required: true
+        text: {
+            type: Object,
+            required: false,
+            default: () => ({
+                title: 'Ajouter un élément',
+                submit: {
+                    text: 'Ajouter',
+                    color: '#333'
+                },
+                close: {
+                    text: 'Fermer',
+                    color: '#333'
+                }
+            })
         },
         item: {
             type: Object,
-            required: true
+            required: false
         },
         disableFields: {
             type: Array,
