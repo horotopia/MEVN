@@ -165,7 +165,6 @@ export class UserController {
         res.status(400);
         throw new Error("Missing id parameter or body");
       }
-      const body = req.body;
       const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.updateUser(
         req.params.id,

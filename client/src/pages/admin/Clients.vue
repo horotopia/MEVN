@@ -1,8 +1,173 @@
-<script setup>
-import Tableau from '../../components/Tableau.vue';
-
-</script>
-
 <template>
-  <Tableau />
+    <Table
+        :header="header"
+        :fields="fields"
+        :data="tableData"
+        :itemsPerPage="1"
+    >
+        <template #action="{ item }">
+            <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
+            <button class="btn btn-danger" @click="deleteItem(item)">Delete</button>
+        </template>
+    </Table>
+    <ModalForm
+        v-if="EditItem"
+        :visible="isModalEdit"
+        :title="'Edit Client'"
+        :item="EditItem"
+        :disableFields="disableKey"
+        :fieldTypes="{ email: 'email', role: 'select' }"
+        :selectOptions="{ role: [{ value: 'ROLE_USER', text: 'User' }, { value: 'ROLE_ADMIN', text: 'Admin' }] }"
+        @close="closeModal"
+        @submit="handleSubmit"
+    />
+    <ModalForm
+        v-if="DeleteItem"
+        :visible="isModalDelete"
+        :title="'Delete Client'"
+
+        @close="closeModal"
+        @submit="handleSubmit"
+    />
 </template>
+
+<script setup>
+import { ref } from 'vue';
+import Table from '../../components/Table.vue';
+import ModalForm from '../../components/ModalForm.vue';
+
+const urlApi = 'http://localhost:5000/api/users';
+
+const header = ref({
+    title: 'Liste des clients'
+});
+const fields = ref([]);
+const tableData = ref([]);
+const disableKey = ref([
+    '_id', 'password', 'createdAt', 'updatedAt'
+]);
+
+const isModalEdit = ref(false);
+const isModalDelete = ref(false);
+const EditItem = ref(null);
+const DeleteItem = ref(null);
+
+async function fetchUsers() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    console.log('JWT Token:', jwtToken);
+
+    try {
+        const response = await fetch(urlApi, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la récupération des utilisateurs');
+        }
+
+        const data = await response.json();
+
+        for (const key in data[0]) {
+            if (!disableKey.value.includes(key)) {
+                fields.value.push({ key, label: key.charAt(0).toUpperCase() + key.slice(1) });
+            }
+        }
+
+        // action column
+
+        fields.value.push({ key: 'action', label: 'Action' });
+
+        for (const item of data) {
+            tableData.value.push(item);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des utilisateurs', error);
+    }
+}
+
+async function updateUser(item) {
+    if (!item._id) {
+        console.error('ID manquant');
+        return;
+    }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    console.log('JWT Token:', jwtToken);
+
+    delete item.createdAt;
+    delete item.updatedAt;
+    delete item.password;
+
+    try {
+        const response = await fetch(`${urlApi}/${item._id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+            body: JSON.stringify(item),
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la mise à jour de l\'utilisateur');
+        }
+
+        const data = await response.json();
+        console.log('Utilisateur mis à jour:', data);
+
+        return data;
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour de l\'utilisateur', error);
+    }
+}
+
+fetchUsers();
+
+function editItem(item) {
+    delete item.password;
+    delete item.createdAt;
+    delete item.updatedAt;
+
+    EditItem.value = item;
+    isModalEdit.value = true;
+}
+
+function deleteItem(item) {
+    DeleteItem.value = item;
+    isModalDelete.value = true;
+}
+
+function closeModal() {
+    isModalEdit.value = false;
+    isModalDelete.value = false;
+    EditItem.value = null;
+    DeleteItem.value = null;
+}
+
+function handleSubmit(updatedItem) {
+    console.log('Updated item:', updatedItem);
+    const index = tableData.value.findIndex(i => i._id === updatedItem._id);
+
+    if (index !== -1) {
+        tableData.value[index] = updatedItem;
+    }
+
+    updateUser(updatedItem);
+
+    closeModal();
+}
+</script>

@@ -90,7 +90,7 @@ const validateUserId = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.params.userId || req.body.userId;
+    const userId = req.params.id || req.body.userId;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(401);
       throw new Error("Invalid ID format");
@@ -112,13 +112,15 @@ const validateRoleAdminOrUserId = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.params.userId || req.body.userId;
+    console.log(req.params)
+    const userId = req.params.id || req.body.userId;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(401);
       throw new Error("Invalid ID format");
     }
+
     const user = await getUser(req, res);
-    if (user._id !== userId || user.role !== "ROLE_ADMIN") {
+    if (user.role !== "ROLE_ADMIN") {
       res.status(403);
       throw new Error("You are not authorized to access this route");
     }

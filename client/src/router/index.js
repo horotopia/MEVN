@@ -18,6 +18,7 @@ import ProfileCard from '../components/Dashboard/ProfileCard.vue'
 import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
+import Products from '../pages/admin/Products.vue';
 
 const routes = [
   {
@@ -53,6 +54,7 @@ const routes = [
       { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
       { path: 'dashboard/clients', name: 'Clients', component: Clients },
+      { path: 'dashboard/products', name: 'Products', component: Products },
     ]
   },
 ];
@@ -61,7 +63,6 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 });
-
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('jwtToken');
@@ -77,4 +78,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
 export default router;
