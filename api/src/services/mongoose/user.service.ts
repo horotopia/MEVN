@@ -1,7 +1,9 @@
 import { Model } from "mongoose";
-import { User } from "../../models/user.interface";
+import { User } from "../../models";
 import { MongooseService } from "./mongoose.service";
 import { userSchema } from "./schema";
+
+import { AddressService } from "./address.service";
 
 export type CreateUser = Omit<User, "_id" | "name" | "createdAt" | "updatedAt">;
 export type UpdateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
@@ -58,7 +60,24 @@ export class UserService {
 
   // delete
   async deleteUser(id: string): Promise<User | null> {
-    const res = await this.model.findByIdAndDelete(id);
+    const res = await this.model.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name: "Anonyme",
+          email: `${id}@deleted.com`,
+          password: "deleted",
+        }
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    const addressService = new AddressService(this.mongooseService);
+    await addressService.anonymise(id);
+
     return res;
   }
 }
