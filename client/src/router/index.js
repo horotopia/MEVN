@@ -19,6 +19,7 @@ import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
 import Products from '../pages/admin/Products.vue';
+import Orders from '../pages/admin/Orders.vue';
 
 const routes = [
   {
@@ -63,6 +64,7 @@ const routes = [
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
       { path: 'dashboard/clients', name: 'Clients', component: Clients },
       { path: 'dashboard/products', name: 'Products', component: Products },
+      { path: 'dashboard/orders', name: 'Orders', component: Orders },
     ]
   },
 ];
