@@ -16,14 +16,6 @@ defineProps({
   role: String
 });
 
-const logout = () => {
-  // Supprimer le token de l'utilisateur
-  localStorage.removeItem('jwtToken');
-
-  // Redirection vers la page de connexion
-  router.push({ name: 'Login' });
-};
-
 const menuGroups = ref([
   {
     menuItems: [

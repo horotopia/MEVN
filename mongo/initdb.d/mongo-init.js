@@ -14,6 +14,7 @@ db.createUser({
 db.createCollection("users");
 db.users.insertMany([
   {
+    _id: ObjectId("60f4b6e1e9f0f4001f6b3b4f"),
     name: "LeGrizzly",
     email: "LeGrizzly@hotmail.fr",
     password: "$2a$10$HdhL0Nwy2AQrAwyVxQ9HMuhpz5cgczdhrRPY4ePCh.gseXHniOYvS", // password: "LeGrizzly@hotmail.fr"
@@ -22,6 +23,7 @@ db.users.insertMany([
     updatedAt: new Date(),
   },
   {
+    _id: ObjectId("60f4b6e1e9f0f4001f6b3b50"),
     name: "John Doe",
     email: "fake@mail.com",
     password: null,
@@ -30,6 +32,7 @@ db.users.insertMany([
     updatedAt: new Date(),
   },
   {
+    _id: ObjectId("60f4b6e1e9f0f4001f6b3b51"),
     name: "Jane Doe",
     email: "fake2@mail.com",
     password: null,
@@ -38,6 +41,7 @@ db.users.insertMany([
     updatedAt: new Date(),
   },
   {
+    _id: ObjectId("60f4b6e1e9f0f4001f6b3b52"),
     name: "Alice Smith",
     email: "alice@mail.com",
     password: null,
@@ -46,6 +50,7 @@ db.users.insertMany([
     updatedAt: new Date(),
   },
   {
+    _id: ObjectId("60f4b6e1e9f0f4001f6b3b53"),
     name: "Bob Johnson",
     email: "bob@mail.com",
     password: null,
@@ -87,7 +92,7 @@ db.product.insertMany([
     weight: 8500,
     height: 60,
     age: 3,
-    price: 45000,
+    price: 45001,
     category: "pokémon",
     stock: 10,
   },
@@ -113,7 +118,7 @@ db.product.insertMany([
     weight: 1800,
     height: 30,
     age: 2,
-    price: 15000,
+    price: 15001,
     category: "pokémon",
     stock: 15,
   },
@@ -126,7 +131,7 @@ db.product.insertMany([
     weight: 990,
     height: 60,
     age: 3,
-    price: 35000,
+    price: 35001,
     category: "pokémon",
     stock: 6,
   },
@@ -152,7 +157,7 @@ db.product.insertMany([
     weight: 750,
     height: 60,
     age: 3,
-    price: 25000,
+    price: 25001,
     category: "pokémon",
     stock: 18,
   },
@@ -202,7 +207,7 @@ db.address.insertMany([
   {
     street: "1 rue de la paix",
     city: "Paris",
-    postalCode: "75000",
+    postalCode: "75001",
     country: "France",
     userId: ObjectId("60f4b6e1e9f0f4001f6b3b4f"),
   },
@@ -235,3 +240,4 @@ db.address.insertMany([
     userId: ObjectId("60f4b6e1e9f0f4001f6b3b53"),
   },
 ]);
+
