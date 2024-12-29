@@ -1,9 +1,9 @@
 <template>
     <Table
-        :header="header"
+        :header="{ title: 'Liste des produits' }"
         :fields="fields"
         :data="tableData"
-        :itemsPerPage="10"
+        :itemsPerPage="5"
     >
         <template #action="{ item }">
             <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
@@ -11,51 +11,66 @@
         </template>
     </Table>
     <ModalForm
-        v-if="EditItem"
-        :visible="isModalEdit"
-        :title="'Edit Client'"
-        :item="EditItem"
+        v-if="modalEdit.item"
+        :visible="modalEdit.isVisible"
+        :text="{ title: 'Modifier un client', submit: 'Modifier', close: 'Fermer' }"
+        :item="modalEdit.item"
         :disableFields="disableKey"
-        :fieldTypes="{}"
-        :selectOptions="{}"
+        :fieldTypes="{ email: 'email', role: 'select' }"
+        :selectOptions="{ role: [{ value: 'ROLE_USER', text: 'User' }, { value: 'ROLE_ADMIN', text: 'Admin' }] }"
         @close="closeModal"
         @submit="handleSubmit"
     />
     <ModalForm
-        v-if="DeleteItem"
-        :visible="isModalDelete"
-        :title="'Delete Client'"
-
+        v-if="modalDelete.item"
+        :visible="modalDelete.isVisible"
+        :text="{
+            title: `Etes-vous sûr de vouloir supprimer '${modalDelete.item?.name}' ?`,
+            submit: {
+                text: 'Supprimer', color: 'orange'
+            },
+            close: {
+                text: 'Annuler', color: 'red'
+            }
+        }"
+        :item="{
+            id: modalDelete.item?._id,
+            email: modalDelete.item?.email,
+        }"
+        :disableFields="['id', 'email']"
         @close="closeModal"
-        @submit="handleSubmit"
+        @submit="handleDelete"
     />
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
 
-const header = ref({
-    title: 'Liste des produits'
-});
+const urlApi = 'http://localhost:5000/api/product';
+
 const fields = ref([]);
 const tableData = ref([]);
 const disableKey = ref([
     '_id', 'createdAt', 'updatedAt'
 ]);
 
-const isModalEdit = ref(false);
-const isModalDelete = ref(false);
-const EditItem = ref(null);
-const DeleteItem = ref(null);
+const modalEdit = ref({
+    isVisible: false,
+    item: null
+})
 
-async function fetchUsers() {
+const modalDelete = ref({
+    isVisible: false,
+    item: null
+})
+
+async function fetchProducts() {
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     try {
-        const response = await fetch('http://localhost:5000/api/product/', {
+        const response = await fetch(urlApi, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -69,7 +84,7 @@ async function fetchUsers() {
                 console.error('Jeton expiré ou non valide');
                 return;
             }
-            throw new Error('Erreur lors de la récupération des utilisateurs');
+            throw new Error('Erreur lors de la récupération des produits');
         }
 
         const data = await response.json();
@@ -90,35 +105,129 @@ async function fetchUsers() {
     }
 }
 
-fetchUsers();
+async function updateProduct(item) {
+    if (!item._id) {
+        return;
+    }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    delete item.createdAt;
+    delete item.updatedAt;
+    delete item.password;
+
+    try {
+        const response = await fetch(`${urlApi}/${item._id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+            body: JSON.stringify(item),
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la mise à jour du produit');
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour du produit', error);
+    }
+}
+
+async function deleteProduct(item) {
+    if (!item?._id) {
+        return;
+    }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    try {
+        const response = await fetch(`${urlApi}/${item._id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la suppression du produit', error);
+        }
+
+        const data = await response.json();
+
+        const index = tableData.value.findIndex(i => i._id === item._id);
+
+        tableData.value[index] = data;
+
+        return item;
+    } catch (error) {
+        console.error('Erreur lors de la suppression du produit', error);
+    }
+}
+
+onMounted(() => {
+    fetchProducts();
+});
 
 function editItem(item) {
+    delete item.password;
     delete item.createdAt;
     delete item.updatedAt;
 
-    EditItem.value = item;
-    isModalEdit.value = true;
+    modalEdit.value = {
+        isVisible: true,
+        item: item
+    }
 }
 
 function deleteItem(item) {
-    DeleteItem.value = item;
-    isModalDelete.value = true;
+    modalDelete.value = {
+        isVisible: true,
+        item: item
+    }
 }
 
 function closeModal() {
-    isModalEdit.value = false;
-    isModalDelete.value = false;
-    EditItem.value = null;
-    DeleteItem.value = null;
+    modalEdit.value = {
+        isVisible: false,
+        item: null
+    }
+    modalDelete.value = {
+        isVisible: false,
+        item: null
+    }
 }
 
 function handleSubmit(updatedItem) {
-    console.log('Updated item:', updatedItem);
     const index = tableData.value.findIndex(i => i._id === updatedItem._id);
 
     if (index !== -1) {
         tableData.value[index] = updatedItem;
     }
+
+    updateProduct(updatedItem);
+
+    closeModal();
+}
+
+function handleDelete() {
+    deleteProduct(modalDelete.value.item);
+
     closeModal();
 }
 </script>
