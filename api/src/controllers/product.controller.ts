@@ -23,7 +23,7 @@ export class ProductController {
    *           example:
    *             name: Pikachu
    *             description: Pokémon électrique
-   *             type: électricité
+   *             type: électrique
    *             evolutionLevel: 2
    *             evolutionReference: Pichu
    *             weight: 6000
@@ -391,7 +391,6 @@ export class ProductController {
       "/",
       authenticateToken,
       validateRoleAdmin,
-      validateObjectId,
       this.createProduct.bind(this)
     );
     router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
