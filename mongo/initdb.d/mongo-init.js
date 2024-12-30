@@ -24,7 +24,7 @@ db.users.insertMany([
   {
     name: "Horotopia",
     email: "guirado.leo@gmail.com",
-    password: "$2y$10$OuPhXwunVvoomiBGRmJbze37.u/yaJqDz1vhrdunMlSDaXaDn9yuO", // password: "LeGrizzly@hotmail.fr"
+    password: "$2y$10$soV112Dkq1EMrQV6Y5dA5Ow7.4C1Xajpyi.HKY5tX/GxiQEwHxCEW", // password: "guirado.leo@gmail.com"
     role: "ROLE_USER",
     createdAt: new Date(),
     updatedAt: new Date(),
