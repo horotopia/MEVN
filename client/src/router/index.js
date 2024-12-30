@@ -18,7 +18,7 @@ import ProfileCard from '../components/Dashboard/ProfileCard.vue'
 import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
-
+import Loader from '../pages/user/Loader.vue'
 const routes = [
   {
     path: '/',
@@ -28,6 +28,7 @@ const routes = [
       { path: 'pokemon', name: 'Pokemon', component: Pokemon },
       { path: 'pokemon/:id', name: 'PokemonDetails', component: PokemonDetails, props: true },
       { path: 'accessoires', name: 'Accessoires', component: Accessoires },
+      { path: 'Loader', name: 'Loader', component: Loader },
       { path: 'mentions-legales', name: 'MentionsLégales', component: MentionsLegales },
       { path: 'conditions-generales-de-vente', name: 'ConditionsGeneraleDeVente', component: Cgv },
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },

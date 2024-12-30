@@ -30,7 +30,7 @@ export class AuthController {
    *                 description: Mot de passe de l'utilisateur
    *             example:
    *               email: johndoe@example.com
-   *               password: mypassword
+   *               password: myPassword123
    *     responses:
    *       201:
    *         description: User registered successfully
@@ -42,6 +42,9 @@ export class AuthController {
    *                 token:
    *                   type: string
    *                   description: JWT token de l'utilisateur
+   *                 email:
+   *                   type: string
+   *                   description: Email de l'utilisateur
    *       400:
    *         description: Bad request
    *       409:
@@ -122,7 +125,7 @@ export class AuthController {
    *                 description: Mot de passe de l'utilisateur
    *             example:
    *               email: johndoe@example.com
-   *               password: mypassword
+   *               password: myPassword123
    *     responses:
    *       200:
    *         description: User logged in successfully and Session created

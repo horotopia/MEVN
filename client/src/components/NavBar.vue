@@ -63,6 +63,13 @@ export default {
       >
         Accessoires
       </router-link>
+
+      <router-link 
+        to="/loader" 
+        class="bg-[#FF5353] px-8 py-2 text-white primary-font hover:opacity-90 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke"
+      >
+        Loader
+      </router-link>
       
       <div class="flex-grow"></div>
       

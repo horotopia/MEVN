@@ -5,58 +5,63 @@ import { validateRoleAdmin } from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose";
 
 export class PicturesController {
-  /**
-   * @swagger
-   * /api/pictures:
-   *   post:
-   *     summary: Créer une picture
-   *     tags: [Pictures]
-   *     description: Créer une picture dans le système.
-   *     operationId: uploadFile
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               userId:
-   *                 type: string
-   *                 description: L'identifiant unique de l'utilisateur
-   *               name:
-   *                 type: string
-   *                 description: Le nom de la picture
-   *               description:
-   *                 type: string
-   *                 description: La description de la picture
-   *             required:
-   *               - userId
-   *               - name
-   *     responses:
-   *       201:
-   *         description: Créé avec succès
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 id:
-   *                   type: string
-   *                   description: L'ID de la picture créée
-   *                 name:
-   *                   type: string
-   *                   description: Le nom de la picture
-   *       400:
-   *         description: Requête invalide
-   *       401:
-   *         description: Non autorisé
-   *       403:
-   *         description: Accès refusé
-   *       409:
-   *         description: Conflit, la picture existe déjà
-   *       500:
-   *         description: Erreur interne du serveur
-   */
+/**
+ * @swagger
+ * /api/pictures/{userId}/{name}:
+ *   post:
+ *     summary: Créer une picture
+ *     tags: [Pictures]
+ *     description: Permet de créer une picture dans le système.
+ *     operationId: uploadFile
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         description: L'identifiant unique de l'utilisateur.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: name
+ *         in: path
+ *         description: Le nom de la picture.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Picture créée avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: L'ID de la picture créée.
+ *                 name:
+ *                   type: string
+ *                   description: Le nom de la picture.
+ *       400:
+ *         description: Requête invalide.
+ *       401:
+ *         description: Non autorisé.
+ *       403:
+ *         description: Accès refusé.
+ *       409:
+ *         description: La picture existe déjà.
+ *       500:
+ *         description: Erreur interne du serveur.
+ */
+
   async createPicture(req: Request, res: Response, next: NextFunction) {
     try {
       if (
