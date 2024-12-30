@@ -1,4 +1,5 @@
 <template>
+  <PokeballLoader :isLoading="loading" ></PokeballLoader>
   <div class="min-h-screen flex bg-gray-100">
     <aside class="w-72 p-6 bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
       <h2 class="text-2xl font-extrabold uppercase tracking-wide mb-8 text-gray-800">
@@ -113,12 +114,14 @@
 </template>
 
 <script>
+import PokeballLoader from '@/components/pokeballLoader.vue';
 import PokemonCard from '../../components/PokemonCard.vue'
 
 export default {
   name: 'PokemonPage',
   components: {
-    PokemonCard
+    PokemonCard,
+    PokeballLoader
   },
   data() {
     return {

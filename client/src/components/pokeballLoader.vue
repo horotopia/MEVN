@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="isLoading"
-      class="absolute inset-0 z-10 flex items-center justify-center bg-white bg-opacity-75"
+      class="fixed  inset-0 z-10 flex items-center justify-center bg-white bg-opacity-75"
     >
       <div class="relative w-24 h-24 rounded-full border-4 border-black overflow-hidden animate-spin">
         <div class="absolute inset-0 bg-red-500 h-1/2"></div>
