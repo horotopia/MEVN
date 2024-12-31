@@ -155,7 +155,7 @@ export class AuthController {
       );
       if (!passwordMatch) {
         res.status(401);
-        throw new Error("Invalid credentials");
+        throw new Error("Invalid credentials 2");
       }
       const session = await mongooseService.sessionService.createSession({
         user: user,
