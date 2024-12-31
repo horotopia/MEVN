@@ -63,7 +63,7 @@ export const addressSchema = new Schema<Address>(
   },
   {
     timestamps: true,
-    collection: "addresses",
+    collection: "address",
     versionKey: false,
   }
 );

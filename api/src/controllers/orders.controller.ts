@@ -13,7 +13,7 @@ export class OrdersController {
   // créer un order
   /**
    * @swagger
-   * /orders:
+   * /api/orders/:
    *   post:
    *     summary: Créer une commande
    *     tags: [Orders]
@@ -82,7 +82,7 @@ export class OrdersController {
   // obtenir un order
   /**
    * @swagger
-   * /orders/{id}:
+   * /api/orders/{id}:
    *   get:
    *     summary: Obtenir une commande
    *     tags: [Orders]
@@ -138,7 +138,7 @@ export class OrdersController {
   // obtenir tous les orders du user (dl données perso)
   /**
    * @swagger
-   * /orders/u/{userId}:
+   * /api/orders/u/{userId}:
    *   get:
    *     summary: Obtenir toutes les commandes d'un utilisateur
    *     tags: [Orders]
@@ -192,7 +192,7 @@ export class OrdersController {
   // obtenir tous les orders par status (partie admin)
   /**
    * @swagger
-   * /orders/s/{status}:
+   * /api/orders/s/{status}:
    *   get:
    *     summary: Obtenir toutes les commandes par statut
    *     tags: [Orders]
@@ -246,7 +246,7 @@ export class OrdersController {
   // obtenir tous les orders (partie admin)
   /**
    * @swagger
-   * /orders:
+   * /api/orders/:
    *   get:
    *     summary: Obtenir toutes les commandes
    *     tags: [Orders]
@@ -287,7 +287,7 @@ export class OrdersController {
   // modifier un order (partie admin)
   /**
    * @swagger
-   * /orders/{id}:
+   * /api/orders/{id}:
    *   put:
    *     summary: Modifier une commande
    *     tags: [Orders]
@@ -354,7 +354,7 @@ export class OrdersController {
   // supprimer un order (partie admin)
   /**
    * @swagger
-   * /orders/{id}:
+   * /api/orders/{id}:
    *   delete:
    *     summary: Supprimer une commande
    *     tags: [Orders]
@@ -403,7 +403,7 @@ export class OrdersController {
   // anonymiser tous les orders du user (suppression du compte)
   /**
    * @swagger
-   * /orders/u/{userId}:
+   * /api/orders/u/{userId}:
    *   delete:
    *     summary: Anonymiser les commandes d'un utilisateur
    *     tags: [Orders]

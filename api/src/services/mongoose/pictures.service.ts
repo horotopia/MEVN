@@ -56,4 +56,13 @@ export class PicturesService {
   async deleteAllPicturesByUserId(userId: string): Promise<void> {
     const res = await this.model.deleteMany({ userId });
   }
+
+  async findAllPicturesByProductId(productId: string): Promise<Pictures[]> {
+    const res = await this.model.find({ productId });
+    return res;
+  }
+
+  async deleteAllPicturesByProductId(productId: string): Promise<void> {
+    const res = await this.model.deleteMany({ productId });
+  }
 }

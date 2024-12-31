@@ -1,6 +1,6 @@
 <template>
     <Table
-        :header="{ title: 'Liste des produits' }"
+        :header="{ title: 'Liste des commandes' }"
         :fields="fields"
         :data="tableData"
         :itemsPerPage="5"
@@ -48,12 +48,12 @@ import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
 
-const urlApi = 'http://localhost:5000/api/product';
+const urlApi = 'http://localhost:5000/api/orders';
 
 const fields = ref([]);
 const tableData = ref([]);
 const disableKey = ref([
-    '_id', 'createdAt', 'updatedAt'
+    '_id', 'password', 'createdAt', 'updatedAt'
 ]);
 
 const modalEdit = ref({
@@ -66,8 +66,9 @@ const modalDelete = ref({
     item: null
 })
 
-async function fetchProducts() {
+async function fetchUsers() {
     const jwtToken = localStorage.getItem('jwtToken');
+    console.log('JWT Token:', jwtToken);
 
     try {
         const response = await fetch(urlApi, {
@@ -84,7 +85,7 @@ async function fetchProducts() {
                 console.error('Jeton expiré ou non valide');
                 return;
             }
-            throw new Error('Erreur lors de la récupération des produits');
+            throw new Error('Erreur lors de la récupération des utilisateurs');
         }
 
         const data = await response.json();
@@ -101,11 +102,11 @@ async function fetchProducts() {
             tableData.value.push(item);
         }
     } catch (error) {
-        console.error('Erreur lors de la récupération des produits', error);
+        console.error('Erreur lors de la récupération des utilisateurs', error);
     }
 }
 
-async function updateProduct(item) {
+async function updateUser(item) {
     if (!item._id) {
         return;
     }
@@ -132,18 +133,18 @@ async function updateProduct(item) {
                 console.error('Jeton expiré ou non valide');
                 return;
             }
-            throw new Error('Erreur lors de la mise à jour du produit');
+            throw new Error('Erreur lors de la mise à jour de l\'utilisateur');
         }
 
         const data = await response.json();
 
         return data;
     } catch (error) {
-        console.error('Erreur lors de la mise à jour du produit', error);
+        console.error('Erreur lors de la mise à jour de l\'utilisateur', error);
     }
 }
 
-async function deleteProduct(item) {
+async function deleteUser(item) {
     if (!item?._id) {
         return;
     }
@@ -165,7 +166,7 @@ async function deleteProduct(item) {
                 console.error('Jeton expiré ou non valide');
                 return;
             }
-            throw new Error('Erreur lors de la suppression du produit', error);
+            throw new Error('Erreur lors de la suppression de l\'utilisateur');
         }
 
         const data = await response.json();
@@ -176,12 +177,12 @@ async function deleteProduct(item) {
 
         return item;
     } catch (error) {
-        console.error('Erreur lors de la suppression du produit', error);
+        console.error('Erreur lors de la suppression de l\'utilisateur', error);
     }
 }
 
 onMounted(() => {
-    fetchProducts();
+    fetchUsers();
 });
 
 function editItem(item) {
@@ -220,13 +221,13 @@ function handleSubmit(updatedItem) {
         tableData.value[index] = updatedItem;
     }
 
-    updateProduct(updatedItem);
+    updateUser(updatedItem);
 
     closeModal();
 }
 
 function handleDelete() {
-    deleteProduct(modalDelete.value.item);
+    deleteUser(modalDelete.value.item);
 
     closeModal();
 }

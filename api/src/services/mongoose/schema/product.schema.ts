@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { Product } from "../../../models/product.interface";
+import { Product } from "../../../models";
 
 /**
  * @swagger
@@ -167,7 +167,7 @@ export const productSchema = new Schema<Product>(
       type: Number,
       default: 0,
       min: 0,
-    },
+    }
   },
   {
     timestamps: true,

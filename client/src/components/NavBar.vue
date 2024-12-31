@@ -63,7 +63,6 @@ export default {
       >
         Accessoires
       </router-link>
-      
       <div class="flex-grow"></div>
       
       <router-link 

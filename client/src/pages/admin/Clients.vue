@@ -1,9 +1,9 @@
 <template>
     <Table
-        :header="header"
+        :header="{ title: 'Liste des clients' }"
         :fields="fields"
         :data="tableData"
-        :itemsPerPage="1"
+        :itemsPerPage="5"
     >
         <template #action="{ item }">
             <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
@@ -11,10 +11,10 @@
         </template>
     </Table>
     <ModalForm
-        v-if="EditItem"
-        :visible="isModalEdit"
-        :title="'Edit Client'"
-        :item="EditItem"
+        v-if="modalEdit.item"
+        :visible="modalEdit.isVisible"
+        :text="{ title: 'Modifier un client', submit: 'Modifier', close: 'Fermer' }"
+        :item="modalEdit.item"
         :disableFields="disableKey"
         :fieldTypes="{ email: 'email', role: 'select' }"
         :selectOptions="{ role: [{ value: 'ROLE_USER', text: 'User' }, { value: 'ROLE_ADMIN', text: 'Admin' }] }"
@@ -22,35 +22,49 @@
         @submit="handleSubmit"
     />
     <ModalForm
-        v-if="DeleteItem"
-        :visible="isModalDelete"
-        :title="'Delete Client'"
-
+        v-if="modalDelete.item"
+        :visible="modalDelete.isVisible"
+        :text="{
+            title: `Etes-vous sûr de vouloir supprimer '${modalDelete.item?.name}' ?`,
+            submit: {
+                text: 'Supprimer', color: 'orange'
+            },
+            close: {
+                text: 'Annuler', color: 'red'
+            }
+        }"
+        :item="{
+            id: modalDelete.item?._id,
+            email: modalDelete.item?.email,
+        }"
+        :disableFields="['id', 'email']"
         @close="closeModal"
-        @submit="handleSubmit"
+        @submit="handleDelete"
     />
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
 
 const urlApi = 'http://localhost:5000/api/users';
 
-const header = ref({
-    title: 'Liste des clients'
-});
 const fields = ref([]);
 const tableData = ref([]);
 const disableKey = ref([
     '_id', 'password', 'createdAt', 'updatedAt'
 ]);
 
-const isModalEdit = ref(false);
-const isModalDelete = ref(false);
-const EditItem = ref(null);
-const DeleteItem = ref(null);
+const modalEdit = ref({
+    isVisible: false,
+    item: null
+})
+
+const modalDelete = ref({
+    isVisible: false,
+    item: null
+})
 
 async function fetchUsers() {
     const jwtToken = localStorage.getItem('jwtToken');
@@ -82,8 +96,6 @@ async function fetchUsers() {
             }
         }
 
-        // action column
-
         fields.value.push({ key: 'action', label: 'Action' });
 
         for (const item of data) {
@@ -96,12 +108,10 @@ async function fetchUsers() {
 
 async function updateUser(item) {
     if (!item._id) {
-        console.error('ID manquant');
         return;
     }
 
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     delete item.createdAt;
     delete item.updatedAt;
@@ -127,7 +137,6 @@ async function updateUser(item) {
         }
 
         const data = await response.json();
-        console.log('Utilisateur mis à jour:', data);
 
         return data;
     } catch (error) {
@@ -135,31 +144,77 @@ async function updateUser(item) {
     }
 }
 
-fetchUsers();
+async function deleteUser(item) {
+    if (!item?._id) {
+        return;
+    }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    try {
+        const response = await fetch(`${urlApi}/${item._id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la suppression de l\'utilisateur');
+        }
+
+        const data = await response.json();
+
+        const index = tableData.value.findIndex(i => i._id === item._id);
+
+        tableData.value[index] = data;
+
+        return item;
+    } catch (error) {
+        console.error('Erreur lors de la suppression de l\'utilisateur', error);
+    }
+}
+
+onMounted(() => {
+    fetchUsers();
+});
 
 function editItem(item) {
     delete item.password;
     delete item.createdAt;
     delete item.updatedAt;
 
-    EditItem.value = item;
-    isModalEdit.value = true;
+    modalEdit.value = {
+        isVisible: true,
+        item: item
+    }
 }
 
 function deleteItem(item) {
-    DeleteItem.value = item;
-    isModalDelete.value = true;
+    modalDelete.value = {
+        isVisible: true,
+        item: item
+    }
 }
 
 function closeModal() {
-    isModalEdit.value = false;
-    isModalDelete.value = false;
-    EditItem.value = null;
-    DeleteItem.value = null;
+    modalEdit.value = {
+        isVisible: false,
+        item: null
+    }
+    modalDelete.value = {
+        isVisible: false,
+        item: null
+    }
 }
 
 function handleSubmit(updatedItem) {
-    console.log('Updated item:', updatedItem);
     const index = tableData.value.findIndex(i => i._id === updatedItem._id);
 
     if (index !== -1) {
@@ -167,6 +222,12 @@ function handleSubmit(updatedItem) {
     }
 
     updateUser(updatedItem);
+
+    closeModal();
+}
+
+function handleDelete() {
+    deleteUser(modalDelete.value.item);
 
     closeModal();
 }
