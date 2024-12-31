@@ -67,7 +67,7 @@
           <span>{{ calculateTotalPrice() }} €</span>
         </div>
         <div class="mt-4">
-          <router-link to="/panier/informations">
+          <router-link :to="{ name: 'paiement', query: { totalAmount: String(Math.round(calculateTotalPrice() * 100)) } }">
             <button
               class="bg-red-500 hover:bg-red-600 text-white w-full py-2 rounded-lg text-center"
             >
@@ -112,8 +112,7 @@ export default {
   methods: {
     calculateTotalPrice() {
       return this.cartItems
-        .reduce((total, item) => total + (item.price / 100) * item.quantity, 0)
-        .toFixed(2);
+        .reduce((total, item) => total + (item.price / 100) * item.quantity, 0);
     },
     removeFromCart(index) {
       // Supprimez l'élément à l'index donné du tableau `cartItems`
