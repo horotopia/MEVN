@@ -1,4 +1,7 @@
 <script>
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
 export default {
   props: {
     id: {
@@ -65,8 +68,15 @@ export default {
       // Sauvegarder le panier dans le localStorage
       localStorage.setItem("cart", JSON.stringify(cart));
 
-      // Optionnel : Notifier l'utilisateur
-      alert(`${product.name} a été ajouté au panier.`);
+      // Toast pour confirmer l'ajout au panier
+      toast.success(`${product.name} a été ajouté au panier.`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     },
   },
 };
