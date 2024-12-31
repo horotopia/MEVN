@@ -36,29 +36,34 @@ import Cookies from 'js-cookie';
     },
     methods: {
       async fetchUsers() {
-        const jwtToken = Cookies.get("jwtToken");
+      const jwtToken = Cookies.get("jwtToken");
+      console.log('JWT Token:', jwtToken);
 
-        try {
-            const response = await fetch('http://localhost:5000/api/users', {
-                method: 'GET',
-                credentials: 'include', 
-                headers: {
-                  'content-type': 'application/json',
-                  'Authorization': `Bearer ${jwtToken}`,
-                  'Accept': '*/*'
-                }
-            });
+      try {
+        const response = await fetch('http://localhost:5000/api/users', {
+          method: 'GET',
+          credentials: 'include', // Important pour envoyer les cookies
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`,
+          },
+        });
 
-            if (!response.ok) {
-            throw new Error('Erreur lors de la récupération des utilisateurs');
-            }
-
-            const data = await response.json();
-            this.users = data; 
-        } catch (error) {
-            console.error('Erreur lors de la récupération des utilisateurs', error);
+        if (!response.ok) {
+          if (response.status === 401) {
+            console.error('Jeton expiré ou non valide');
+            // Redirigez vers la page de connexion
+            return;
+          }
+          throw new Error('Erreur lors de la récupération des utilisateurs');
         }
-        },
+
+        const data = await response.json();
+        this.users = data; 
+      } catch (error) {
+        console.error('Erreur lors de la récupération des utilisateurs', error);
+      }
+    },
       async deleteUser(id) {
         try {
           const response = await fetch(`http://localhost:5000/api/users/${id}`, {
@@ -93,4 +98,5 @@ import Cookies from 'js-cookie';
     text-align: left;
   }
   </style>
+  
   
