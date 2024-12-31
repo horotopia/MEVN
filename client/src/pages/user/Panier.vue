@@ -100,12 +100,11 @@
 export default {
   data() {
     return {
-      cartItems: [], // Tableau pour stocker les produits ajoutés au panier
+      cartItems: [],
     };
   },
   computed: {
     totalItems() {
-      // Calculer le nombre total d'articles dans le panier
       return this.cartItems.reduce((total, item) => total + item.quantity, 0);
     },
   },
@@ -115,30 +114,32 @@ export default {
         .reduce((total, item) => total + (item.price / 100) * item.quantity, 0);
     },
     removeFromCart(index) {
-      // Supprimez l'élément à l'index donné du tableau `cartItems`
       this.cartItems.splice(index, 1);
+      this.saveCart();
     },
     decreaseQuantity(index) {
       if (this.cartItems[index].quantity > 1) {
-        // Réduire la quantité si elle est supérieure à 1
         this.cartItems[index].quantity--;
       } else {
-        // Supprimer le produit si la quantité est 1
         this.removeFromCart(index);
       }
+      this.saveCart();
+    },
+    saveCart() {
+      localStorage.setItem("cart", JSON.stringify(this.cartItems));
+      window.dispatchEvent(new Event("cart-updated"));
     },
   },
   created() {
-    // Charger les données du panier depuis le localStorage (si elles existent)
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
       this.cartItems = JSON.parse(storedCart);
     }
+    window.dispatchEvent(new Event("cart-updated"));
   },
   watch: {
     cartItems: {
       handler(newValue) {
-        // Sauvegarder les données du panier dans le localStorage à chaque modification
         localStorage.setItem('cart', JSON.stringify(newValue));
       },
       deep: true,
