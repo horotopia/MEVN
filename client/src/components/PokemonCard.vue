@@ -14,7 +14,7 @@
       </button>
     
       <div class="h-full rounded-lg border-2 border-gray-300 p-2">
-        <img :src="image" :alt="nom" class="h-full w-full object-contain rounded-lg">
+        <img :src="image" :alt="nom" class="h-full w-full object-cover rounded-lg">
       </div>
     
       <div class="pl-4">

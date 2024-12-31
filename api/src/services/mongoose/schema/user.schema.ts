@@ -5,33 +5,6 @@ import { User } from "../../../models";
  * @swagger
  * components:
  *   schemas:
- *     Address:
- *       type: object
- *       required:
- *         - userId
- *       properties:
- *         userId:
- *           type: string
- *           description: L'id de l'utilisateur
- *         street:
- *           type: string
- *           description: La rue de l'adresse
- *         city:
- *           type: string
- *           description: La ville de l'adresse
- *         postalCode:
- *           type: string
- *           description: Le code postal de l'adresse
- *         country:
- *           type: string
- *           description: Le pays de l'adresse
- *       example:
- *         userId: "643d0fd5c07b4a2e88b074c9"
- *         street: "123 Rue de Paris"
- *         city: "Paris"
- *         postalCode: "75000"
- *         country: "France"
- *
  *     User:
  *       type: object
  *       required:
@@ -55,6 +28,9 @@ import { User } from "../../../models";
  *         address:
  *           $ref: '#/components/schemas/Address'
  *           description: L'adresse de l'utilisateur
+ *         pictures:
+ *           type: array
+ *           description: Les images de l'utilisateur
  *       example:
  *         name: John Doe
  *         email: john.doe@toto.com
@@ -64,8 +40,9 @@ import { User } from "../../../models";
  *           userId: "643d0fd5c07b4a2e88b074c9"
  *           street: "123 Rue de Paris"
  *           city: "Paris"
- *           postalCode: "75000"
+ *           postalCode: "75001"
  *           country: "France"
+ *         pictures: ["643d0fd5c07b4a2e88b074c9"]
  */
 
 export const userSchema = new Schema<User>(
@@ -92,6 +69,12 @@ export const userSchema = new Schema<User>(
       type: Schema.Types.ObjectId,
       ref: "Address",
     },
+    pictures: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Pictures"
+      }
+    ]
   },
   {
     timestamps: true,

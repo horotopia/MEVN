@@ -73,6 +73,17 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
+app.get(/^\/uploads\/products\/(.*)/, function (req, res) {
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.sendFile(__dirname + '/uploads/products/' + req.params[0]);
+});
+
+// uploads users folder
+app.get(/^\/uploads\/users\/(.*)/, function (req, res) {
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.sendFile(__dirname + '/uploads/users/' + req.params[0]);
+});
+
 const addressController = new AddressController();
 app.use("/api/address", addressController.buildRouter());
 const authController = new AuthController();
