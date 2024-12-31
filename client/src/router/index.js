@@ -75,11 +75,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log('Params reçus :', to.params);
-  next();
-});
-
-router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('jwtToken');
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!token) {
