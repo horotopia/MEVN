@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { Orders } from "../../../models";
+import { Orders, User, Product } from "../../../models";
 
 /**
  * @swagger
@@ -43,14 +43,14 @@ export const ordersSchema = new Schema<Orders>(
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "Users",
+      ref: "User",
     },
     items: [
       {
         productId: {
           type: Schema.Types.ObjectId,
           required: true,
-          ref: "Products",
+          ref: "Product",
         },
         quantity: {
           type: Number,

@@ -66,16 +66,17 @@ export class PicturesController {
     try {
       if (
         !req.body ||
-        !req.body.userId ||
         !req.body.name ||
-        !req.body.description
+        !req.body.description ||
+        ( !req.body.userId || !req.body.productId )
       ) {
         res.status(400);
         throw new Error("Bad Request");
       }
       const mongooseService = await MongooseService.get();
       const picture = await mongooseService.picturesService.createPicture({
-        userId: req.body.userId,
+        userId: req.body.userId || null,
+        productId: req.body.productId || null,
         name: req.body.name,
         description: req.body.description,
       });
@@ -368,13 +369,108 @@ export class PicturesController {
     }
   }
 
+  /**
+   * @swagger
+   * /api/pictures/p/{productId}:
+   *   get:
+   *     summary: Obtenir toutes les pictures d'un produit
+   *     tags: [Pictures]
+   *     description: Obtenir toutes les pictures d'un produit en utilisant son identifiant unique.
+   *     parameters:
+   *       - in: path
+   *         name: productId
+   *         required: true
+   *         description: L'identifiant unique du produit
+   *         schema:
+   *           type: string
+   *     responses:
+   *       200:
+   *         description: Les pictures ont été trouvées avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Pictures'
+   *       400:
+   *         description: Paramètres manquants ou mal formatés
+   *       401:
+   *         description: Non autorisé
+   *       403:
+   *         description: Accès refusé
+   *       500:
+   *         description: Erreur interne du serveur
+   */
+  async getAllPicturesByProductId(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params || !req.params.productId) {
+        res.status(400);
+        throw new Error("Bad Request");
+      }
+      const mongooseService = await MongooseService.get();
+      const pictures = await mongooseService.picturesService.findAllPicturesByProductId(
+        req.params.productId
+      );
+      res.status(200).json(pictures);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/pictures/p/{productId}:
+   *   delete:
+   *     summary: Supprimer toutes les pictures d'un produit
+   *     tags: [Pictures]
+   *     description: Supprimer toutes les pictures d'un produit en utilisant son identifiant unique.
+   *     parameters:
+   *       - in: path
+   *         name: productId
+   *         required: true
+   *         description: L'identifiant unique du produit
+   *         schema:
+   *           type: string
+   *     responses:
+   *       204:
+   *         description: Supprimé avec succès, toutes les pictures du produit ont été supprimées
+   *       400:
+   *         description: Paramètres manquants ou mal formatés
+   *       401:
+   *         description: Non autorisé
+   *       403:
+   *         description: Accès refusé
+   *       500:
+   *         description: Erreur interne du serveur
+   */
+  async deleteAllPicturesByProductId( req: Request, res: Response, next: NextFunction ) {
+    try {
+      if (!req.params || !req.params.productId) {
+        res.status(400);
+        throw new Error("Bad Request");
+      }
+      const mongooseService = await MongooseService.get();
+      await mongooseService.picturesService.deleteAllPicturesByProductId(
+        req.params.productId
+      );
+      res.status(204).send();
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
     router.post("/", authenticateToken, this.createPicture);
     router.get("/:id", authenticateToken, validateObjectId, this.getPicture);
     router.get(
       "/u/:userId",
-      authenticateToken,
       validateObjectId,
       this.getAllPicturesByUserId
     );
@@ -392,6 +488,16 @@ export class PicturesController {
       validateObjectId,
       this.deleteAllPicturesByUserId
     );
+
+    router.get("/p/:productId", validateObjectId, this.getAllPicturesByProductId);
+    router.delete(
+      "/p/:productId",
+      authenticateToken,
+      validateRoleAdmin,
+      validateObjectId,
+      this.deleteAllPicturesByProductId
+    );
+
     return router;
   }
 }

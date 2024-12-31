@@ -18,6 +18,8 @@ import ProfileCard from '../components/Dashboard/ProfileCard.vue'
 import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
+import Products from '../pages/admin/Products.vue';
+import Orders from '../pages/admin/Orders.vue';
 
 const routes = [
   {
@@ -41,18 +43,28 @@ const routes = [
     component: AuthLayout,
     children: [
       { path: 'login', name: 'Login', component: Login },
-      { path: 'register', name: 'Register', component: Register }
+      { path: 'register', name: 'Register', component: Register },
+      {
+        path: 'logout',
+        name: 'Logout',
+        beforeEnter(to, from, next) {
+          localStorage.removeItem('jwtToken');
+          next({ name: 'Home' });
+        }
+      }
     ]
   },
   {
     path: '/',
     component: AdminLayout,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true }, // requiresAdmin
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
       { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
-      { path: 'dashboard/clients', name: 'Clients', component: Clients },
+      { path: 'dashboard/clients', name: 'Clients', component: Clients, meta: { requiresAdmin: true } },
+      { path: 'dashboard/products', name: 'Products', component: Products, meta: { requiresAdmin: true } },
+      { path: 'dashboard/orders', name: 'Orders', component: Orders, meta: { requiresAdmin: true } },
     ]
   },
 ];
@@ -62,12 +74,15 @@ const router = createRouter({
   routes
 });
 
-
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('jwtToken');
+  const userRole = localStorage.getItem('userRole');
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!token) {
       next({ name: 'Login' });
+    } else if ((to.matched.some(record => record.meta.requiresAdmin) || to.matched.find(record => record.path === to.path)?.meta?.requiresAdmin) && userRole !== 'admin') {
+      window.history.length > 1 ? router.go(-1) : next({ name: 'Dashboard' });
     } else {
       next();
     }
@@ -77,4 +92,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
 export default router;
