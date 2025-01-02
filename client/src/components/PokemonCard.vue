@@ -163,7 +163,7 @@
             }
 
             localStorage.setItem("cart", JSON.stringify(cart));
-            this.quantite = 0;
+            this.quantite = 1;
           }
         },
         allerVersDetailsPokemon() {

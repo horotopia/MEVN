@@ -93,7 +93,7 @@
 
       <transition-group 
         tag="div" 
-        class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1400px] mx-auto"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16 max-w-[1400px] mx-auto"
         name="pokemon-grid"
       >
       <AccessoiresCard
