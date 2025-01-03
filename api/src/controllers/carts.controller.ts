@@ -340,7 +340,7 @@ export class CartsController {
         res.status(404);
         throw new Error("Cart not found");
       }
-      res.status(204);
+      res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
         res.status(500);
@@ -388,7 +388,7 @@ export class CartsController {
       }
       const mongooseService = await MongooseService.get();
       await mongooseService.cartsService.deleteCartsByUserId(req.params.userId);
-      res.status(204);
+      res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
         res.status(500);

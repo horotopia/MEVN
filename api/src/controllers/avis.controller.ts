@@ -299,7 +299,7 @@ export class AvisController {
         res.status(404);
         throw new Error("Avis not found");
       }
-      res.status(204);
+      res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
         res.status(500);
