@@ -103,7 +103,7 @@
       methods: {
         getTypeColor(type) {
           const couleurs = {
-            normal: 'bg-gray-400',
+          normal: 'bg-gray-400',
           feu: 'bg-red-500',
           eau: 'bg-blue-500',
           plante: 'bg-green-500',
