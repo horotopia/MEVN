@@ -20,7 +20,6 @@ const getUser = async (req: Request, res: Response) => {
   }
 
   const decoded = jwt.verify(jwtToken, SECRET_KEY) as jwt.JwtPayload;
-  console.log(decoded);
 
   const mongooseService = await MongooseService.get();
   const user = await mongooseService.userService.findUserById(decoded.id);
@@ -112,7 +111,6 @@ const validateRoleAdminOrUserId = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.params)
     const userId = req.params.id || req.body.userId;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(401);

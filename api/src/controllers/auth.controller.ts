@@ -68,12 +68,13 @@ export class AuthController {
         email: req.body.email,
         password: await bcryptInstance.hashPassword(req.body.password),
       });
-
+      
       const session = await mongooseService.sessionService.createSession({
         user: user,
         userAgent: req.header("user-agent") || "unknown",
         expirationDate: new Date(new Date().getTime() + 1_296_000_000),
       });
+      
 
       // Create token
       const jwtToken = generateToken(user);
