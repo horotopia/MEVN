@@ -20,7 +20,6 @@ const getUser = async (req: Request, res: Response) => {
   }
 
   const decoded = jwt.verify(jwtToken, SECRET_KEY) as jwt.JwtPayload;
-  console.log(decoded);
 
   const mongooseService = await MongooseService.get();
   const user = await mongooseService.userService.findUserById(decoded.id);
@@ -90,13 +89,13 @@ const validateUserId = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.params.id || req.body.userId;
+    const userId = req.params.userId || req.body.userId || req.params.id;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(401);
       throw new Error("Invalid ID format");
     }
     const user = await getUser(req, res);
-    if (user._id !== userId) {
+    if (user._id.toString() !== userId) {
       res.status(403);
       throw new Error("You are not authorized to access this route");
     }
@@ -112,7 +111,6 @@ const validateRoleAdminOrUserId = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.params)
     const userId = req.params.id || req.body.userId;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(401);

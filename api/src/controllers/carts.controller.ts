@@ -4,6 +4,7 @@ import { validateObjectId } from "../middlewares/validate";
 import {
   validateRoleAdminOrUser,
   validateRoleUser,
+  validateUserId,
 } from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose/mongoose.service";
 
@@ -148,13 +149,13 @@ export class CartsController {
 
   /**
    * @swagger
-   * /api/carts/u/{id}:
+   * /api/carts/u/{userId}:
    *   get:
    *     summary: Get all carts by user ID
    *     tags: [Carts]
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: userId
    *         schema:
    *           type: string
    *         required: true
@@ -181,13 +182,13 @@ export class CartsController {
    */
   async getAllCartsByUserId(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params || !req.params.id) {
+      if (!req.params || !req.params.userId) {
         res.status(400);
         throw new Error("Bad request");
       }
       const mongooseService = await MongooseService.get();
       const carts = await mongooseService.cartsService.findCartsByUserId(
-        req.params.id
+        req.params.userId
       );
       if (!carts) {
         res.status(404);
@@ -381,12 +382,12 @@ export class CartsController {
     next: NextFunction
   ) {
     try {
-      if (!req.params || !req.params.id) {
+      if (!req.params || !req.params.userId) {
         res.status(400);
         throw new Error("Bad request");
       }
       const mongooseService = await MongooseService.get();
-      await mongooseService.cartsService.deleteCartsByUserId(req.params.id);
+      await mongooseService.cartsService.deleteCartsByUserId(req.params.userId);
       res.status(204);
     } catch (error) {
       if (!res.statusCode) {
@@ -407,32 +408,32 @@ export class CartsController {
       this.get.bind(this)
     );
     router.get(
-      "/u/:id",
+      "/u/:userId",
       authenticateToken,
       validateRoleAdminOrUser,
-      validateObjectId,
-      this.get.bind(this)
+      validateUserId,
+      this.getAllCartsByUserId.bind(this)
     );
     router.put(
       "/:id",
       authenticateToken,
       validateRoleUser,
       validateObjectId,
-      this.create.bind(this)
+      this.update.bind(this)
     );
     router.delete(
       "/:id",
       authenticateToken,
       validateRoleUser,
       validateObjectId,
-      this.create.bind(this)
+      this.delete.bind(this) 
     );
     router.delete(
-      "/u/:id",
+      "/u/:userId",
       authenticateToken,
       validateRoleAdminOrUser,
-      validateObjectId,
-      this.create.bind(this)
+      validateUserId,
+      this.deleteAllCartsByUserId.bind(this)
     );
     return router;
   }
