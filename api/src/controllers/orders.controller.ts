@@ -4,7 +4,9 @@ import { validateObjectId } from "../middlewares/validate";
 import {
   validateRoleAdmin,
   validateRoleAdminOrUser,
+  validateRoleAdminOrUserId,
   validateRoleUser,
+  validateUserId,
 } from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose";
 
@@ -455,14 +457,14 @@ export class OrdersController {
     router.get(
       "/:id",
       authenticateToken,
-      validateRoleUser,
+      validateRoleUser ,
       validateObjectId,
       this.getOrder
     );
     router.get(
       "/u/:userId",
       authenticateToken,
-      validateRoleAdminOrUser,
+      validateRoleAdminOrUserId,
       validateObjectId,
       this.getOrdersByUserId
     );
