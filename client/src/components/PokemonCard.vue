@@ -95,7 +95,7 @@
       },
       data() {
         return {
-          quantite: 0,
+          quantite: 1,
           estFavori: false,
           estAime: false
         }
@@ -104,23 +104,23 @@
         getTypeColor(type) {
           const couleurs = {
             normal: 'bg-gray-400',
-            feu: 'bg-red-500',
-            water: 'bg-blue-500',
-            grass: 'bg-green-500',
-            électricité: 'bg-yellow-500',
-            ice: 'bg-blue-300',
-            fighting: 'bg-red-700',
-            poison: 'bg-purple-500',
-            ground: 'bg-yellow-600',
-            vol: 'bg-blue-400',
-            psychic: 'bg-pink-500',
-            bug: 'bg-green-600',
-            rock: 'bg-yellow-800',
-            ghost: 'bg-purple-700',
-            dragon: 'bg-purple-600',
-            dark: 'bg-gray-700',
-            steel: 'bg-gray-500',
-            fairy: 'bg-pink-400'
+          feu: 'bg-red-500',
+          eau: 'bg-blue-500',
+          plante: 'bg-green-500',
+          électrique: 'bg-yellow-500',
+          glace: 'bg-blue-300',
+          combat: 'bg-red-700',
+          poison: 'bg-purple-500',
+          sol: 'bg-yellow-600',
+          vol: 'bg-blue-400',
+          psy: 'bg-pink-500',
+          insecte: 'bg-green-600',
+          roche: 'bg-yellow-800',
+          spectre: 'bg-purple-700',
+          dragon: 'bg-purple-600',
+          ténèbres: 'bg-gray-700',
+          acier: 'bg-gray-500',
+          fée: 'bg-pink-400'
           }
           return couleurs[type] || 'bg-gray-500'
         },
@@ -128,7 +128,7 @@
           this.quantite++
         },
         diminuerQuantite() {
-          if (this.quantite > 0) {
+          if (this.quantite > 1) {
             this.quantite--
           }
         },
