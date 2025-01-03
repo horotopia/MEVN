@@ -23,14 +23,14 @@ export class OrdersController {
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: '#/components/schemas/Order'
+   *             $ref: '#/components/schemas/Orders'
    *     responses:
    *       200:
    *         description: Commande créée avec succès.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/Order'
+   *               $ref: '#/components/schemas/Orders'
    *       400:
    *         description: Requête invalide.
    *       401:
@@ -100,7 +100,7 @@ export class OrdersController {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/Order'
+   *               $ref: '#/components/schemas/Orders'
    *       400:
    *         description: Requête invalide.
    *       401:
@@ -158,7 +158,7 @@ export class OrdersController {
    *             schema:
    *               type: array
    *               items:
-   *                 $ref: '#/components/schemas/Order'
+   *                 $ref: '#/components/schemas/Orders'
    *       400:
    *         description: Requête invalide.
    *       401:
@@ -212,7 +212,7 @@ export class OrdersController {
    *             schema:
    *               type: array
    *               items:
-   *                 $ref: '#/components/schemas/Order'
+   *                 $ref: '#/components/schemas/Orders'
    *       400:
    *         description: Requête invalide.
    *       401:
@@ -259,7 +259,7 @@ export class OrdersController {
    *             schema:
    *               type: array
    *               items:
-   *                 $ref: '#/components/schemas/Order'
+   *                 $ref: '#/components/schemas/Orders'
    *       400:
    *         description: Requête invalide.
    *       401:
@@ -304,7 +304,7 @@ export class OrdersController {
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: '#/components/schemas/Order'
+   *             $ref: '#/components/schemas/Orders'
    *     responses:
    *       204:
    *         description: Commande modifiée avec succès.
