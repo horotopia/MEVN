@@ -57,13 +57,6 @@
               >+</button>
             </div>
           </div>
-    
-          <button 
-            @click.prevent.stop="ajouterAuPanier"
-            class="whitespace-nowrap rounded-full bg-[#ff4c4c] border-2 border-[#D43C3C] px-4 py-1 font-bold text-white transition ease-in-out active:bg-[#CC3C3C] active:border-[#A82E2E]"
-          >
-            AJOUTER AU PANIER
-          </button>
           <button 
             @click.prevent.stop="basculerCoeur"
             class="rounded-full border-2 border-gray-300 p-1.5 transition-colors duration-200 hover:bg-yellow-100 flex items-center justify-center h-[34px] w-[34px]"
@@ -145,17 +138,6 @@
         basculerCoeur() {
           this.estAime = !this.estAime
         },
-        // ajouterAuPanier() {
-        //   if (this.quantite > 0) {
-        //     this.$emit('ajouter-au-panier', {
-        //       id: this.id,
-        //       nom: this.nom,
-        //       quantite: this.quantite,
-        //       prix: this.prix
-        //     })
-        //     this.quantite = 0
-        //   }
-        // },
         allerVersDetailsPokemon() {
           this.$router.push(`/pokemon/${this.id}`)
         }

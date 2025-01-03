@@ -11,6 +11,7 @@ export default {
   },
   data() {
     return {
+      publicPath: 'http://localhost:5000' + '/uploads',
       pokemon: null,
       loading: true,
       error: null,
@@ -83,76 +84,114 @@ export default {
 </script>
 
 <template>
-  <div class="container mx-auto p-8">
-    <div v-if="loading" class="text-center text-lg font-semibold">Chargement...</div>
-    <div v-else-if="error" class="text-center text-red-500 font-semibold">{{ error }}</div>
-    <div v-else class="bg-white rounded-lg shadow-lg p-6 flex flex-col md:flex-row">
-      <!-- Image du Pokémon -->
-      <div class="flex-1">
-        <img :src="pokemon?.image" alt="Pokémon" class="w-64 h-64 mx-auto" />
+<div class="container mx-auto bg-white shadow-9">
+  <div class="mx-8 my-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+    <!-- Image du pokémon -->
+    <div class="h-80 w-full bg-white shadow-md">
+      <img :src="pokemon?.pictures?.length ? `${publicPath}/products/${pokemon._id}/${pokemon.pictures[0]?.name}` : 'https://via.placeholder.com/300?text=Image+Non+Disponible'" alt="pokémon" />
+    </div>
+    <div class="">
+      <h2 class="rounded-md px-6 py-1 font-extrabold text-white uppercase w-100 text-center" :class="getTypeColor(pokemon?.type)">{{ pokemon?.name }}</h2>
+      <div class="py-2 flex-1">
+        <div class="font-semibold text-gray-700 pt-2">{{ pokemon?.description }}</div>
+        <p class="text-lg font-semibold text-gray-800">Stock :</p>
+        <span 
+          class="inline-flex items-center gap-2 px-3 py-1 text-sm font-bold rounded-full"
+          :class="pokemon?.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+        >
+          <svg v-if="pokemon?.stock > 0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-green-600">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-red-600">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          {{ pokemon?.stock > 0 ? pokemon.stock + ' en stock' : 'Rupture de stock' }}
+        </span>
+
+        <p class="mt-4 text-lg font-semibold text-gray-800">Prix :</p>
+        <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">
+          {{ pokemon?.price }} €
+        </span>
       </div>
-
-      <!-- Informations sur le Pokémon -->
-      <div class="flex-1 ml-0 md:ml-8 mt-8 md:mt-0">
-        <h1 class="text-4xl font-bold mb-4">{{ pokemon?.name }}</h1>
-        <p class="text-gray-600 mb-4">{{ pokemon?.description }}</p>
-
-        <div class="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p><strong>Type :</strong></p>
-            <span
-              class="inline-block px-3 py-1 text-white font-semibold rounded-lg"
-              :class="getTypeColor(pokemon?.type)"
-            >
-              {{ pokemon?.type }}
-            </span>
-          </div>
-
-          <div>
-            <p><strong>Catégorie :</strong></p>
-            <span class="font-semibold text-gray-700">{{ pokemon?.category }}</span>
-          </div>
-
-          <div>
-            <p><strong>Poids :</strong></p>
-            <span class="font-semibold text-gray-700">{{ pokemon?.weight }} g</span>
-          </div>
-
-          <div>
-            <p><strong>Taille :</strong></p>
-            <span class="font-semibold text-gray-700">{{ pokemon?.height }} cm</span>
-          </div>
-
-          <div>
-            <p><strong>Prix :</strong></p>
-            <span class="font-semibold text-gray-700">{{ pokemon?.price }} €</span>
-          </div>
-
-          <div>
-            <p><strong>Stock :</strong></p>
-            <span
-              class="font-semibold"
-              :class="pokemon?.stock > 0 ? 'text-green-600' : 'text-red-600'"
-            >
-              {{ pokemon?.stock > 0 ? pokemon.stock : 'Rupture de stock' }}
-            </span>
-          </div>
-        </div>
-
-        <button
+      <button
           v-if="pokemon?.stock > 0"
           @click="addToCart(pokemon)"
           class="mt-6 w-full bg-[#ff4c4c] text-white font-bold py-2 rounded-lg hover:bg-[#cc3c3c]"
         >
           Ajouter au panier
-        </button>
+      </button>
+    </div>
+    <div class="col-span-1 sm:col-span-2 lg:grid-cols-2">
+      <div class="relative text-sm font-semibold text-gray-700">
+        <div class="absolute inset-0 bg-red-500 h-20 mt-16 opacity-20 rounded-md -z-10"></div>
+        <h3 class="text-lg font-bold">Tout savoir sur Salamèche</h3>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+      </div>
+      <div class="mt-8 text-sm font-semibold text-gray-700">
+        <h3 class="text-lg font-bold">Son Habitat et ses besoins</h3>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+      </div>
+    </div>
+    <div class="mt-6">
+      <table class="w-full border-collapse bg-white shadow-lg rounded-lg overflow-hidden">
+      <thead class="text-white text-left" :class="getTypeColor(pokemon?.type)">
+        <tr>
+          <th class="px-4 py-3 text-lg font-semibold">Attaque</th>
+          <th class="px-4 py-3 text-lg font-semibold">Type</th>
+          <th class="px-4 py-3 text-lg font-semibold">Puissance</th>
+          <th class="px-4 py-3 text-lg font-semibold">Précision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hover:bg-orange-100 transition">
+          <td class="px-6 py-4 border-b text-gray-800">Flammèche</td>
+          <td class="px-6 py-4 border-b text-gray-600">Feu</td>
+          <td class="px-6 py-4 border-b text-gray-800">40</td>
+          <td class="px-6 py-4 border-b text-gray-800">100%</td>
+        </tr>
+        <tr class="bg-gray-50 hover:bg-orange-100 transition">
+          <td class="px-6 py-4 border-b text-gray-800">Griffe</td>
+          <td class="px-6 py-4 border-b text-gray-600">Normal</td>
+          <td class="px-6 py-4 border-b text-gray-800">50</td>
+          <td class="px-6 py-4 border-b text-gray-800">95%</td>
+        </tr>
+        <tr class="hover:bg-orange-100 transition">
+          <td class="px-6 py-4 border-b text-gray-800">Jet de Flammes</td>
+          <td class="px-6 py-4 border-b text-gray-600">Feu</td>
+          <td class="px-6 py-4 border-b text-gray-800">90</td>
+          <td class="px-6 py-4 border-b text-gray-800">85%</td>
+        </tr>
+        <tr class="bg-gray-50 hover:bg-orange-100 transition">
+          <td class="px-6 py-4 border-b text-gray-800">Lance-Flammes</td>
+          <td class="px-6 py-4 border-b text-gray-600">Feu</td>
+          <td class="px-6 py-4 border-b text-gray-800">110</td>
+          <td class="px-6 py-4 border-b text-gray-800">80%</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="">
+      <h3>Informations supplémentaires</h3>
+      <div class="py-2">
+        <p><strong>Poids :</strong></p>
+        <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">{{ pokemon?.weight }} g</span>
+        <p><strong>Taille :</strong></p>
+        <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">{{ pokemon?.height }} cm</span>
+        <p><strong>Age :</strong></p>
+        <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">{{ pokemon?.age }} ans</span>
+      </div>
+    </div>
+    <div class="col-span-1 sm:col-span-2 lg:grid-cols-2 bg-red-500">
+      <div class="text-sm font-semibold text-gray-700">
+        <div class="">
+          <h3>Les évolutions de salamèche : Niveau d'évolution actuel 1</h3>
+          <div>
+            <img src="https://via.placeholder.com/100x100/FF0000/FFFFFF?text=Flamme" alt="pokémon" />
+            <img src="https://via.placeholder.com/100x100/FF0000/FFFFFF?text=Flamme" alt="pokémon" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
+</div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 1200px;
-}
-</style>
