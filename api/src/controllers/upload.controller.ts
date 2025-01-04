@@ -4,9 +4,11 @@ import { NextFunction, Request, Response, Router } from "express";
 import multer from 'multer';
 
 export class UploadController {
+    private tmpDir = path.join(__dirname, '../uploads/tmp');
+
     private storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, '/api/src/uploads/tmp');
+            cb(null, this.tmpDir);
         },
         filename: (req, file, cb) => {
             cb(null, file.originalname);
@@ -14,6 +16,12 @@ export class UploadController {
     });
 
     private upload = multer({ storage: this.storage, limits: { fileSize: 1000000 } });
+
+    constructor() {
+        if (!fs.existsSync(this.tmpDir)) {
+            fs.mkdirSync(this.tmpDir, { recursive: true });
+        }
+    }
 
     public uploadFile = (req: Request, res: Response, next: NextFunction): void => {
         try {
@@ -40,9 +48,10 @@ export class UploadController {
                     }
                 }
 
-                const filePath = path.join(__dirname, '../uploads/tmp', req.file.originalname);
+                const filePath = path.join(this.tmpDir, req.file.originalname);
 
-                const newFileName = `${Date.now()}-${req.file.originalname}`;
+                const newFileName = `${Date.now()}-${req.file.originalname.replace(/\s/g, '_')}`;
+
                 fs.renameSync(filePath, path.join(__dirname, '../uploads', req.params.type, req.params.id, newFileName));
 
                 res.status(200).json({
