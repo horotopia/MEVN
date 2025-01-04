@@ -390,7 +390,7 @@ export class OrdersController {
       }
       const mongooseService = await MongooseService.get();
       await mongooseService.ordersService.deleteOrder(req.params.id);
-      res.status(204);
+      res.status(204).send();
     } catch (error) {
       if (error instanceof Error && error.message === "Order not found") {
         res.status(404);
