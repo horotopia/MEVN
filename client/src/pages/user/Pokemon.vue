@@ -128,7 +128,7 @@ export default {
   },
   data() {
     return {
-      publicPath: 'http://localhost:50' + '/uploads',
+      publicPath: 'http://localhost:5000' + '/uploads',
       products: [],
       typeSelectionne: '',
       prixMaximum: 1000000,

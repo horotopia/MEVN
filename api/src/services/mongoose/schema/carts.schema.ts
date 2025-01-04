@@ -5,7 +5,7 @@ import { Carts } from "../../../models";
  * @swagger
  * components:
  *   schemas:
- *     Cart:
+ *     Carts:
  *       type: object
  *       required:
  *         - userId

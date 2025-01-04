@@ -198,15 +198,17 @@ export class AddressController {
    * @swagger
    * /api/address/{id}:
    *   delete:
-   *     summary: Delete an address
+   *     summary: Supprime une adresse
+   *     description: Supprime une adresse via l'id de l'adresse
    *     tags: [Address]
+   *     operationId: deleteAddress
    *     parameters:
-   *       - in: path
-   *         name: id
+   *       - name: id
+   *         in: path
+   *         required: true
+   *         description: ID de l'adresse à supprimer
    *         schema:
    *           type: string
-   *         required: true
-   *         description: ID of the address to delete
    *     responses:
    *       204:
    *         description: Address deleted successfully
@@ -235,8 +237,7 @@ export class AddressController {
         res.status(404);
         throw new Error("Address not found");
       }
-      res.status(204);
-      return;
+      res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
         res.status(500);
@@ -284,7 +285,7 @@ export class AddressController {
       }
       const mongooseService = await MongooseService.get();
       await mongooseService.addressService.anonymise(req.params.userId);
-      res.status(204);
+      res.status(204).send();
       return;
     } catch (error) {
       if (!res.statusCode) {

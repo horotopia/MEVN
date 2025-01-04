@@ -57,13 +57,6 @@
               >+</button>
             </div>
           </div>
-    
-          <button 
-            @click.prevent.stop="ajouterAuPanier"
-            class="whitespace-nowrap rounded-full bg-[#ff4c4c] border-2 border-[#D43C3C] px-4 py-1 font-bold text-white transition ease-in-out active:bg-[#CC3C3C] active:border-[#A82E2E]"
-          >
-            AJOUTER AU PANIER
-          </button>
           <button 
             @click.prevent.stop="basculerCoeur"
             class="rounded-full border-2 border-gray-300 p-1.5 transition-colors duration-200 hover:bg-yellow-100 flex items-center justify-center h-[34px] w-[34px]"
@@ -110,7 +103,7 @@
       methods: {
         getTypeColor(type) {
           const couleurs = {
-            normal: 'bg-gray-400',
+          normal: 'bg-gray-400',
           feu: 'bg-red-500',
           eau: 'bg-blue-500',
           plante: 'bg-green-500',
@@ -144,27 +137,6 @@
         },
         basculerCoeur() {
           this.estAime = !this.estAime
-        },
-        ajouterAuPanier() {
-          if (this.quantite > 0) {
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const existingProduct = cart.find((item) => item._id === this.id);
-            
-            if (existingProduct) {
-              existingProduct.quantity += this.quantite;
-            } else {
-              cart.push({
-                _id: this.id,
-                name: this.nom,
-                price: this.prix,
-                image: this.image,
-                quantity: this.quantite
-              });
-            }
-
-            localStorage.setItem("cart", JSON.stringify(cart));
-            this.quantite = 1;
-          }
         },
         allerVersDetailsPokemon() {
           this.$router.push(`/pokemon/${this.id}`)
