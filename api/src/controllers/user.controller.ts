@@ -140,7 +140,7 @@ export class UserController {
    *             example:
    *               name: John Doe
    *               email: johndoe@example.com
-   *               password: mypassword
+   *               password: myPassword123
    *     responses:
    *       200:
    *         description: User successfully updated

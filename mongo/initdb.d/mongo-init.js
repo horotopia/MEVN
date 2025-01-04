@@ -21,7 +21,14 @@ db.users.insertMany([
     role: "ROLE_ADMIN"
   },
   {
-    _id: ObjectId("60f4b6e1e9f0f4001f6b3b50"),
+    name: "Horotopia",
+    email: "guirado.leo@gmail.com",
+    password: "$2y$10$YQgt4OqsN4VgY67W.9xBkeGdEXBeeCRID8TBMjN2.vNbpL0IftGn2", // password: "guirado.leo@gmail.com"
+    role: "ROLE_USER",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
     name: "John Doe",
     email: "fake@mail.com",
     password: null,

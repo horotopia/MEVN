@@ -19,6 +19,7 @@ import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
 import Products from '../pages/admin/Products.vue';
+import PaymentStripe from '../components/PaymentStripe.vue';
 import Orders from '../pages/admin/Orders.vue';
 
 const routes = [
@@ -36,6 +37,7 @@ const routes = [
       { path: 'panier', name: 'Panier', component: Panier },
       { path: 'contact', name: 'Contact', component: Contact },
       { path: 'panier/informations', name: 'Informations', component: PanierInformations },
+      { path: 'paiement', name: 'paiement', component: PaymentStripe, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
     ]
   },
   {
@@ -57,14 +59,14 @@ const routes = [
   {
     path: '/',
     component: AdminLayout,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true }, // requiresAdmin
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
       { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
-      { path: 'dashboard/clients', name: 'Clients', component: Clients },
-      { path: 'dashboard/products', name: 'Products', component: Products },
-      { path: 'dashboard/orders', name: 'Orders', component: Orders },
+      { path: 'dashboard/clients', name: 'Clients', component: Clients, meta: { requiresAdmin: true } },
+      { path: 'dashboard/products', name: 'Products', component: Products, meta: { requiresAdmin: true } },
+      { path: 'dashboard/orders', name: 'Orders', component: Orders, meta: { requiresAdmin: true } },
     ]
   },
 ];
@@ -76,9 +78,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('jwtToken');
+  const userRole = localStorage.getItem('userRole');
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!token) {
       next({ name: 'Login' });
+    } else if ((to.matched.some(record => record.meta.requiresAdmin) || to.matched.find(record => record.path === to.path)?.meta?.requiresAdmin) && userRole !== 'ROLE_ADMIN') {
+      window.history.length > 1 ? router.go(-1) : next({ name: 'Dashboard' });
     } else {
       next();
     }

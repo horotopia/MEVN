@@ -5,33 +5,6 @@ import { User } from "../../../models";
  * @swagger
  * components:
  *   schemas:
- *     Address:
- *       type: object
- *       required:
- *         - userId
- *       properties:
- *         userId:
- *           type: string
- *           description: L'id de l'utilisateur
- *         street:
- *           type: string
- *           description: La rue de l'adresse
- *         city:
- *           type: string
- *           description: La ville de l'adresse
- *         postalCode:
- *           type: string
- *           description: Le code postal de l'adresse
- *         country:
- *           type: string
- *           description: Le pays de l'adresse
- *       example:
- *         userId: "643d0fd5c07b4a2e88b074c9"
- *         street: "123 Rue de Paris"
- *         city: "Paris"
- *         postalCode: "75000"
- *         country: "France"
- *
  *     User:
  *       type: object
  *       required:
@@ -72,7 +45,6 @@ export const userSchema = new Schema<User>(
   {
     name: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -91,7 +63,7 @@ export const userSchema = new Schema<User>(
     address: {
       type: Schema.Types.ObjectId,
       ref: "Address",
-    },
+    }
   },
   {
     timestamps: true,

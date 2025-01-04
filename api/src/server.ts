@@ -3,6 +3,9 @@ import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import express, { Express, NextFunction, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
+import bodyParser from 'body-parser';
+import { Stripe } from 'stripe';
+import cors from 'cors';
 
 // Configurations
 import configureCORS from "./config/cors";
@@ -24,8 +27,13 @@ import {
   OrdersController,
   PicturesController,
   ProductController,
+  UploadController,
   UserController,
 } from "./controllers";
+
+import mailRoutes from './routes/mail.routes';
+
+const stripe = new Stripe('sk_test_51QbfWPAp1XlFPm6zLkvVNhO8pYoxpQhqwIJwCA0uaVb6CSTnFIZhBZIqw7vsMgVTfZmCjK58buTuBqXutEbVRAGf004LpVVZTa', { apiVersion: '2024-06-20' });
 
 config();
 const app: Express = express();
@@ -33,6 +41,8 @@ const app: Express = express();
 // config
 configureCORS(app);
 configureHelmet(app);
+app.use(cors());
+app.use(bodyParser.json());
 
 app.use(
   compression({
@@ -46,6 +56,35 @@ app.use(
     threshold: 0,
   })
 );
+
+// Endpoint pour créer un PaymentIntent
+app.post('/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency } = req.body; // Récupération des données du frontend
+    
+    if (!amount || !currency) {
+      throw new Error('Le montant et la devise sont requis.');
+    }
+
+    // Création du PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount, // Montant en centimes (5000 pour 50,00 €)
+      currency, // Devise (par exemple, 'eur')
+    });
+
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret, // Envoyer le client_secret au frontend
+    });
+  } catch (error) {
+    res.status(500).send({});
+  }
+});
+
+// Lancer le serveur
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
+});
 
 // Security
 app.use(express.json());
@@ -73,6 +112,17 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
+app.get(/^\/uploads\/products\/(.*)/, function (req, res) {
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.sendFile(__dirname + '/uploads/products/' + req.params[0]);
+});
+
+// uploads users folder
+app.get(/^\/uploads\/users\/(.*)/, function (req, res) {
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.sendFile(__dirname + '/uploads/users/' + req.params[0]);
+});
+
 const addressController = new AddressController();
 app.use("/api/address", addressController.buildRouter());
 const authController = new AuthController();
@@ -92,8 +142,14 @@ app.use("/api/product", productController.buildRouter());
 const userController = new UserController();
 app.use("/api/users", userController.buildRouter());
 
+const uploadController = new UploadController();
+app.use("/api/upload", uploadController.buildRouter());
+
 // Middleware d'erreurs global
 app.use(errorHandler(logger));
+
+// Ajouter avec les autres routes
+app.use('/api/mail', mailRoutes);
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;

@@ -23,7 +23,7 @@ export class ProductController {
    *           example:
    *             name: Pikachu
    *             description: Pokémon électrique
-   *             type: électricité
+   *             type: électrique
    *             evolutionLevel: 2
    *             evolutionReference: Pichu
    *             weight: 6000
@@ -375,7 +375,7 @@ export class ProductController {
         res.status(404);
         throw new Error("Product not found");
       }
-      res.status(204);
+      res.status(204).send();
       return;
     } catch (error) {
       if (!res.statusCode) {
@@ -391,7 +391,6 @@ export class ProductController {
       "/",
       authenticateToken,
       validateRoleAdmin,
-      validateObjectId,
       this.createProduct.bind(this)
     );
     router.get("/:id", validateObjectId, this.getOneProduct.bind(this));

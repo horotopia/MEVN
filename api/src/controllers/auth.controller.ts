@@ -30,7 +30,7 @@ export class AuthController {
    *                 description: Mot de passe de l'utilisateur
    *             example:
    *               email: johndoe@example.com
-   *               password: mypassword
+   *               password: myPassword123
    *     responses:
    *       201:
    *         description: User registered successfully
@@ -42,6 +42,9 @@ export class AuthController {
    *                 token:
    *                   type: string
    *                   description: JWT token de l'utilisateur
+   *                 email:
+   *                   type: string
+   *                   description: Email de l'utilisateur
    *       400:
    *         description: Bad request
    *       409:
@@ -65,12 +68,13 @@ export class AuthController {
         email: req.body.email,
         password: await bcryptInstance.hashPassword(req.body.password),
       });
-
+      
       const session = await mongooseService.sessionService.createSession({
         user: user,
         userAgent: req.header("user-agent") || "unknown",
         expirationDate: new Date(new Date().getTime() + 1_296_000_000),
       });
+      
 
       // Create token
       const jwtToken = generateToken(user);
@@ -122,7 +126,7 @@ export class AuthController {
    *                 description: Mot de passe de l'utilisateur
    *             example:
    *               email: johndoe@example.com
-   *               password: mypassword
+   *               password: myPassword123
    *     responses:
    *       200:
    *         description: User logged in successfully and Session created
@@ -155,7 +159,7 @@ export class AuthController {
       );
       if (!passwordMatch) {
         res.status(401);
-        throw new Error("Invalid credentials");
+        throw new Error("Invalid credentials 2");
       }
       const session = await mongooseService.sessionService.createSession({
         user: user,

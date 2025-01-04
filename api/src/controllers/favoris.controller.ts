@@ -219,7 +219,7 @@ export class FavorisController {
         res.status(404);
         throw new Error("Favoris not found");
       }
-      res.status(204);
+      res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
         res.status(500);
@@ -271,7 +271,7 @@ export class FavorisController {
       await mongooseService.favorisService.deleteAllFavorisByUserId(
         req.params.userId
       );
-      res.status(204);
+      res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
         res.status(500);
