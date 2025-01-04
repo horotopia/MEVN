@@ -1,54 +1,51 @@
 <template>
-    <Table
-        :header="{ title: 'Liste des clients' }"
-        :fields="fields"
-        :data="tableData"
-        :itemsPerPage="5"
-    >
+    <Table :options="{
+            header: {
+                title: 'Liste des clients',
+            },
+            search: true
+        }" :fields="fields" :data="tableData" :itemsPerPage="5">
+        <template #pictures="{ item }">
+
+            <a v-if="item.pictures[0]?.name" :href="`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`" class="text-decoration-none" target="_blank">
+                <Avatar :fullname="item.name" :size="34"
+                    :image="`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`" />
+            </a>
+
+            <Avatar v-else :fullname="item.name" :size="34" />
+        </template>
         <template #action="{ item }">
             <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
             <button class="btn btn-danger" @click="deleteItem(item)">Delete</button>
         </template>
     </Table>
-    <ModalForm
-        v-if="modalEdit.item"
-        :visible="modalEdit.isVisible"
-        :text="{ title: 'Modifier un client', submit: 'Modifier', close: 'Fermer' }"
-        :item="modalEdit.item"
-        :disableFields="disableKey"
-        :fieldTypes="{ email: 'email', role: 'select' }"
+    <ModalForm v-if="modalEdit.item" :visible="modalEdit.isVisible"
+        :text="{ title: 'Modifier un client', submit: 'Modifier', close: 'Fermer' }" :item="modalEdit.item"
+        :disableFields="disableKey" :fieldTypes="{ email: 'email', role: 'select' }"
         :selectOptions="{ role: [{ value: 'ROLE_USER', text: 'User' }, { value: 'ROLE_ADMIN', text: 'Admin' }] }"
-        @close="closeModal"
-        @submit="handleSubmit"
-    />
-    <ModalForm
-        v-if="modalDelete.item"
-        :visible="modalDelete.isVisible"
-        :text="{
-            title: `Etes-vous sûr de vouloir supprimer '${modalDelete.item?.name}' ?`,
-            submit: {
-                text: 'Supprimer', color: 'orange'
-            },
-            close: {
-                text: 'Annuler', color: 'red'
-            }
-        }"
-        :item="{
-            id: modalDelete.item?._id,
-            email: modalDelete.item?.email,
-        }"
-        :disableFields="['id', 'email']"
-        @close="closeModal"
-        @submit="handleDelete"
-    />
+        @close="closeModal" @submit="handleSubmit" />
+    <ModalForm v-if="modalDelete.item" :visible="modalDelete.isVisible" :text="{
+        title: `Etes-vous sûr de vouloir supprimer '${modalDelete.item?.name}' ?`,
+        submit: {
+            text: 'Supprimer', color: 'orange'
+        },
+        close: {
+            text: 'Annuler', color: 'red'
+        }
+    }" :item="{
+        id: modalDelete.item?._id,
+        email: modalDelete.item?.email,
+    }" :disableFields="['id', 'email']" @close="closeModal" @submit="handleDelete" />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
+import Avatar from '../../components/Avatar.vue';
 
 const urlApi = 'http://localhost:5000/api/users';
+const publicPath = 'http://localhost:5000/uploads';
 
 const fields = ref([]);
 const tableData = ref([]);
