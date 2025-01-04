@@ -90,7 +90,6 @@ async function fetchUsers() {
     try {
         const response = await fetch(urlApi, {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -137,7 +136,6 @@ async function updateUser(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'PUT',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -171,7 +169,6 @@ async function deleteUser(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'DELETE',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,

@@ -7,7 +7,7 @@ export default {
       password: '',
       emailError: '',
       passwordError: '',
-      errorMessage: '', // Champ pour afficher une erreur globale
+      errorMessage: ''
     };
   },
   methods: {
@@ -32,7 +32,7 @@ export default {
     },
     async submitLogin() {
       if (!this.validateForm()) {
-        return; // Ne pas envoyer si les validations échouent
+        return;
       }
 
       try {
@@ -42,8 +42,7 @@ export default {
             'Content-Type': 'application/json',
             Accept: '*/*',
           },
-          body: JSON.stringify({ email: this.email, password: this.password }),
-          credentials: 'include',
+          body: JSON.stringify({ email: this.email, password: this.password })
         });
 
         if (!response.ok) {
@@ -53,11 +52,11 @@ export default {
         const data = await response.json();
         if (data.jwtToken) {
           localStorage.setItem('jwtToken', data.jwtToken);
-          localStorage.setItem('userRole', data.user.role); // Stocker le rôle de l'utilisateur
+          localStorage.setItem('userRole', data.user.role);
 
-          localStorage.setItem('user', JSON.stringify(data.user)); // Stocker les informations de l'utilisateur
+          localStorage.setItem('user', JSON.stringify(data.user));
 
-          this.$router.push('/dashboard'); // Rediriger vers AdminLayout
+          this.$router.push('/dashboard');
         } else {
           this.errorMessage = 'Erreur de connexion : jeton non reçu.';
         }
