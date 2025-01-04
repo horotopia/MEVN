@@ -30,7 +30,7 @@
         @submit="handleSubmit"
     >
         <template #footer>
-            <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: 'red', color: '#fff' }" @click="formEdit.isVisible = false; formEdit.item = null">Annuler</button>
+            <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: '#1d2632', color: '#fff' }" @click="formEdit.isVisible = false; formEdit.item = null">Retour</button>
         </template>
     </Form>
 
@@ -54,11 +54,7 @@
             </div>
 
             <div class="flex justify-end mt-4" :disabled="isLoading">
-                <button v-if="!isLoading" type="submit" class="mr-2 p-1.5 rounded-md" style="background-color: rgb(76, 175, 80); color: rgb(255, 255, 255);">Enregistrer</button>
-                <div v-if="isLoading">
-                    Loading...
-                </div>
-                <button type="button" class="p-1.5 rounded-md" style="background-color: red; color: rgb(255, 255, 255);">Annuler</button>
+                <button type="button" class="p-1.5 rounded-md" style="background-color: rgb(29, 38, 50); color: rgb(255, 255, 255);" @click="formEdit.isVisible = false; formEdit.item = null">Retour</button>
             </div>
         </form>
     </div>
@@ -173,7 +169,6 @@ const addMedia = async (media) => {
 
         const response = await fetch(`${urlApiPicture}`, {
             method: 'POST',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -211,7 +206,6 @@ const removeMedia = async (media) => {
 
         const response = await fetch(`${urlApiPicture}/${media._id}`, {
             method: 'DELETE',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -240,7 +234,6 @@ async function fetchProducts() {
     try {
         const response = await fetch(urlApi, {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -286,7 +279,6 @@ async function updateProduct(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'PUT',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -320,7 +312,6 @@ async function deleteProduct(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'DELETE',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
