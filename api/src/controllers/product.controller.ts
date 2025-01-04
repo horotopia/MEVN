@@ -391,7 +391,6 @@ export class ProductController {
       "/",
       authenticateToken,
       validateRoleAdmin,
-      validateObjectId,
       this.createProduct.bind(this)
     );
     router.get("/:id", validateObjectId, this.getOneProduct.bind(this));

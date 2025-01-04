@@ -24,6 +24,7 @@ import {
   OrdersController,
   PicturesController,
   ProductController,
+  UploadController,
   UserController,
 } from "./controllers";
 
@@ -102,6 +103,9 @@ const productController = new ProductController();
 app.use("/api/product", productController.buildRouter());
 const userController = new UserController();
 app.use("/api/users", userController.buildRouter());
+
+const uploadController = new UploadController();
+app.use("/api/upload", uploadController.buildRouter());
 
 // Middleware d'erreurs global
 app.use(errorHandler(logger));
