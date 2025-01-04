@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mailService } from '../services/mailService';
+import { mailService } from '../services/mail.service';
 
 export const sendConfirmationEmail = async (req: Request, res: Response) => {
     const { email, username } = req.body;
@@ -31,7 +31,7 @@ export const sendPasswordResetEmail = async (req: Request, res: Response) => {
             to: email,
             subject: 'Réinitialise ton mot de passe',
             template: 'passwordReset',
-            data: { link: resetLink }
+            data: { resetLink }
         });
 
         res.status(200).json({ message: 'E-mail de réinitialisation envoyé avec succès !' });
@@ -48,7 +48,7 @@ export const sendInvoiceEmail = async (req: Request, res: Response) => {
             to: email,
             subject: 'Votre facture est prête',
             template: 'invoice',
-            data: { username, link: invoiceLink }
+            data: { username, invoiceLink }
         });
 
         res.status(200).json({ message: 'E-mail de facture envoyé avec succès !' });
@@ -57,21 +57,19 @@ export const sendInvoiceEmail = async (req: Request, res: Response) => {
     }
 };
 
-export const sendInvitationToResetPasswordEmail = async (req: Request, res: Response) => {
-    const { email, username } = req.body;
+export const sendOrderConfirmationEmail = async (req: Request, res: Response) => {
+    const { email, username, orderNumber, orderDetails } = req.body;
 
     try {
-        const resetLink = `${process.env.FRONTEND_URL}/invitation-reset?email=${email}`;
-        
         await mailService.sendTemplatedEmail({
             to: email,
-            subject: 'Invitation à réinitialiser votre mot de passe',
-            template: 'passwordReset',
-            data: { link: resetLink }
+            subject: 'Confirmation de votre commande',
+            template: 'orderConfirmation',
+            data: { username, orderNumber, orderDetails }
         });
 
-        res.status(200).json({ message: 'Invitation envoyée avec succès !' });
+        res.status(200).json({ message: 'E-mail de confirmation de commande envoyé avec succès !' });
     } catch (error: any) {
-        res.status(500).json({ message: 'Erreur lors de l\'envoi de l\'e-mail.' });
+        res.status(500).json({ message: 'Erreur lors de l\'envoi de l\'email.' });
     }
 };

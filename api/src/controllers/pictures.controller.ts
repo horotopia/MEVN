@@ -500,21 +500,21 @@ export class PicturesController {
     router.get(
       "/u/:userId",
       validateObjectId,
-      this.getAllPicturesByUserId
+      this.getAllPicturesByUserId.bind(this)
     );
     router.put("/:id", authenticateToken, validateObjectId, this.updatePicture);
     router.delete(
       "/:id",
       authenticateToken,
       validateObjectId,
-      this.deletePicture
+      this.deletePicture.bind(this)
     );
     router.delete(
       "/u/:userId",
       authenticateToken,
       validateRoleAdmin,
       validateObjectId,
-      this.deleteAllPicturesByUserId
+      this.deleteAllPicturesByUserId.bind(this)
     );
 
     router.get("/p/:productId", validateObjectId, this.getAllPicturesByProductId);
@@ -523,7 +523,7 @@ export class PicturesController {
       authenticateToken,
       validateRoleAdmin,
       validateObjectId,
-      this.deleteAllPicturesByProductId
+      this.deleteAllPicturesByProductId.bind(this)
     );
 
     return router;

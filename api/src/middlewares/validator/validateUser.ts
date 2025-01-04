@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import e, { NextFunction, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 
 const validateCreateUser = (
@@ -6,6 +6,7 @@ const validateCreateUser = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("validateCreateUser:", req.body);
   // Validation de l'email
   body("email").isEmail().withMessage("E-mail valide obligatoire");
   // Validation du mot de passe
@@ -27,8 +28,9 @@ const validateCreateUser = (
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400).json({ errors: errors.array() });
+    next(errors);
   }
-  next(errors);
+  next();
 };
 
 export default validateCreateUser;

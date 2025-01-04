@@ -19,6 +19,7 @@ import SettingsCard from '../components/Dashboard/SettingsCard.vue'
 import Clients from '../pages/admin/Clients.vue'
 import PanierInformations from '../pages/user/PanierInformations.vue'
 import Products from '../pages/admin/Products.vue';
+import PaymentStripe from '../components/PaymentStripe.vue';
 import Orders from '../pages/admin/Orders.vue';
 
 const routes = [
@@ -36,6 +37,7 @@ const routes = [
       { path: 'panier', name: 'Panier', component: Panier },
       { path: 'contact', name: 'Contact', component: Contact },
       { path: 'panier/informations', name: 'Informations', component: PanierInformations },
+      { path: 'paiement', name: 'paiement', component: PaymentStripe, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
     ]
   },
   {
