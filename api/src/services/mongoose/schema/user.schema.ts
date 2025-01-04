@@ -28,9 +28,6 @@ import { User } from "../../../models";
  *         address:
  *           $ref: '#/components/schemas/Address'
  *           description: L'adresse de l'utilisateur
- *         pictures:
- *           type: array
- *           description: Les images de l'utilisateur
  *       example:
  *         name: John Doe
  *         email: john.doe@toto.com
@@ -40,9 +37,8 @@ import { User } from "../../../models";
  *           userId: "643d0fd5c07b4a2e88b074c9"
  *           street: "123 Rue de Paris"
  *           city: "Paris"
- *           postalCode: "75001"
+ *           postalCode: "75000"
  *           country: "France"
- *         pictures: ["643d0fd5c07b4a2e88b074c9"]
  */
 
 export const userSchema = new Schema<User>(
@@ -67,13 +63,7 @@ export const userSchema = new Schema<User>(
     address: {
       type: Schema.Types.ObjectId,
       ref: "Address",
-    },
-    pictures: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Pictures"
-      }
-    ]
+    }
   },
   {
     timestamps: true,

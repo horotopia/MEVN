@@ -54,6 +54,9 @@ export default {
         if (data.jwtToken) {
           localStorage.setItem('jwtToken', data.jwtToken);
           localStorage.setItem('userRole', data.user.role); // Stocker le rôle de l'utilisateur
+
+          localStorage.setItem('user', JSON.stringify(data.user)); // Stocker les informations de l'utilisateur
+
           this.$router.push('/dashboard'); // Rediriger vers AdminLayout
         } else {
           this.errorMessage = 'Erreur de connexion : jeton non reçu.';
@@ -76,29 +79,20 @@ export default {
   <div class="flex flex-col items-center pt-16 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-2xl">
       <h1 class="text-5xl font-extrabold text-center mb-12 font-primary whitespace-nowrap">COMPTE POKÉSHOP</h1>
-      
-      <div class="bg-white rounded-xl border-2 border-[#DDDDDD] shadow-[0_4px_8px_rgba(0,0,0,0.3)] p-12 max-w-xl mx-auto">
+
+      <div
+        class="bg-white rounded-xl border-2 border-[#DDDDDD] shadow-[0_4px_8px_rgba(0,0,0,0.3)] p-12 max-w-xl mx-auto">
         <h2 class="text-2xl font-bold text-center mb-10 font-primary">CONNEXION</h2>
-        
-        <form 
-          @submit.prevent="submitLogin"
-          novalidate
-          class="space-y-8 font-secondary font-semibold"
-        >
+
+        <form @submit.prevent="submitLogin" novalidate class="space-y-8 font-secondary font-semibold">
           <div>
             <label class="flex items-center space-x-2 mb-2">
               <div class="w-1 h-5 bg-[#C73D3D]"></div>
               <span class="font-medium font-secondary font-semibold text-gray-900">Adresse E-mail</span>
             </label>
-            <input
-              type="email"
-              v-model="email"
-              @input="checkEmail"
-              placeholder="Adresse E-mail"
+            <input type="email" v-model="email" @input="checkEmail" placeholder="Adresse E-mail"
               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
-              :class="{ 'border-red-500': emailError }"
-              required
-            />
+              :class="{ 'border-red-500': emailError }" required />
             <p v-if="emailError" class="mt-1 text-sm text-red-600 font-secondary">{{ emailError }}</p>
           </div>
 
@@ -107,24 +101,16 @@ export default {
               <div class="w-1 h-5 bg-[#C73D3D]"></div>
               <span class="font-medium font-secondary font-semibold text-gray-900">Mot de passe</span>
             </label>
-            <input
-              type="password"
-              v-model="password"
-              @input="checkPassword"
-              placeholder="Mot de passe"
+            <input type="password" v-model="password" @input="checkPassword" placeholder="Mot de passe"
               class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-4 focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
-              :class="{ 'border-red-500': passwordError }"
-              required
-            />
+              :class="{ 'border-red-500': passwordError }" required />
             <p v-if="passwordError" class="mt-1 text-sm text-red-600 font-secondary">{{ passwordError }}</p>
           </div>
 
           <p v-if="errorMessage" class="text-center mt-4 text-red-600 font-secondary">{{ errorMessage }}</p>
 
-          <button
-            type="submit"
-            class="w-48 mx-auto block bg-[#C73D3D] text-white py-2 rounded-full hover:bg-[#B23535] transition-colors duration-200 font-primary font-bold mt-8 text-lg"
-          >
+          <button type="submit"
+            class="w-48 mx-auto block bg-[#C73D3D] text-white py-2 rounded-full hover:bg-[#B23535] transition-colors duration-200 font-primary font-bold mt-8 text-lg">
             Se connecter
           </button>
         </form>
@@ -132,10 +118,8 @@ export default {
 
       <div class="text-center mt-4 font-bold font-primary">
         <p class="text-gray-800 mb-4">Vous n'avez pas de compte ?</p>
-        <router-link 
-          to="/register" 
-          class="inline-block bg-[#C73D3D] text-white py-2 px-8 rounded-full hover:bg-[#B23535] transition-colors duration-200 text-lg"
-        >
+        <router-link to="/register"
+          class="inline-block bg-[#C73D3D] text-white py-2 px-8 rounded-full hover:bg-[#B23535] transition-colors duration-200 text-lg">
           Créer un compte
         </router-link>
       </div>

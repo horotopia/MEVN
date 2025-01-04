@@ -1,7 +1,7 @@
 import { Model } from "mongoose";
-import { User } from "../../models";
+import { User, Pictures, Address } from "../../models";
 import { MongooseService } from "./mongoose.service";
-import { userSchema } from "./schema";
+import { userSchema, picturesSchema, addressSchema } from "./schema";
 
 import { AddressService } from "./address.service";
 
@@ -11,12 +11,17 @@ export type UpdateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 export class UserService {
   readonly mongooseService: MongooseService;
   readonly model: Model<User>;
+  readonly pictureModel: Model<Pictures>;
+  readonly addressModel: Model<Address>;
 
   constructor(mongooseService: MongooseService) {
     this.mongooseService = mongooseService;
     const mongoose = this.mongooseService.mongoose;
     this.model = mongoose.model("User", userSchema);
+    this.pictureModel = mongoose.model("Picture", picturesSchema);
+    this.addressModel = mongoose.model("Address", addressSchema);
   }
+
   // register
   async createUser(user: CreateUser): Promise<User> {
     const res = await this.model.create(user);
@@ -28,21 +33,57 @@ export class UserService {
     const user = await this.model.findOne({
       email: email,
     });
-    // findOne permet de récuperer 1 enregistrement avec le filtre
-    // la condition du filtre utilise un AND entre chaque champs
-    return user;
+    if (!user) {
+      return null;
+    }
+
+    const userId = user._id;
+    const pictures = await this.pictureModel.find({ userId: { $in: userId } });
+
+    const userPictures = pictures.filter(picture => picture.userId.toString() === userId.toString());
+    const userWithImages = {
+      ...user.toObject(),
+      pictures: userPictures
+    };
+
+    return userWithImages;
   }
 
   // read one
   async findUserById(id: string): Promise<User | null> {
-    const res = await this.model.findById(id);
-    return res;
+    const user = await this.model.findById(id);
+    if (!user) {
+      return null;
+    }
+
+    const userId = user._id;
+    const pictures = await this.pictureModel.find({ userId: { $in: userId } });
+
+    const userPictures = pictures.filter(picture => picture.userId.toString() === userId.toString());
+    const userWithImages = {
+      ...user.toObject(),
+      pictures: userPictures
+    };
+
+    return userWithImages;
   }
 
   // read all
   async findAllUsers(): Promise<User[]> {
-    const res = await this.model.find();
-    return res;
+    const users = await this.model.find();
+
+    const userIds = users.map(user => user._id);
+    const pictures = await this.pictureModel.find({ userId: { $in: userIds } });
+
+    const usersWithImages = users.map(user => {
+      const userPictures = pictures.filter(picture => picture.userId.toString() === user._id.toString());
+      return {
+        ...user.toObject(),
+        pictures: userPictures
+      };
+    });
+
+    return usersWithImages;
   }
 
   // update

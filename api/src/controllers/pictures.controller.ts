@@ -4,6 +4,9 @@ import { validateObjectId } from "../middlewares/validate";
 import { validateRoleAdmin } from "../middlewares/validator/validateRole";
 import { MongooseService } from "../services/mongoose";
 
+import fs from 'fs';
+import path from 'path';
+
 export class PicturesController {
 /**
  * @swagger
@@ -64,11 +67,23 @@ export class PicturesController {
 
   async createPicture(req: Request, res: Response, next: NextFunction) {
     try {
-      if (
+      console.log(req.body);
+      console.log(
+        !req.body,
+        !req.body.name,
+        !req.body.description,
+        !req.body.userId,
+        !req.body.productId
+      )
+      console.log(
         !req.body ||
-        !req.body.name ||
-        !req.body.description ||
-        ( !req.body.userId || !req.body.productId )
+          !req.body.name ||
+          !req.body.description ||
+          !(!req.body.userId || !req.body.productId)
+      )
+      if (
+        !req.body || !req.body.name || !req.body.description ||
+        !( !req.body.userId || !req.body.productId )
       ) {
         res.status(400);
         throw new Error("Bad Request");
@@ -307,10 +322,23 @@ export class PicturesController {
       const picture = await mongooseService.picturesService.deletePictures(
         req.params.id
       );
+
       if (!picture) {
         res.status(404);
         throw new Error("Not Found");
       }
+
+      console.log(picture);
+
+      const filePath = path.join(__dirname, '../uploads', (picture?.userId)? `users/${picture?.userId}/${picture.name}` : `products/${picture?.productId}/${picture?.name}`);
+
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          res.status(404);
+          throw new Error('Error deleting file');
+        }
+      })
+
       res.status(204).send();
     } catch (error) {
       if (!res.statusCode) {
