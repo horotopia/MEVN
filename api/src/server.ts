@@ -30,6 +30,7 @@ import {
   UserController,
 } from "./controllers";
 
+import mailRoutes from './routes/mail.routes';
 
 const stripe = new Stripe('sk_test_51QbfWPAp1XlFPm6zLkvVNhO8pYoxpQhqwIJwCA0uaVb6CSTnFIZhBZIqw7vsMgVTfZmCjK58buTuBqXutEbVRAGf004LpVVZTa', { apiVersion: '2024-06-20' });
 
@@ -142,6 +143,9 @@ app.use("/api/users", userController.buildRouter());
 
 // Middleware d'erreurs global
 app.use(errorHandler(logger));
+
+// Ajouter avec les autres routes
+app.use('/api/mail', mailRoutes);
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;
