@@ -57,13 +57,6 @@
               >+</button>
             </div>
           </div>
-    
-          <button 
-            @click.prevent.stop="ajouterAuPanier"
-            class="whitespace-nowrap rounded-full bg-[#ff4c4c] border-2 border-[#D43C3C] px-4 py-1 font-bold text-white transition ease-in-out active:bg-[#CC3C3C] active:border-[#A82E2E]"
-          >
-            AJOUTER AU PANIER
-          </button>
           <button 
             @click.prevent.stop="basculerCoeur"
             class="rounded-full border-2 border-gray-300 p-1.5 transition-colors duration-200 hover:bg-yellow-100 flex items-center justify-center h-[34px] w-[34px]"
@@ -102,7 +95,7 @@
       },
       data() {
         return {
-          quantite: 0,
+          quantite: 1,
           estFavori: false,
           estAime: false
         }
@@ -110,24 +103,24 @@
       methods: {
         getTypeColor(type) {
           const couleurs = {
-            normal: 'bg-gray-400',
-            feu: 'bg-red-500',
-            water: 'bg-blue-500',
-            grass: 'bg-green-500',
-            électricité: 'bg-yellow-500',
-            ice: 'bg-blue-300',
-            fighting: 'bg-red-700',
-            poison: 'bg-purple-500',
-            ground: 'bg-yellow-600',
-            vol: 'bg-blue-400',
-            psychic: 'bg-pink-500',
-            bug: 'bg-green-600',
-            rock: 'bg-yellow-800',
-            ghost: 'bg-purple-700',
-            dragon: 'bg-purple-600',
-            dark: 'bg-gray-700',
-            steel: 'bg-gray-500',
-            fairy: 'bg-pink-400'
+          normal: 'bg-gray-400',
+          feu: 'bg-red-500',
+          eau: 'bg-blue-500',
+          plante: 'bg-green-500',
+          électrique: 'bg-yellow-500',
+          glace: 'bg-blue-300',
+          combat: 'bg-red-700',
+          poison: 'bg-purple-500',
+          sol: 'bg-yellow-600',
+          vol: 'bg-blue-400',
+          psy: 'bg-pink-500',
+          insecte: 'bg-green-600',
+          roche: 'bg-yellow-800',
+          spectre: 'bg-purple-700',
+          dragon: 'bg-purple-600',
+          ténèbres: 'bg-gray-700',
+          acier: 'bg-gray-500',
+          fée: 'bg-pink-400'
           }
           return couleurs[type] || 'bg-gray-500'
         },
@@ -135,7 +128,7 @@
           this.quantite++
         },
         diminuerQuantite() {
-          if (this.quantite > 0) {
+          if (this.quantite > 1) {
             this.quantite--
           }
         },
@@ -145,17 +138,6 @@
         basculerCoeur() {
           this.estAime = !this.estAime
         },
-        // ajouterAuPanier() {
-        //   if (this.quantite > 0) {
-        //     this.$emit('ajouter-au-panier', {
-        //       id: this.id,
-        //       nom: this.nom,
-        //       quantite: this.quantite,
-        //       prix: this.prix
-        //     })
-        //     this.quantite = 0
-        //   }
-        // },
         allerVersDetailsPokemon() {
           this.$router.push(`/pokemon/${this.id}`)
         }

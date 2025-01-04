@@ -6,4 +6,5 @@ export * from "./favoris.controller";
 export * from "./orders.controller";
 export * from "./pictures.controller";
 export * from "./product.controller";
+export * from "./upload.controller";
 export * from "./user.controller";

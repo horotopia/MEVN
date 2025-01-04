@@ -375,7 +375,7 @@ export class ProductController {
         res.status(404);
         throw new Error("Product not found");
       }
-      res.status(204);
+      res.status(204).send();
       return;
     } catch (error) {
       if (!res.statusCode) {

@@ -4,11 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
+    host: 'mailhog',
+    port: 1025,
+    secure: false,
+    ignoreTLS: true
 });
 
-export default transporter
+export default transporter;

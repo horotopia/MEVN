@@ -5,7 +5,17 @@ export default {
     return {
       cartItemCount: 0
     }
-  }
+  },
+  methods: {
+    updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      this.cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+    },
+  },
+  created() {
+    this.updateCartCount();
+    window.addEventListener("cart-updated", this.updateCartCount);
+  },
 }
 </script>
 
@@ -52,14 +62,20 @@ export default {
       <div class="w-8"></div>
       <router-link 
         to="/pokemon" 
-        class="bg-[#FFD233] px-8 py-2 text-white primary-font hover:opacity-90 border-l-2 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke"
+        :class="[
+          $route.path.startsWith('/pokemon') ? 'bg-[#FFD233]' : 'bg-[#FF5353]',
+          'px-8 py-2 text-white primary-font hover:opacity-90 border-l-2 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke'
+        ]"
       >
         Pokémon
       </router-link>
       
       <router-link 
         to="/accessoires" 
-        class="bg-[#FF5353] px-8 py-2 text-white primary-font hover:opacity-90 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke"
+        :class="[
+          $route.path.startsWith('/accessoires') ? 'bg-[#FFD233]' : 'bg-[#FF5353]',
+          'px-8 py-2 text-white primary-font hover:opacity-90 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke'
+        ]"
       >
         Accessoires
       </router-link>
@@ -67,7 +83,10 @@ export default {
       
       <router-link 
         to="/contact" 
-        class="bg-[#FF5353] px-8 py-2 text-white primary-font hover:opacity-90 border-l-2 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke"
+        :class="[
+          $route.path.startsWith('/contact') ? 'bg-[#FFD233]' : 'bg-[#FF5353]',
+          'px-8 py-2 text-white primary-font hover:opacity-90 border-l-2 border-r-2 border-[#C73D3D] text-[28px] nav-text-stroke'
+        ]"
       >
         Contact
       </router-link>

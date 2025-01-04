@@ -1,26 +1,42 @@
 <template>
     <Table
-        :header="{ title: 'Liste des commandes' }"
+        v-if="!formEdit.isVisible"
+        :options="{
+            header: {
+                title: 'Liste des commandes',
+            },
+            search: true
+        }"
         :fields="fields"
         :data="tableData"
         :itemsPerPage="5"
     >
+        <template #userId="{ item }">
+            <span>{{ item.userId?.name }}</span>
+        </template>
+        <template #items="{ item }">
+            <span>{{
+                item.items?.length
+                    ? item.items.map((i, index) => `${i?.productId?.name} x${i.quantity}`).join(', ')
+                    : 'Aucun article'
+            }}</span>
+        </template>
         <template #action="{ item }">
             <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
             <button class="btn btn-danger" @click="deleteItem(item)">Delete</button>
         </template>
     </Table>
-    <ModalForm
-        v-if="modalEdit.item"
-        :visible="modalEdit.isVisible"
-        :text="{ title: 'Modifier un client', submit: 'Modifier', close: 'Fermer' }"
-        :item="modalEdit.item"
-        :disableFields="disableKey"
-        :fieldTypes="{ email: 'email', role: 'select' }"
-        :selectOptions="{ role: [{ value: 'ROLE_USER', text: 'User' }, { value: 'ROLE_ADMIN', text: 'Admin' }] }"
-        @close="closeModal"
+    <Form
+        v-else
+        :visible="formEdit.isVisible"
+        :text="{ title: 'Modifier un produit', submit: 'Enregistrer' }"
+        :forms="getForms()"
         @submit="handleSubmit"
-    />
+    >
+        <template #footer>
+            <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: 'red', color: '#fff' }" @click="formEdit.isVisible = false; formEdit.item = null">Annuler</button>
+        </template>
+    </Form>
     <ModalForm
         v-if="modalDelete.item"
         :visible="modalDelete.isVisible"
@@ -47,6 +63,7 @@
 import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
+import Form from '../../components/forms/Form.vue';
 
 const urlApi = 'http://localhost:5000/api/orders';
 
@@ -56,7 +73,7 @@ const disableKey = ref([
     '_id', 'password', 'createdAt', 'updatedAt'
 ]);
 
-const modalEdit = ref({
+const formEdit = ref({
     isVisible: false,
     item: null
 })
@@ -73,7 +90,6 @@ async function fetchUsers() {
     try {
         const response = await fetch(urlApi, {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -120,7 +136,6 @@ async function updateUser(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'PUT',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -154,7 +169,6 @@ async function deleteUser(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'DELETE',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -185,15 +199,43 @@ onMounted(() => {
     fetchUsers();
 });
 
+function getForms() {
+    return formEdit.forms;
+}
+
 function editItem(item) {
     delete item.password;
-    delete item.createdAt;
-    delete item.updatedAt;
 
-    modalEdit.value = {
+    formEdit.value = {
         isVisible: true,
         item: item
     }
+
+    formEdit.forms = [
+        {
+            type: 'text',
+            key: '_id',
+            value: item._id,
+            disabled: true,
+            placeholder: 'ID',
+            label: 'Identifiant unique du produit',
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'text',
+            key: 'name',
+            value: item.name,
+            placeholder: 'Nom du produit',
+            label: 'Nom du produit',
+            max: 100,
+            columns: 6,
+            columns: {
+                container: 'w-1/2'
+            }
+        }
+    ]
 }
 
 function deleteItem(item) {
@@ -204,7 +246,7 @@ function deleteItem(item) {
 }
 
 function closeModal() {
-    modalEdit.value = {
+    formEdit.value = {
         isVisible: false,
         item: null
     }
