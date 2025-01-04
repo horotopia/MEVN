@@ -80,12 +80,6 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
-// Lancer le serveur
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
-});
-
 // Security
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

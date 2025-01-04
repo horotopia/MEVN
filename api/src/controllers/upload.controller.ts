@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { NextFunction, Request, Response, Router } from "express";
 import multer from 'multer';
-import { timeStamp } from 'console';
 
 export class UploadController {
     private storage = multer.diskStorage({
