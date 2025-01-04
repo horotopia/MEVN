@@ -36,8 +36,6 @@ onClickOutside(target, () => {
           fill="" />
       </svg>
     </router-link>
-
-    <!-- Dropdown Start -->
     <div v-show="dropdownOpen"
       class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default">
       <ul class="flex flex-col gap-5 border-b border-stroke px-6 py-7.5">
@@ -57,9 +55,6 @@ onClickOutside(target, () => {
           </router-link>
         </li>
       </ul>
-      <!-- <button
-        class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-      > -->
       <router-link to="/logout"
         class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
         <svg class="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none"
@@ -74,6 +69,5 @@ onClickOutside(target, () => {
         Se deconnecter
       </router-link>
     </div>
-    <!-- Dropdown End -->
   </div>
 </template>

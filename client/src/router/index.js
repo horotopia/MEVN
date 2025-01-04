@@ -6,6 +6,7 @@ import Home from '../pages/user/Home.vue';
 import Login from '../pages/auth/Login.vue';
 import Register from '../pages/auth/Register.vue';
 import Dashboard from '../pages/admin/Dashboard.vue';
+import Statistiques from '../pages/admin/Statistiques.vue';
 import PokemonDetails from '../pages/user/PokemonDetails.vue';
 import Pokemon from '../pages/user/Pokemon.vue';
 import Accessoires from '../pages/user/Accessoires.vue';
@@ -34,9 +35,9 @@ const routes = [
       { path: 'mentions-legales', name: 'MentionsLégales', component: MentionsLegales },
       { path: 'conditions-generales-de-vente', name: 'ConditionsGeneraleDeVente', component: Cgv },
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },
-      { path: 'panier', name: 'Panier', component: Panier },
       { path: 'contact', name: 'Contact', component: Contact },
-      { path: 'panier/informations', name: 'Informations', component: PanierInformations },
+      { path: 'panier', name: 'Panier', component: Panier },
+      { path: 'panier/informations', name: 'infopanier', component: PanierInformations,  props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
       { path: 'paiement', name: 'paiement', component: PaymentStripe, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
     ]
   },
@@ -62,6 +63,7 @@ const routes = [
     meta: { requiresAuth: true }, // requiresAdmin
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+      { path: 'dashboard/statistiques', name: 'Statistiques', component: Statistiques },
       { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
       { path: 'dashboard/clients', name: 'Clients', component: Clients, meta: { requiresAdmin: true } },
@@ -86,10 +88,18 @@ router.beforeEach((to, from, next) => {
     } else if ((to.matched.some(record => record.meta.requiresAdmin) || to.matched.find(record => record.path === to.path)?.meta?.requiresAdmin) && userRole !== 'ROLE_ADMIN') {
       window.history.length > 1 ? router.go(-1) : next({ name: 'Dashboard' });
     } else {
-      next();
+      if (to.name === 'Dashboard' && userRole === 'ROLE_ADMIN') {
+        next({ name: 'Statistiques' });
+      } else {
+        next();
+      }
     }
   } else if ((to.name === 'Login' || to.name === 'Register') && token) {
-    next({ name: 'Dashboard' });
+    if (userRole === 'ROLE_ADMIN') {
+      next({ name: 'Statistiques' });
+    } else {
+      next({ name: 'Dashboard' });
+    }
   } else {
     next();
   }

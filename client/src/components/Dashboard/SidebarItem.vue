@@ -50,8 +50,6 @@ const handleItemClick = () => {
         />
       </svg>
     </router-link>
-
-    <!-- Dropdown Menu Start -->
     <div class="translate transform overflow-hidden" v-show="sidebarStore.page === item.label">
       <SidebarDropdown
         v-if="item.children"
@@ -59,7 +57,6 @@ const handleItemClick = () => {
         :currentPage="currentPage"
         :page="item.label"
       />
-      <!-- Dropdown Menu End -->
     </div>
   </li>
 </template>

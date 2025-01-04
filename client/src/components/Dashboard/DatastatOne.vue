@@ -102,7 +102,6 @@ const cardItems = ref([
 </script>
 
 <template>
-  <!-- Card Item Start -->
   <div
     v-for="(item, index) in cardItems"
     :key="index"
@@ -112,13 +111,11 @@ const cardItems = ref([
       class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 text-black"
       v-html="item.icon"
     ></div>
-
     <div class="mt-4 flex items-end justify-between">
       <div>
         <h4 class="text-title-md font-bold text-black ">{{ item.total }}</h4>
         <span class="text-sm font-medium">{{ item.title }}</span>
       </div>
-
       <span
         class="flex items-center gap-1 text-sm font-medium"
         :class="{ 'text-meta-3': item.growthRate > 0, 'text-meta-5': item.growthRate < 0 }"
@@ -138,7 +135,6 @@ const cardItems = ref([
             fill=""
           />
         </svg>
-
         <svg
           v-if="item.growthRate < 0"
           class="fill-meta-5"
@@ -156,5 +152,4 @@ const cardItems = ref([
       </span>
     </div>
   </div>
-  <!-- Card Item End -->
 </template>
