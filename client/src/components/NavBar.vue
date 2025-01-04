@@ -5,7 +5,17 @@ export default {
     return {
       cartItemCount: 0
     }
-  }
+  },
+  methods: {
+    updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      this.cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+    },
+  },
+  created() {
+    this.updateCartCount();
+    window.addEventListener("cart-updated", this.updateCartCount);
+  },
 }
 </script>
 
