@@ -27,6 +27,8 @@ import {
   UserController,
 } from "./controllers";
 
+import mailRoutes from './routes/mail.routes';
+
 config();
 const app: Express = express();
 
@@ -105,6 +107,9 @@ app.use("/api/users", userController.buildRouter());
 
 // Middleware d'erreurs global
 app.use(errorHandler(logger));
+
+// Ajouter avec les autres routes
+app.use('/api/mail', mailRoutes);
 
 // Listen to the server
 const port: string | number = process.env.API_PORT || 5000;
