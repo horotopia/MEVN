@@ -385,20 +385,36 @@ export class ProductController {
     }
   }
 
+  // countProductSellInMonth
+  async countProductSellInMonth(req: Request, res: Response, next: NextFunction) {
+    console.log("countProductSellInMonth");
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.productService.countProductSellInMonth();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
+    router.get("/countProductSellInMonth", this.countProductSellInMonth.bind(this));
+    router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
+    router.get(
+      "/:attribute/:value",
+      validateAttributeAndValue,
+      this.getProductByAttribute.bind(this)
+    );
+    router.get("/", this.getProducts.bind(this));
     router.post(
       "/",
       authenticateToken,
       validateRoleAdmin,
       this.createProduct.bind(this)
-    );
-    router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
-    router.get("/", this.getProducts.bind(this));
-    router.get(
-      "/:attribute/:value",
-      validateAttributeAndValue,
-      this.getProductByAttribute.bind(this)
     );
     router.put(
       "/:id",
@@ -414,6 +430,7 @@ export class ProductController {
       validateObjectId,
       this.deleteProduct.bind(this)
     );
+
     return router;
   }
 }
