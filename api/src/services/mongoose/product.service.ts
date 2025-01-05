@@ -94,7 +94,7 @@ export class ProductService {
   }
 
   // sold
-  async countProductSellInMonth(): Promise<{ currrentMonth: number, lastMonth: number }> {
+  async countProductSellInMonth(): Promise<{ currrentMonth: number, lastMonth: number, growthRate: number }> {
     const date = new Date();
     
     const currentMonth = date.getMonth();
@@ -124,9 +124,14 @@ export class ProductService {
 
     const lastMonthSell = lastMonthOrders.reduce((acc, order) => acc + order.items.reduce((acc, item) => acc + item.quantity, 0), 0);
 
+    const growthRate = lastMonthSell > 0 
+        ? ((currentMonthSell - lastMonthSell) / lastMonthSell) * 100 
+        : (currentMonthSell > 0 ? 100 : 0);
+
     return {
       currrentMonth: currentMonthSell,
-      lastMonth: lastMonthSell
+      lastMonth: lastMonthSell,
+      growthRate: parseFloat(growthRate.toFixed(2)),
     }
   }
 }
