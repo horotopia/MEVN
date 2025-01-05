@@ -1,17 +1,21 @@
 <template>
-    <Table :options="{
+    <Table
+        v-if="!formEdit.isVisible"
+        :options="{
             header: {
                 title: 'Liste des clients',
             },
             search: true
-        }" :fields="fields" :data="tableData" :itemsPerPage="5">
+        }"
+        :fields="fields"
+        :data="tableData"
+        :itemsPerPage="5"
+    >
         <template #pictures="{ item }">
-
             <a v-if="item.pictures[0]?.name" :href="`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`" class="text-decoration-none" target="_blank">
                 <Avatar :fullname="item.name" :size="34"
                     :image="`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`" />
             </a>
-
             <Avatar v-else :fullname="item.name" :size="34" />
         </template>
         <template #action="{ item }">
@@ -19,11 +23,45 @@
             <button class="btn btn-danger" @click="deleteItem(item)">Delete</button>
         </template>
     </Table>
-    <ModalForm v-if="modalEdit.item" :visible="modalEdit.isVisible"
-        :text="{ title: 'Modifier un client', submit: 'Modifier', close: 'Fermer' }" :item="modalEdit.item"
-        :disableFields="disableKey" :fieldTypes="{ email: 'email', role: 'select' }"
-        :selectOptions="{ role: [{ value: 'ROLE_USER', text: 'User' }, { value: 'ROLE_ADMIN', text: 'Admin' }] }"
-        @close="closeModal" @submit="handleSubmit" />
+
+    <Form
+        v-if="formEdit.isVisible"
+        :visible="formEdit.isVisible"
+        :text="{ title: 'Modifier un client', submit: 'Modifier' }"
+        :forms="getForms()"
+        @submit="handleSubmit"
+    >
+        <template #footer>
+            <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: '#1d2632', color: '#fff' }" @click="formEdit.isVisible = false; formEdit.item = null">Retour</button>
+        </template>
+    </Form>
+
+    <div class="bg-white p-6 w-full" v-if="formEdit.isVisible">
+        <form @submit.prevent="onSubmit" class="">
+            <div class="mb-4">
+                <label class="form-label">Media</label>
+                <div>
+                    <Uploader
+                        v-if="hasResponse"
+                        :server="`http://localhost:5000/api/upload/users/${formEdit.item._id}`"
+                        :media="getData()"
+                        location="http://localhost:5000/uploads/users"
+                        :max="1"
+                        @init="initMedia"
+                        @change="changeMedia"
+                        @add="addMedia"
+                        @remove="removeMedia"
+                    />
+                </div>
+                <p v-if="errors['media.list']" class="text-danger">{{ errors['media.list'][0] }}</p>
+            </div>
+
+            <div class="flex justify-end mt-4" :disabled="isLoading">
+                <button type="button" class="p-1.5 rounded-md" style="background-color: rgb(29, 38, 50); color: rgb(255, 255, 255);" @click="formEdit.isVisible = false; formEdit.item = null">Retour</button>
+            </div>
+        </form>
+    </div>
+    
     <ModalForm v-if="modalDelete.item" :visible="modalDelete.isVisible" :text="{
         title: `Etes-vous sûr de vouloir supprimer '${modalDelete.item?.name}' ?`,
         submit: {
@@ -42,10 +80,14 @@
 import { ref, onMounted } from 'vue';
 import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
+import Form from '../../components/forms/Form.vue';
+
 import Avatar from '../../components/Avatar.vue';
+import Uploader from '../../components/Uploader.vue';
 
 const urlApi = 'http://localhost:5000/api/users';
 const publicPath = 'http://localhost:5000/uploads';
+const urlApiPicture = 'http://localhost:5000/api/pictures';
 
 const fields = ref([]);
 const tableData = ref([]);
@@ -53,9 +95,26 @@ const disableKey = ref([
     '_id', 'password', 'createdAt', 'updatedAt'
 ]);
 
-const modalEdit = ref({
+const post = ref({
+    id: '',
+    title: '',
+    content: '',
+    media: {
+        list: [],
+        saved: [],
+        added: [],
+        removed: []
+    }
+});
+
+const errors = ref([])
+const hasResponse = ref(true)
+const isLoading = ref(false)
+
+const formEdit = ref({
     isVisible: false,
-    item: null
+    item: null,
+    forms: {}
 })
 
 const modalDelete = ref({
@@ -70,7 +129,6 @@ async function fetchUsers() {
     try {
         const response = await fetch(urlApi, {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -117,7 +175,6 @@ async function updateUser(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'PUT',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -151,7 +208,6 @@ async function deleteUser(item) {
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
             method: 'DELETE',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`,
@@ -178,19 +234,180 @@ async function deleteUser(item) {
     }
 }
 
+const initMedia = (media) => {
+    post.value.media.saved = media
+    hasResponse.value = true
+}
+
+const changeMedia = (media) => {
+    post.value.media.added = media
+}
+
+const addMedia = async (media) => {
+    post.value.media.added.push(media)
+
+    console.log('Added:', media);
+
+    try {
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        const response = await fetch(`${urlApiPicture}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+            body: JSON.stringify({
+                name: media.name,
+                userId: formEdit.value.item._id,
+                description: "product user"
+            }),
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la creation de l\'image');
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error('Erreur lors de la creation de l\'image', error);
+    }
+}
+
+const removeMedia = async (media) => {
+    post.value.media.removed.push(media)
+
+    console.log('Removed:', post.value.media.removed);
+
+    try {
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        const response = await fetch(`${urlApiPicture}/${media._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Jeton expiré ou non valide');
+                return;
+            }
+            throw new Error('Erreur lors de la creation de l\'image');
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error('Erreur lors de la creation de l\'image', error);
+    }
+}
+
 onMounted(() => {
     fetchUsers();
 });
 
+function getForms() {
+    return formEdit.forms;
+}
+
+const getData = () => {
+    post.value.media.saved = formEdit.value.item.pictures.map(picture => {
+        return {
+            _id: picture._id,
+            name: picture.userId + '/' + picture.name,
+        }
+    }) || []
+
+    return post.value.media.saved
+}
+
 function editItem(item) {
     delete item.password;
-    delete item.createdAt;
-    delete item.updatedAt;
 
-    modalEdit.value = {
+    formEdit.value = {
         isVisible: true,
         item: item
     }
+
+    formEdit.forms = [
+        {
+            type: 'text',
+            key: '_id',
+            value: item._id,
+            disabled: true,
+            placeholder: 'ID',
+            label: 'Identifiant unique du produit',
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'text',
+            key: 'name',
+            value: item.name,
+            placeholder: 'Nom',
+            label: 'Nom',
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'text',
+            key: 'email',
+            value: item.email,
+            placeholder: 'Email',
+            label: 'Email',
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'select',
+            key: 'role',
+            value: item.role,
+            placeholder: 'Role',
+            label: 'Role',
+            columns: {
+                container: 'w-1/2'
+            },
+            options: [
+                { value: 'ROLE_USER', text: 'User' },
+                { value: 'ROLE_ADMIN', text: 'Admin' }
+            ]
+        },
+        {
+            type: 'text',
+            key: 'createdAt',
+            value: item.createdAt,
+            disabled: true,
+            placeholder: 'Date de création',
+            label: 'Date de création',
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'text',
+            key: 'updatedAt',
+            value: item.updatedAt,
+            disabled: true,
+            placeholder: 'Date de mise à jour',
+            label: 'Date de mise à jour',
+            columns: {
+                container: 'w-1/2'
+            }
+        }
+    ]
 }
 
 function deleteItem(item) {
@@ -201,9 +418,10 @@ function deleteItem(item) {
 }
 
 function closeModal() {
-    modalEdit.value = {
+    formEdit.value = {
         isVisible: false,
-        item: null
+        item: null,
+        forms: {}
     }
     modalDelete.value = {
         isVisible: false,

@@ -125,15 +125,11 @@ const modalDelete = ref({
     item: null
 })
 
-
-
 const getData = () => {
-    // post.value.media.saved = formEdit.value.item.pictures || []
-
     post.value.media.saved = formEdit.value.item.pictures.map(picture => {
         return {
             _id: picture._id,
-            name: picture.productId + '/' + picture.name,
+            name: picture.userId + '/' + picture.name,
         }
     }) || []
 
@@ -383,6 +379,22 @@ function editItem(item) {
             max: 500,
         },
         {
+            type: 'textarea',
+            key: 'Tout savoir',
+            content: item.toutSavoir,
+            placeholder: 'Tout savoir sur le produit',
+            label: 'Tout savoir sur le produit',
+            max: 500,
+        },
+        {
+            type: 'textarea',
+            key: 'Habitat',
+            content: item.habitat,
+            placeholder: 'Habitat du produit',
+            label: 'Habitat du produit',
+            max: 500,
+        },
+        {
             type: 'select',
             key: 'type',
             value: item.type,
@@ -503,13 +515,6 @@ function editItem(item) {
                 { value: 'médicaments', text: 'Médicaments' },
             ],
         },
-        // {
-        //     type: 'multifile',
-        //     key: 'pictures',
-        //     value: item.pictures,
-        //     label: 'Images du produit',
-        //     max: 5,
-        // },
         {
             type: 'text',
             key: 'createdAt',
