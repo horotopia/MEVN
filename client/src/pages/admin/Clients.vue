@@ -12,7 +12,6 @@
         :itemsPerPage="5"
     >
         <template #pictures="{ item }">
-            {{`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`}}
             <a v-if="item.pictures[0]?.name" :href="`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`" class="text-decoration-none" target="_blank">
                 <Avatar :fullname="item.name" :size="34"
                     :image="`${publicPath}/users/${item._id}/${item.pictures[0]?.name}`" />
