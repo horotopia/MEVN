@@ -24,6 +24,7 @@ import PanierInformations from '../pages/user/PanierInformations.vue'
 import Products from '../pages/admin/Products.vue';
 import PaymentStripe from '../components/PaymentStripe.vue';
 import Orders from '../pages/admin/Orders.vue';
+import Commandes from '../pages/admin/Commandes.vue'
 
 const routes = [
   {
@@ -88,6 +89,7 @@ const routes = [
       { path: 'dashboard/clients', name: 'Clients', component: Clients, meta: { requiresAdmin: true } },
       { path: 'dashboard/products', name: 'Products', component: Products, meta: { requiresAdmin: true } },
       { path: 'dashboard/orders', name: 'Orders', component: Orders, meta: { requiresAdmin: true } },
+      { path: 'dashboard/commandes', name: 'Commandes', component: Commandes },
     ]
   },
 ];
