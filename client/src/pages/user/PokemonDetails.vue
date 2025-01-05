@@ -61,24 +61,16 @@ export default {
       }
     },
     addToCart(product) {
-      // Récupérer le panier depuis le localStorage
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      // Vérifier si le produit est déjà dans le panier
       const existingProduct = cart.find((item) => item._id === product._id);
 
       if (existingProduct) {
-        // Incrémenter la quantité
         existingProduct.quantity += 1;
       } else {
-        // Ajouter un nouveau produit avec une quantité de 1
         cart.push({ ...product, quantity: 1 });
       }
 
-      // Sauvegarder le panier dans le localStorage
       localStorage.setItem("cart", JSON.stringify(cart));
-
-      // Toast pour confirmer l'ajout au panier
       toast.success(`${product.name} a été ajouté au panier.`, {
         position: "top-right",
         autoClose: 3000,
@@ -96,16 +88,12 @@ export default {
 <div class="bg-slate-100 -z-14">
   <div class="container mx-auto bg-white shadow-9 -z-12">
     <div class="mx-8 py-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
-      <!-- Image du pokémon -->
       <div class="flex h-100 w-full">
-        <!-- Image principale -->
         <div class="flex-1">
           <div class="w-full h-full bg-slate-500 flex items-center justify-center text-white font-bold text-xl">
             Image Non Disponible
           </div>
         </div>
-
-        <!-- Images secondaires -->
         <div class="w-1/3 flex flex-col space-y-2 ml-2">
           <div class="w-full h-1/3 bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
             Image 2
@@ -238,12 +226,9 @@ export default {
       </div>
       <div class="col-span-1 sm:col-span-2 lg:grid-cols-2">
         <div class="flex flex-col items-center p-4">
-          <!-- Titre -->
           <h3 class="text-lg font-semibold text-gray-700 mb-4 text-center">
             Les évolutions de Salamèche : Niveau d'évolution actuel 1
           </h3>
-
-          <!-- Section des images -->
           <div class="flex justify-between w-full space-x-4">
             <div class="w-1/3 object-cover rounded bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
               Image 2

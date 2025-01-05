@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 class="text-2xl font-semibold text-center mb-4">Effectuez votre paiement de {{ (totalAmount / 100).toFixed(2) }} €</h1>
+      <h1 class="text-2xl font-semibold text-center mb-4">Effectuez votre paiement de {{ (totalAmount).toFixed(2) }} €</h1>
       <div id="card-element" class="p-4 border border-gray-300 rounded-md mb-4"></div>
       <div id="card-errors" role="alert" class="text-red-500 text-sm mb-4"></div>
       <button
@@ -23,11 +23,12 @@
     props: {
         totalAmount: {
         type: Number,
-        required: true, // Assurez-vous que le montant est toujours passé
+        required: true,
         },
     },
     data() {
       return {
+        cartItems: [],
         stripe: null,
         elements: null,
         card: null,
@@ -37,12 +38,11 @@
       };
     },
     async mounted() {
-      console.log('Montant total reçu en centimes :', this.totalAmount);
-      // Charger Stripe avec la clé publique
+      const storedCart = localStorage.getItem('cart');
+      this.cartItems = storedCart ? JSON.parse(storedCart) : [];
       this.stripe = await loadStripe('pk_test_51QbfWPAp1XlFPm6z7th8WLTBBSzesVnizSwg3AaDPyGcVuBNennpWxZ8vpHGmwcXUNKBNVkpS6WNRhs31UT5Gabe00G4JD2kll'); // Remplacez par votre clé publique Stripe
       this.elements = this.stripe.elements();
   
-      // Créer l'élément de carte bancaire
       this.card = this.elements.create('card', {
         style: {
           base: {
@@ -59,7 +59,6 @@
       });
       this.card.mount('#card-element');
   
-      // Gestion des erreurs
       this.card.on('change', (event) => {
         const displayError = document.getElementById('card-errors');
         if (event.error) {
@@ -76,22 +75,20 @@
         this.successMessage = null;
   
         try {
-          // Appel au serveur pour créer un PaymentIntent
           const response = await fetch('http://localhost:5000/create-payment-intent', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              amount: this.totalAmount, // Montant en centimes (50,00 €)
-              currency: 'eur', // Devise
+              amount: this.totalAmount, 
+              currency: 'eur',
             }),
           });
   
           const data = await response.json();
           if (!response.ok) throw new Error(data.error);
   
-          // Confirmer le paiement avec Stripe
           const result = await this.stripe.confirmCardPayment(data.clientSecret, {
             payment_method: {
               card: this.card,
@@ -102,6 +99,30 @@
             this.errorMessage = result.error.message;
           } else if (result.paymentIntent.status === 'succeeded') {
             this.successMessage = 'Paiement réussi ! Merci pour votre achat.';
+            localStorage.removeItem('cart');
+            window.dispatchEvent(new Event('cart-updated'));
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            const userId = user ? user._id : null;
+
+            if (!userId) {
+              console.error('Impossible de récupérer userId depuis localStorage');
+              return;
+            }
+
+            const items = this.cartItems.map((item) => ({
+              productId: item._id,
+              quantity: item.quantity,
+              price: item.price,
+            }));
+
+            const orderDetails = {
+              userId: userId,
+              items: items,
+              totalAmount: this.totalAmount,
+              status: 'pending',
+            };
+          await this.createOrder(orderDetails);
           }
         } catch (error) {
           this.errorMessage = error.message;
@@ -109,11 +130,38 @@
           this.loading = false;
         }
       },
+      async createOrder(orderDetails) {
+        try {
+          const jwtToken = localStorage.getItem('jwtToken');
+          console.log('Token JWT :', jwtToken);
+
+          if (!jwtToken) {
+            console.error('Token JWT manquant');
+            return;
+          }
+
+          const response = await fetch('http://localhost:5000/api/orders', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${jwtToken}`,
+            },
+            body: JSON.stringify(orderDetails),
+          });
+
+          console.log('Données envoyées :', orderDetails);
+
+          if (!response.ok) {
+            throw new Error('Erreur lors de la création de la commande');
+          }
+
+          const data = await response.json();
+          console.log('Commande créée avec succès :', data);
+        } catch (error) {
+          console.error('Erreur :', error.message);
+        }
+      },
     },
   };
   </script>
-  
-  <style>
-  /* Aucun style custom, tout est géré avec Tailwind CSS */
-  </style>
   

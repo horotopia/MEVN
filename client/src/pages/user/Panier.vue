@@ -1,14 +1,10 @@
 <template>
 <div class="min-h-screen flex bg-gray-100">
   <div class="container mx-auto p-4 my-16">
-    <!-- Panier -->
     <div class="flex flex-col lg:flex-row justify-between gap-4">
-      <!-- Section gauche: Détails du panier -->
       <div class="flex-1 bg-white shadow-lg rounded-lg p-4">
         <h2 class="text-lg font-semibold mb-4">MON PANIER</h2>
 
-
-      <!-- Article -->
       <div v-if="cartItems.length > 0">
           <div
             v-for="(item, index) in cartItems"
@@ -32,7 +28,7 @@
                 </router-link>
               </div>
             </div>
-            <p class="text-lg font-bold">{{ (item.price / 100).toFixed(2) }} €</p>
+            <p class="text-lg font-bold">{{ (item.price).toFixed(2) }} €</p>
             <div class="flex items-center gap-2">
               <button
                 @click="decreaseQuantity(index)"
@@ -55,8 +51,6 @@
         </div>
       </div>
         
-
-      <!-- Section droite: Résumé -->
       <div class="w-full lg:w-1/3 bg-white shadow-lg rounded-lg p-4">
         <h2 class="text-xl font-semibold mb-4">Résumé de la commande</h2>
         <div class="pb-6">
@@ -67,7 +61,7 @@
           <span>{{ calculateTotalPrice() }} €</span>
         </div>
         <div class="mt-4">
-          <router-link :to="{ name: 'paiement', query: { totalAmount: String(Math.round(calculateTotalPrice() * 100)) } }">
+          <router-link :to="{ name: 'infopanier', query: { totalAmount: String(Math.round(calculateTotalPrice())) } }">
             <button
               class="bg-red-500 hover:bg-red-600 text-white w-full py-2 rounded-lg text-center"
             >
@@ -111,7 +105,7 @@ export default {
   methods: {
     calculateTotalPrice() {
       return this.cartItems
-        .reduce((total, item) => total + (item.price / 100) * item.quantity, 0);
+        .reduce((total, item) => total + (item.price) * item.quantity, 0);
     },
     removeFromCart(index) {
       this.cartItems.splice(index, 1);
@@ -125,6 +119,10 @@ export default {
       }
       this.saveCart();
     },
+    updateCart() {
+      const storedCart = localStorage.getItem('cart');
+      this.cartItems = storedCart ? JSON.parse(storedCart) : [];
+    },
     saveCart() {
       localStorage.setItem("cart", JSON.stringify(this.cartItems));
       window.dispatchEvent(new Event("cart-updated"));
@@ -136,6 +134,10 @@ export default {
       this.cartItems = JSON.parse(storedCart);
     }
     window.dispatchEvent(new Event("cart-updated"));
+    window.addEventListener('cart-updated', this.updateCart);
+  },
+  beforeDestroy() {
+    window.removeEventListener('cart-updated', this.updateCart);
   },
   watch: {
     cartItems: {
