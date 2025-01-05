@@ -19,6 +19,7 @@ export class AuthController {
    *           schema:
    *             type: object
    *             required:
+   *               - name
    *               - email
    *               - password
    *             properties:
@@ -29,6 +30,7 @@ export class AuthController {
    *                 type: string
    *                 description: Mot de passe de l'utilisateur
    *             example:
+   *               name: John Doe
    *               email: johndoe@example.com
    *               password: myPassword123
    *     responses:
@@ -56,6 +58,7 @@ export class AuthController {
     try {
       if (
         !req.body ||
+        typeof req.body.name !== "string" ||
         typeof req.body.email !== "string" ||
         typeof req.body.password !== "string"
       ) {
@@ -65,6 +68,7 @@ export class AuthController {
       const bcryptInstance = new Bcrypt();
       const mongooseService = await MongooseService.get();
       const user = await mongooseService.userService.createUser({
+        name: req.body.name,
         email: req.body.email,
         password: await bcryptInstance.hashPassword(req.body.password),
       });

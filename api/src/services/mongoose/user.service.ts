@@ -5,7 +5,7 @@ import { userSchema, picturesSchema, addressSchema } from "./schema";
 
 import { AddressService } from "./address.service";
 
-export type CreateUser = Omit<User, "_id" | "name" | "createdAt" | "updatedAt">;
+export type CreateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 export type UpdateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 
 export class UserService {
