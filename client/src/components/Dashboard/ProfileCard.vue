@@ -12,6 +12,8 @@ const formData = ref({
   country: '',
 })
 
+const addressId = ref(null);
+
 import userPhoto from '../../assets/img/POKESHOP_LOGO.png'
 
 async function fetchUserAddress() {
@@ -35,6 +37,7 @@ async function fetchUserAddress() {
 
     if (Array.isArray(addressData) && addressData.length > 0) {
       const address = addressData[0];
+      addressId.value = address._id;
       formData.value = {
         ...formData.value,
         street: address.street || '',
@@ -49,6 +52,70 @@ async function fetchUserAddress() {
   } catch (error) {
     console.error('Erreur lors de la récupération de l\'adresse utilisateur :', error);
   }
+}
+
+async function handleSubmit() {
+  const jwtToken = localStorage.getItem('jwtToken');
+
+  try {
+    if (!addressId.value) {
+      console.log('Création d\'une nouvelle adresse...');
+      const response = await fetch(`http://localhost:5000/api/address`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`,
+        },
+        body: JSON.stringify({
+          userId: user._id,
+          street: formData.value.street,
+          city: formData.value.city,
+          postalCode: formData.value.postalCode,
+          country: formData.value.country,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création de l\'adresse.');
+      }
+
+      const newAddress = await response.json();
+      console.log('Adresse créée avec succès :', newAddress);
+      alert('Adresse créée avec succès !');
+      addressId.value = newAddress._id;
+    } else {
+      console.log('Mise à jour de l\'adresse existante...');
+      const response = await fetch(`http://localhost:5000/api/address/${addressId.value}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`,
+        },
+        body: JSON.stringify({
+          street: formData.value.street,
+          city: formData.value.city,
+          postalCode: formData.value.postalCode,
+          country: formData.value.country,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la mise à jour de l\'adresse.');
+      }
+
+      const updatedAddress = await response.json();
+      console.log('Adresse mise à jour avec succès :', updatedAddress);
+      alert('Adresse mise à jour avec succès !');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la gestion de l\'adresse :', error);
+    alert('Une erreur est survenue lors de la gestion de l\'adresse.');
+  }
+}
+
+function handleCancel() {
+  fetchUserAddress();
+  alert('Modifications annulées.');
 }
 
 onMounted(() => {
