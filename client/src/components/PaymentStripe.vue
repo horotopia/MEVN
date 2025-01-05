@@ -1,20 +1,20 @@
 <template>
-    <div class="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 class="text-2xl font-semibold text-center mb-4">Effectuez votre paiement de {{ (totalAmount).toFixed(2) }} €</h1>
-      <div id="card-element" class="p-4 border border-gray-300 rounded-md mb-4"></div>
-      <div id="card-errors" role="alert" class="text-red-500 text-sm mb-4"></div>
-      <button
-        @click="handlePayment"
-        :disabled="loading"
-        class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <span v-if="loading">Traitement...</span>
-        <span v-else>Payer</span>
-      </button>
-      <p v-if="successMessage" class="text-green-500 text-sm mt-4 text-center">{{ successMessage }}</p>
-      <p v-if="errorMessage" class="text-red-500 text-sm mt-4 text-center">{{ errorMessage }}</p>
-    </div>
-  </template>
+  <div class="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <h1 class="text-2xl font-semibold text-center mb-4">Effectuez votre paiement de {{ (totalAmount).toFixed(2) }} €</h1>
+    <div id="card-element" class="p-4 border border-gray-300 rounded-md mb-4"></div>
+    <div id="card-errors" role="alert" class="text-red-500 text-sm mb-4"></div>
+    <button
+      @click="handlePayment"
+      :disabled="loading"
+      class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <span v-if="loading">Traitement...</span>
+      <span v-else>Payer</span>
+    </button>
+    <p v-if="successMessage" class="text-green-500 text-sm mt-4 text-center">{{ successMessage }}</p>
+    <p v-if="errorMessage" class="text-red-500 text-sm mt-4 text-center">{{ errorMessage }}</p>
+  </div>
+</template>
   
   <script>
   import { loadStripe } from '@stripe/stripe-js';

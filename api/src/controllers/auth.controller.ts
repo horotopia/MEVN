@@ -80,23 +80,16 @@ export class AuthController {
         password: await bcryptInstance.hashPassword(req.body.password),
       });
       
-      const session = await mongooseService.sessionService.createSession({
-        user: user,
-        userAgent: req.header("user-agent") || "unknown",
-        expirationDate: new Date(new Date().getTime() + 1_296_000_000),
-      });
+      // const session = await mongooseService.sessionService.createSession({
+      //   user: user,
+      //   userAgent: req.header("user-agent") || "unknown",
+      //   expirationDate: new Date(new Date().getTime() + 1_296_000_000),
+      // });
       
-
-      // Create token
-      const jwtToken = generateToken(user);
-
-      user.password = "";
-
       res
         .status(201)
         .json({
-          user: user,
-          jwtToken: jwtToken
+          response: true,
         })
     } catch (error) {
       if (

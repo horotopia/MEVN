@@ -1,4 +1,7 @@
 <script>
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
   export default {
     name: 'RegistrationPage',
     data() {
@@ -8,45 +11,78 @@
         email: '',
         password: '',
         emailError: '',
+        passwordError: '',
       };
     },
     methods: {
-      validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      },
       checkEmail() {
-        this.emailError = '';
-        if (this.email && !this.validateEmail(this.email)) {
-          this.emailError = 'Veuillez entrer une adresse e-mail valide';
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!this.email) {
+          this.emailError = "L'adresse e-mail est requise.";
+        } else if (!emailPattern.test(this.email)) {
+          this.emailError = "L'adresse e-mail n'est pas valide.";
+        } else {
+          this.emailError = '';
         }
       },
-      handleSubmit() {
-        this.emailError = '';
-
-        if (!this.name) {
-          console.log("Le nom et prénom est requis");
-          return false;
-        }
-        if (!this.tel) {
-          console.log("Le téléphone est requis");
-          return false;
-        }
-        if (!this.email) {
-          this.emailError = 'L\'adresse e-mail est requise';
-          return false;
-        }
-        if (!this.validateEmail(this.email)) {
-          this.emailError = 'Veuillez entrer une adresse e-mail valide';
-          return false;
-        }
+      checkPassword() {
         if (!this.password) {
-          console.log("Le mot de passe est requis");
-          return false;
+          this.passwordError = "Le mot de passe est requis.";
+        } else if (this.password.length < 6) {
+          this.passwordError = "Le mot de passe doit contenir au moins 6 caractères.";
+        } else {
+          this.passwordError = '';
+        }
+      },
+      async submitRegister() {
+        if (!this.validateForm()) {
+          return;
         }
 
-        console.log('Inscription réussie avec :', this.email, this.password, this.name, this.tel);
-        return true;
+        try {
+          const response = await fetch('http://localhost:5000/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: '*/*',
+            },
+            body: JSON.stringify({ email: this.email, password: this.password, name: this.name, tel : this.tel})
+          });
+
+          if (!response.ok) {
+            throw new Error('Erreur lors de l\'inscription');
+          }
+
+          const data = await response.json();
+          if (data.response) {
+            // localStorage.setItem('jwtToken', data.jwtToken);
+            // localStorage.setItem('userRole', data.user.role);
+            // localStorage.setItem('user', JSON.stringify(data.user));
+            
+            this.$router.push('/login').then( async () => { 
+              setTimeout(() =>  {
+                toast.success(`Votre compte à été crée avec succès`, {
+                  position: "top-right",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                });
+              }, 500)
+            });;
+          } else {
+            this.errorMessage = 'Erreur de connexion : jeton non reçu.';
+          }
+        } catch (error) {
+          this.errorMessage = 'Email ou mot de passe incorrect.';
+          console.error('Erreur de connexion', error);
+        }
+      },
+      validateForm() {
+        this.checkEmail();
+        this.checkPassword();
+        return !this.emailError && !this.passwordError;
       },
     },
   };
@@ -61,8 +97,7 @@
         <h2 class="text-2xl font-bold text-center mb-10 font-primary">INSCRIPTION</h2>
         
         <form 
-          @submit.prevent="handleSubmit"
-          novalidate
+        @submit.prevent="submitRegister" novalidate
           class="space-y-8 font-secondary font-semibold"
         >
           <div>
