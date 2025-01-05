@@ -65,13 +65,13 @@ export default {
       const existingProduct = cart.find((item) => item._id === product._id);
 
       if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.quantity += this.quantite;
       } else {
-        cart.push({ ...product, quantity: 1 });
+        cart.push({ ...product, quantity: this.quantite });
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
-      toast.success(`${product.name} a été ajouté au panier.`, {
+      toast.success(`${this.quantite} ${product.name} ${this.quantite > 1 ? 'ont été ajoutés' : 'a été ajouté'} au panier.`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -79,6 +79,7 @@ export default {
         pauseOnHover: true,
         draggable: true,
       });
+      this.quantite = 1;
     },
   },
 };

@@ -38,25 +38,6 @@
         <hr class="my-4 border-gray-300" />
     
         <div class="flex items-end gap-4">
-          <div>
-            <span class="mb-1 block text-xs">QUANTITÉ</span>
-            <div class="flex">
-              <button 
-                class="rounded-l-lg border border-gray-300 px-3 py-1"
-                @click.prevent.stop="diminuerQuantite"
-              >-</button>
-              <input 
-                type="text" 
-                v-model="quantite" 
-                class="w-12 text-center border-y border-gray-300"
-                @click.prevent.stop
-              />
-              <button 
-                class="rounded-r-lg border border-gray-300 px-3 py-1"
-                @click.prevent.stop="augmenterQuantite"
-              >+</button>
-            </div>
-          </div>
           <button 
             @click.prevent.stop="basculerCoeur"
             class="rounded-full border-2 border-gray-300 p-1.5 transition-colors duration-200 hover:bg-yellow-100 flex items-center justify-center h-[34px] w-[34px]"
