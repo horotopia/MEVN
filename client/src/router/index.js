@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import "vue3-toastify/dist/index.css";
 import DefaultLayout from '../Layouts/DefaultLayout.vue'
 import AuthLayout from '../Layouts/AuthLayout.vue'
 import AdminLayout from '../Layouts/AdminLayout.vue'
@@ -37,7 +39,24 @@ const routes = [
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },
       { path: 'contact', name: 'Contact', component: Contact },
       { path: 'panier', name: 'Panier', component: Panier },
-      { path: 'panier/informations', name: 'infopanier', component: PanierInformations,  props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
+      { path: 'panier/informations', name: 'infopanier', component: PanierInformations,  props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }),
+        beforeEnter: (to, from, next) => {
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          if (cart.length === 0) {
+            toast.error('Votre panier est vide. Ajoutez des articles pour procéder au paiement.', {
+              position: 'top-right',
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+            next({ name: 'Panier' });
+          } else {
+            next();
+          }
+        },
+     },
       { path: 'paiement', name: 'paiement', component: PaymentStripe, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
     ]
   },

@@ -1,11 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-100 p-6">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6">Coordonnées de facturation et de livraison</h1>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Carte de facturation -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="container mx-auto p-4 my-16">
+      <div class="flex flex-col lg:flex-row justify-between gap-4">
+        <div class="flex-1 bg-white shadow-lg rounded-lg p-4">
           <h2 class="text-lg font-semibold mb-4">Coordonnées de facturation</h2>
 
           <form @submit.prevent="handleBillingSubmit">
@@ -54,67 +51,67 @@
             </div>
           </form>
         </div>
+        <div v-if="hasNonPokemonItems">
+          <div class="flex-1 bg-white p-4 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold mb-4">Coordonnées de livraison</h2>
 
-        <!-- Carte de livraison -->
-        <!-- <div class="bg-white p-6 rounded-lg shadow-md">
-          <h2 class="text-lg font-semibold mb-4">Coordonnées de livraison</h2>
+            <form @submit.prevent="handleShippingSubmit">
+              <div class="mb-4">
+                <label for="shipping-name" class="block text-sm font-medium text-gray-700">Nom complet</label>
+                <input
+                  id="shipping-name"
+                  type="text"
+                  v-model="shipping.name"
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                  required
+                />
+              </div>
 
-          <form @submit.prevent="handleShippingSubmit">
-            <div class="mb-4">
-              <label for="shipping-name" class="block text-sm font-medium text-gray-700">Nom complet</label>
-              <input
-                id="shipping-name"
-                type="text"
-                v-model="shipping.name"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                required
-              />
-            </div>
+              <div class="mb-4">
+                <label for="shipping-address" class="block text-sm font-medium text-gray-700">Adresse</label>
+                <input
+                  id="shipping-address"
+                  type="text"
+                  v-model="shipping.address"
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                  required
+                />
+              </div>
 
-            <div class="mb-4">
-              <label for="shipping-address" class="block text-sm font-medium text-gray-700">Adresse</label>
-              <input
-                id="shipping-address"
-                type="text"
-                v-model="shipping.address"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                required
-              />
-            </div>
+              <div class="mb-4">
+                <label for="shipping-city" class="block text-sm font-medium text-gray-700">Ville</label>
+                <input
+                  id="shipping-city"
+                  type="text"
+                  v-model="shipping.city"
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                  required
+                />
+              </div>
 
-            <div class="mb-4">
-              <label for="shipping-city" class="block text-sm font-medium text-gray-700">Ville</label>
-              <input
-                id="shipping-city"
-                type="text"
-                v-model="shipping.city"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                required
-              />
-            </div>
-
-            <div class="mb-4">
-              <label for="shipping-postal" class="block text-sm font-medium text-gray-700">Code postal</label>
-              <input
-                id="shipping-postal"
-                type="text"
-                v-model="shipping.postalCode"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                required
-              />
-            </div>
-          </form>
-        </div> -->
+              <div class="mb-4">
+                <label for="shipping-postal" class="block text-sm font-medium text-gray-700">Code postal</label>
+                <input
+                  id="shipping-postal"
+                  type="text"
+                  v-model="shipping.postalCode"
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="mt-6 text-right">
-        <button
-          @click="submitAll"
-          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-        >
-          Continuer vers le paiement {{ (totalAmount).toFixed(2) }} €
-        </button>
-      </div>
+    <div class="mt-6 text-right">
+      <button
+        @click="submitAll"
+        class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+      >
+        Continuer vers le paiement {{ (totalAmount).toFixed(2) }} €
+      </button>
     </div>
   </div>
 </template>
@@ -138,7 +135,19 @@ export default {
         city: '',
         postalCode: '',
       },
+      shipping: {
+        name: '',
+        address: '',
+        city: '',
+        postalCode: '',
+      },
     };
+  },
+  computed: {
+    hasNonPokemonItems() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    return cart.some((item) => item.category !== "pokémon");
+  },
   },
   methods: {
     handleBillingSubmit() {
