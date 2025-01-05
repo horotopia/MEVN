@@ -54,7 +54,7 @@ const menuGroups = ref([
                 <path d="M5.25 5.25H12.75V6.75H5.25V5.25ZM5.25 8.25H12.75V9.75H5.25V8.25ZM5.25 11.25H9.75V12.75H5.25V11.25Z" />
               </svg>`,
         label: 'Mes Commandes',
-        route: '/dashboard',
+        route: '/dashboard/commandes',
         roles: ["ROLE_USER"],
       },
       {

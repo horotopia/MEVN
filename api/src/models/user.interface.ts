@@ -7,5 +7,6 @@ export interface User extends Timestamps {
   email: string;
   password: string;
   role?: string;
+  tel: string;
   address?: Schema.Types.ObjectId;
 }

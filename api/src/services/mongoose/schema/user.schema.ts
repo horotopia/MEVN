@@ -17,6 +17,9 @@ import { User } from "../../../models";
  *         email:
  *           type: string
  *           description: L'email de l'utilisateur
+ *         tel:
+ *           type: string
+ *           description: telephone de l'utilisateur
  *         password:
  *           type: string
  *           description: Le mot de passe de l'utilisateur
@@ -31,6 +34,7 @@ import { User } from "../../../models";
  *       example:
  *         name: John Doe
  *         email: john.doe@toto.com
+ *         tel: 0102030405
  *         password: password
  *         role: ROLE_USER
  *         address:
@@ -50,6 +54,10 @@ export const userSchema = new Schema<User>(
       type: String,
       unique: true,
       required: true,
+    },
+    tel: {
+      type: String,
+      unique: true,
     },
     password: {
       type: String,

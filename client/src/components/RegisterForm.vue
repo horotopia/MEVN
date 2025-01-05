@@ -4,6 +4,7 @@
     data() {
       return {
         name: '',
+        tel: '',
         email: '',
         password: '',
         emailError: '',
@@ -27,6 +28,10 @@
           console.log("Le nom et prénom est requis");
           return false;
         }
+        if (!this.tel) {
+          console.log("Le téléphone est requis");
+          return false;
+        }
         if (!this.email) {
           this.emailError = 'L\'adresse e-mail est requise';
           return false;
@@ -40,7 +45,7 @@
           return false;
         }
 
-        console.log('Inscription réussie avec :', this.email, this.password, this.name);
+        console.log('Inscription réussie avec :', this.email, this.password, this.name, this.tel);
         return true;
       },
     },
@@ -60,7 +65,7 @@
           novalidate
           class="space-y-8 font-secondary font-semibold"
         >
-        <div>
+          <div>
             <label class="flex items-center space-x-2 mb-2">
               <div class="w-1 h-5 bg-[#C73D3D]"></div>
               <span class="font-medium font-secondary font-semibold text-gray-900">Nom & Prénom</span>
@@ -69,6 +74,20 @@
               type="name"
               v-model="name"
               placeholder="Nom & Prénom"
+              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="flex items-center space-x-2 mb-2">
+              <div class="w-1 h-5 bg-[#C73D3D]"></div>
+              <span class="font-medium font-secondary font-semibold text-gray-900">Téléphone</span>
+            </label>
+            <input
+              type="tel"
+              v-model="tel"
+              placeholder="Téléphone"
               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
               required
             />
