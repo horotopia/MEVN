@@ -31,7 +31,7 @@
         </div>
     
         <h2 class="mb-1 text-xl font-extrabold uppercase">{{ nom }}</h2>
-        <p class="mb-2 text-sm text-gray-600">{{ description }}</p>
+        <p class="mb-2 text-sm text-gray-600">{{ tronquerDescription(description) }}</p>
     
         <p class="mb-4 text-xl font-extrabold">{{ prix }}€ HT</p>
     
@@ -121,6 +121,10 @@
         },
         allerVersDetailsPokemon() {
           this.$router.push(`/pokemon/${this.id}`)
+        },
+        tronquerDescription(description) {
+        const mots = description.split(' ');
+        return mots.slice(0, 8).join(' ') + (mots.length > 8 ? '...' : '');
         }
       }
     }
