@@ -18,7 +18,10 @@ db.users.insertMany([
     name: "LeGrizzly",
     email: "LeGrizzly@hotmail.fr",
     password: "$2a$10$HdhL0Nwy2AQrAwyVxQ9HMuhpz5cgczdhrRPY4ePCh.gseXHniOYvS", // password: "LeGrizzly@hotmail.fr"
-    role: "ROLE_ADMIN"
+    role: "ROLE_ADMIN",
+    isEmailVerified: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     name: "Horotopia",

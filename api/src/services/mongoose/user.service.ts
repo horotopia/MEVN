@@ -49,6 +49,10 @@ export class UserService {
       return null;
     }
 
+    if (!user.isEmailVerified && user.role !== 'ROLE_ADMIN') {
+      throw new Error('Votre compte n\'est pas encore vérifié. Veuillez vérifier vos emails.');
+    }
+
     const userId = user._id;
     const pictures = await this.pictureModel.find({ userId: { $in: userId } });
 
