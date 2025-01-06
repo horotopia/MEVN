@@ -17,9 +17,21 @@ export class UserService {
   constructor(mongooseService: MongooseService) {
     this.mongooseService = mongooseService;
     const mongoose = this.mongooseService.mongoose;
-    this.model = mongoose.model("User", userSchema);
-    this.pictureModel = mongoose.model("Picture", picturesSchema);
-    this.addressModel = mongoose.model("Address", addressSchema);
+    try {
+      this.model = mongoose.model<User>("User");
+    } catch (error) {
+      this.model = mongoose.model<User>("User", userSchema);
+    }
+    try {
+      this.pictureModel = mongoose.model<Pictures>("Picture");
+    } catch (error) {
+      this.pictureModel = mongoose.model<Pictures>("Picture", picturesSchema);
+    }
+    try {
+      this.addressModel = mongoose.model<Address>("Address");
+    } catch (error) {
+      this.addressModel = mongoose.model<Address>("Address", addressSchema);
+    }
   }
 
   // register

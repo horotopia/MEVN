@@ -85,7 +85,7 @@
           </span>
         </div>
 
-        <div v-if="chargement" class="flex justify-center items-center h-64">
+        <div v-if="loading" class="flex justify-center items-center h-64">
           <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
         </div>
 
@@ -167,20 +167,38 @@ export default {
   },
   async created() {
     try {
+      console.log("Tentative de récupération des produits...");
       const response = await fetch("http://localhost:5000/api/product");
-      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
+      }
 
-      this.products = data.map((item) => ({
-        _id: item._id,
-        name: item.name,
-        description: item.description,
-        image: (item.pictures[0]?.name)? `${this.publicPath}/products/${item._id}/${item.pictures[0]?.name}` : `https://via.placeholder.com/150?text=${item.name}`,
-        price: item.price,
-        type: item.type || "Inconnu"
-      }));
+      const data = await response.json();
+      console.log("Données reçues:", data);
+
+      if (!Array.isArray(data)) {
+        throw new Error("Les données reçues ne sont pas un tableau");
+      }
+
+      this.products = data.map((item) => {
+        console.log("Traitement du produit:", item);
+        return {
+          _id: item._id,
+          name: item.name || "Sans nom",
+          description: item.description || "Pas de description",
+          image: (item.pictures && item.pictures[0]?.name) 
+            ? `${this.publicPath}/products/${item._id}/${item.pictures[0].name}` 
+            : `https://via.placeholder.com/150?text=${encodeURIComponent(item.name || 'Pokemon')}`,
+          price: item.price || 0,
+          type: item.type || "normal"
+        };
+      });
+
+      console.log("Produits transformés:", this.products);
     } catch (error) {
-      this.error = "Erreur lors de la récupération des produits.";
-      console.error("Erreur lors de la récupération des produits :", error);
+      console.error("Erreur détaillée:", error);
+      this.error = `Erreur lors de la récupération des produits: ${error.message}`;
     } finally {
       this.loading = false;
     }
