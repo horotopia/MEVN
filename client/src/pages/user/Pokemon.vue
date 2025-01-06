@@ -181,7 +181,7 @@ export default {
         throw new Error("Les données reçues ne sont pas un tableau");
       }
 
-      this.products = data.map((item) => {
+      this.products = data.filter(item => item.category === "pokémon").map((item) => {
         console.log("Traitement du produit:", item);
         return {
           _id: item._id,
