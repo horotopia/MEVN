@@ -77,4 +77,50 @@ export class OrdersService {
       { $set: { userId: "anonyme" } }
     );
   }
+
+  // calculateAverageOrderAmount
+  async calculateAverageOrderAmount(): Promise<{ currentMonthOrder: number; lastMonthOrder: number; growthRateOrder: number }> {
+    const date = new Date();
+
+    const currentMonthOrder = date.getMonth();
+    const currentYear = date.getFullYear();
+    const lastMonthOrder = currentMonthOrder === 0 ? 11 : currentMonthOrder - 1;
+    const lastYear = currentMonthOrder === 0 ? currentYear - 1 : currentYear;
+
+    const currentMonthOrders = await this.model.find({
+      status: "completed",
+      createdAt: {
+        $gte: new Date(currentYear, currentMonthOrder, 1),
+        $lt: new Date(currentYear, currentMonthOrder + 1, 1),
+      },
+    });
+
+    const lastMonthOrders = await this.model.find({
+      status: "completed",
+      createdAt: {
+        $gte: new Date(lastYear, lastMonthOrder, 1),
+        $lt: new Date(lastYear, lastMonthOrder + 1, 1),
+      },
+    });
+
+    const currentMonthAverage = currentMonthOrders.length > 0
+      ? currentMonthOrders.reduce((acc, order) => acc + order.totalAmount, 0) / currentMonthOrders.length
+      : 0;
+
+    const lastMonthAverage = lastMonthOrders.length > 0
+      ? lastMonthOrders.reduce((acc, order) => acc + order.totalAmount, 0) / lastMonthOrders.length
+      : 0;
+
+    const growthRateOrder = lastMonthAverage > 0
+      ? ((currentMonthAverage - lastMonthAverage) / lastMonthAverage) * 100
+      : currentMonthAverage > 0
+      ? 100
+      : 0;
+
+    return {
+      currentMonthOrder: parseFloat(currentMonthAverage.toFixed(2)),
+      lastMonthOrder: parseFloat(lastMonthAverage.toFixed(2)),
+      growthRateOrder: parseFloat(growthRateOrder.toFixed(2)),
+    };
+  }
 }

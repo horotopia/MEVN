@@ -451,8 +451,24 @@ export class OrdersController {
     }
   }
 
+  // calculateAverageOrderAmount
+  async calculateAverageOrderAmount(req: Request, res: Response, next: NextFunction) {
+    console.log("calculateAverageOrderAmount");
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.ordersService.calculateAverageOrderAmount();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
+    router.get("/calculateAverageOrderAmount", this.calculateAverageOrderAmount.bind(this));
     router.post("/", authenticateToken, validateRoleUser, this.createOrder);
     router.get(
       "/:id",

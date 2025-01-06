@@ -121,4 +121,40 @@ export class UserService {
 
     return res;
   }
+
+  // stat
+  async countUsersByMonth(): Promise<{ currentMonthUser: number; lastMonthUser: number; growthRateUser: number }> {
+    const date = new Date();
+
+    const currentMonthUser = date.getMonth();
+    const currentYear = date.getFullYear();
+    const lastMonthUser = currentMonthUser === 0 ? 11 : currentMonthUser - 1;
+    const lastYear = currentMonthUser === 0 ? currentYear - 1 : currentYear;
+
+    const currentMonthUsers = await this.model.countDocuments({
+      createdAt: {
+        $gte: new Date(currentYear, currentMonthUser, 1),
+        $lt: new Date(currentYear, currentMonthUser + 1, 1),
+      },
+    });
+
+    const lastMonthUsers = await this.model.countDocuments({
+      createdAt: {
+        $gte: new Date(lastYear, lastMonthUser, 1),
+        $lt: new Date(lastYear, lastMonthUser + 1, 1),
+      },
+    });
+
+    const growthRateUser = lastMonthUsers > 0
+      ? ((currentMonthUsers - lastMonthUsers) / lastMonthUsers) * 100
+      : currentMonthUsers > 0
+      ? 100
+      : 0;
+
+    return {
+      currentMonthUser: currentMonthUsers,
+      lastMonthUser: lastMonthUsers,
+      growthRateUser: parseFloat(growthRateUser.toFixed(2)),
+    };
+  }
 }

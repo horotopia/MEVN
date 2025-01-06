@@ -239,8 +239,24 @@ export class UserController {
     }
   }
 
+  // countUsersByMonth
+  async countUsersByMonth(req: Request, res: Response, next: NextFunction) {
+    console.log("countUsersByMonth");
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.userService.countUsersByMonth();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
+    router.get("/countUsersByMonth", validateObjectId, this.countUsersByMonth.bind(this));
     router.get(
       "/:id",
       authenticateToken,
