@@ -23,6 +23,8 @@ export class ProductController {
    *           example:
    *             name: Pikachu
    *             description: Pokémon électrique
+   *             habitat: son habitat
+   *             habitude: ses habitudes
    *             type: électrique
    *             evolutionLevel: 2
    *             evolutionReference: Pichu
@@ -56,6 +58,8 @@ export class ProductController {
         !req.body ||
         !req.body.name ||
         !req.body.description ||
+        !req.body.habitat ||
+        !req.body.habitude ||
         !req.body.type ||
         !req.body.evolutionLevel ||
         !req.body.evolutionReference ||
@@ -73,6 +77,8 @@ export class ProductController {
       const product = await mongooseService.productService.createProduct({
         name: req.body.name,
         description: req.body.description,
+        habitat: req.body.habitat,
+        habitude: req.body.habitude,
         type: req.body.type,
         evolutionLevel: req.body.evolutionLevel,
         evolutionReference: req.body.evolutionReference,

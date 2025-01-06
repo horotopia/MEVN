@@ -194,8 +194,24 @@ export class AuthController {
     res.json(req.session!.user);
   }
 
+  // countUsersByMonth
+  async countSessionByMonth(req: Request, res: Response, next: NextFunction) {
+    console.log("countSessionByMonth");
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.sessionService.countSessionByMonth();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
+    router.get("/countSessionByMonth", this.countSessionByMonth.bind(this));
     router.post("/register", validateCreateUser, this.register.bind(this));
     router.post("/login", this.login.bind(this));
     router.get("/me", sessionMiddleware(), this.me.bind(this));

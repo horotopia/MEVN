@@ -122,7 +122,7 @@ export default {
   },
   data() {
     return {
-      products: [], // Liste des produits récupérés
+      products: [],
       typeSelectionne: '',
       prixMaximum: 10000000,
       loading: true,
@@ -140,14 +140,12 @@ export default {
       const response = await fetch("http://localhost:5000/api/product");
       const data = await response.json();
 
-      // Transformation des données pour le composant `PokemonCard`
-      this.products = data.map((item) => ({
+      this.products = data.filter(item => item.category === "accessoire").map((item) => ({
         _id: item._id,
         name: item.name,
         description: item.description,
-        image: `https://via.placeholder.com/150?text=${item.name}`, // URL d'image par défaut (ajustez selon vos besoins)
-        price: item.price, // Convertir en euros si nécessaire
-        type: item.type || "Inconnu", // Valeur par défaut si le type est manquant
+        image: `https://via.placeholder.com/150?text=${item.name}`,
+        type: item.type || "Inconnu",
       }));
     } catch (error) {
       this.error = "Erreur lors de la récupération des produits.";
@@ -161,9 +159,9 @@ export default {
 
     const existingProduct = cart.find((item) => item._id === product._id);
     if (existingProduct) {
-      existingProduct.quantity += 1; // Incrémenter la quantité si le produit existe déjà
+      existingProduct.quantity += 1;
     } else {
-      cart.push({ ...product, quantity: 1 }); // Ajouter un nouveau produit
+      cart.push({ ...product, quantity: 1 });
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
