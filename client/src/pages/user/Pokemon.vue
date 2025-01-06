@@ -170,7 +170,7 @@ export default {
       const response = await fetch("http://localhost:5000/api/product");
       const data = await response.json();
 
-      this.products = data.map((item) => ({
+      this.products = data.filter(item => item.category === "pokémon").map((item) => ({
         _id: item._id,
         name: item.name,
         description: item.description,
