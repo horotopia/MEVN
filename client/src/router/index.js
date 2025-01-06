@@ -43,6 +43,7 @@ const routes = [
       { path: 'panier/informations', name: 'infopanier', component: PanierInformations,  props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }),
         beforeEnter: (to, from, next) => {
           const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const user = JSON.parse(localStorage.getItem('user'));
           if (cart.length === 0) {
             toast.error('Votre panier est vide. Ajoutez des articles pour procéder au paiement.', {
               position: 'top-right',
@@ -53,6 +54,16 @@ const routes = [
               draggable: true,
             });
             next({ name: 'Panier' });
+          } else if (!user) {
+            toast.error('Veuillez vous connecter pour accéder aux paiement de votre panier.', {
+              position: 'top-right',
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+            next({ name: 'Panier' }); // à rediriger vers le login
           } else {
             next();
           }
