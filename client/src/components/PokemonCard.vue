@@ -67,7 +67,7 @@
     export default {
       name: 'PokemonCard',
       props: {
-        id: { type: Number, required: true },
+        id: { type: String, required: true },
         nom: { type: String, required: true },
         description: { type: String, required: true },
         image: { type: String, required: true },

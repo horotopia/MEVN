@@ -47,11 +47,15 @@
 </template>
 
 <script>
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 export default {
   name: 'AccessoiresCard',
   props: {
-    id: { type: Number, required: true },
+    id: { type: String, required: true },
     nom: { type: String, required: true },
+    description: { type: String, required: true },
     image: { type: String, required: true },
     prix: { type: Number, required: true }
   },
@@ -73,7 +77,7 @@ export default {
       if (this.quantite > 0) {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const existingProduct = cart.find((item) => item._id === this.id);
-        
+
         if (existingProduct) {
           existingProduct.quantity += this.quantite;
         } else {
@@ -87,6 +91,16 @@ export default {
         }
 
         localStorage.setItem("cart", JSON.stringify(cart));
+        
+        toast.success(`${this.quantite} ${this.nom} ${this.quantite > 1 ? 'ont été ajoutés' : 'a été ajouté'} au panier.`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        
         this.quantite = 1;
       }
     }

@@ -83,12 +83,12 @@
         </span>
       </div>
 
-      <div v-if="chargement" class="flex justify-center items-center h-64">
+      <div v-if="loading" class="flex justify-center items-center h-64">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
       </div>
 
-      <div v-else-if="erreur" class="text-red-500 text-center py-8">
-        {{ erreur }}
+      <div v-else-if="error" class="text-red-500 text-center py-8">
+        {{ error }}
       </div>
 
       <transition-group 
@@ -97,7 +97,7 @@
         name="pokemon-grid"
       >
       <AccessoiresCard
-      v-for="product in products"
+      v-for="product in filteredProducts"
       :key="product._id"
       :id="product._id"
       :nom="product.name"
@@ -105,7 +105,6 @@
       :image="product.image"
       :prix="product.price"
       :types="[product.type]"
-      @ajouter-au-panier="addToCart"
     />
       </transition-group>
     </main>
@@ -131,42 +130,36 @@ export default {
   },
   computed: {
     filteredProducts() {
-      if (!this.typeSelectionne) return this.products;
-      return this.products.filter((product) => product.type === this.typeSelectionne);
-    },
+      return this.products.filter((product) => {
+        const matchesType = !this.typeSelectionne || product.type === this.typeSelectionne;
+        const matchesPrice = product.price <= this.prixMaximum;
+        return matchesType && matchesPrice;
+      });
+    }
   },
   async created() {
     try {
       const response = await fetch("http://localhost:5000/api/product");
       const data = await response.json();
 
-      this.products = data.filter(item => item.category === "accessoire").map((item) => ({
-        _id: item._id,
-        name: item.name,
-        description: item.description,
-        image: `https://via.placeholder.com/150?text=${item.name}`,
-        type: item.type || "Inconnu",
-      }));
+      this.products = data
+        .filter(item => item.category === "accessoire")
+        .map((item) => ({
+          _id: item._id,
+          name: item.name,
+          description: item.description,
+          image: item.pictures?.[0]?.name
+            ? `http://localhost:5000/uploads/products/${item._id}/${item.pictures[0].name}`
+            : `https://via.placeholder.com/150?text=${item.name}`,
+          price: item.price,
+          type: item.type || "Inconnu",
+        }));
     } catch (error) {
       this.error = "Erreur lors de la récupération des produits.";
-      console.error("Erreur lors de la récupération des produits :", error);
     } finally {
       this.loading = false;
     }
-  },
-  addToCart(product) {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingProduct = cart.find((item) => item._id === product._id);
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({ ...product, quantity: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    console.log("Produit ajouté au panier :", product);
-  },
+  }
 }
 </script>
 

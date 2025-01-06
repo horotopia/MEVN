@@ -89,8 +89,8 @@
           <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
         </div>
 
-        <div v-else-if="erreur" class="text-red-500 text-center py-8">
-          {{ erreur }}
+        <div v-else-if="error" class="text-red-500 text-center py-8">
+          {{ error }}
         </div>
 
         <transition-group 
@@ -106,7 +106,7 @@
           :description="product.description"
           :image="product.image"
           :prix="product.price"
-          :types="[product.type]"
+          :types="product.type ? [product.type] : []"
           @ajouter-au-panier="addToCart"
           @filtrer-par-type="filtrerParType"
         />
@@ -159,7 +159,7 @@ export default {
   computed: {
     filteredProducts() {
       return this.products.filter((product) => {
-        const matchesType = !this.typeSelectionne || product.type === this.typeSelectionne;
+        const matchesType = !this.typeSelectionne || product.type.toLowerCase() === this.typeSelectionne.toLowerCase();
         const matchesPrice = product.price <= this.prixMaximum;
         return matchesType && matchesPrice;
       });
@@ -167,7 +167,6 @@ export default {
   },
   async created() {
     try {
-      console.log("Tentative de récupération des produits...");
       const response = await fetch("http://localhost:5000/api/product");
       
       if (!response.ok) {
@@ -175,26 +174,30 @@ export default {
       }
 
       const data = await response.json();
-      console.log("Données reçues:", data);
 
       if (!Array.isArray(data)) {
         throw new Error("Les données reçues ne sont pas un tableau");
       }
 
-      this.products = data.map(item => ({
+      const pokemonOnly = data.filter(item => {
+        const categoryMatch = item.category?.toLowerCase() === "pokemon" || 
+                            item.category?.toLowerCase() === "pokémon" ||
+                            item.category?.toLowerCase() === "pokemons" ||
+                            item.category?.toLowerCase() === "pokémons";
+        return categoryMatch;
+      });
+
+      this.products = pokemonOnly.map(item => ({
         _id: item._id,
-        name: item.name,
-        description: item.description,
+        name: item.name || "Pokémon sans nom",
+        description: item.description || "Aucune description disponible",
         image: item.pictures?.[0]?.name
           ? `${this.publicPath}/products/${item._id}/${item.pictures[0].name}`
           : `https://via.placeholder.com/150?text=${item.name || 'Pokemon'}`,
-        price: item.price,
-        type: item.type
+        price: item.price || 0,
+        type: item.type?.toLowerCase() || "normal"
       }));
-
-      console.log("Produits transformés:", this.products);
     } catch (error) {
-      console.error("Erreur détaillée:", error);
       this.error = `Erreur lors de la récupération des produits: ${error.message}`;
     } finally {
       this.loading = false;
@@ -240,7 +243,7 @@ export default {
           name: product.nom,
           price: product.prix,
           image: product.image,
-          quantity: product.quantity
+          quantity: product.quantity || 1
         });
       }
 
