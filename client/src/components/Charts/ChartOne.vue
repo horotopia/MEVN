@@ -124,7 +124,7 @@ const apexOptions = {
 
 <template>
   <div
-    class="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default sm:px-7.5 xl:col-span-8"
+    class="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default sm:px-7.5"
   >
     <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
       <div class="flex w-full flex-wrap gap-3 sm:gap-5">

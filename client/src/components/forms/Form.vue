@@ -3,7 +3,7 @@
         <h2 class="text-xl font-bold mb-4">{{ text.title }}</h2>
         <form @submit.prevent="handleSubmit">
             <div class="flex flex-wrap">
-                <div v-for="(value, key) in forms" :key="key" class="flex flex-col mb-4"
+                <div v-for="(value, key) in forms" :key="key" class="flex flex-col mb-4 px-2"
                 :class="`${value.columns?.container ? `${value.columns.container}` : 'w-full'}`">
                     <label :for="key" class="block text-sm font-medium text-gray-700">{{ formData[key].label }}</label>
 
@@ -47,6 +47,8 @@
                         :max="formData[key].max"
                     />
 
+                    <div v-if="formData[key].type === 'custom'" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" v-html="formData[key].content"></div>
+
                     <span v-if="formData[key].description" class="text-gray-500 text-sm">{{ formData[key].description }}</span>
                 </div>
             </div>
@@ -62,7 +64,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from 'vue';
+import { defineEmits, defineProps, ref } from 'vue';
 
 const emit = defineEmits(['submit']);
 const props = defineProps({

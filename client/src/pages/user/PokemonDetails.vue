@@ -168,12 +168,12 @@ export default {
       <div class="col-span-1 sm:col-span-2 lg:grid-cols-2 mt-6">
         <div class="relative text-sm font-semibold text-gray-700">
           <!-- <div class="absolute inset-0 h-20 mt-10 opacity-20 rounded-md" :class="getTypeColor(pokemon?.type)"></div> -->
-          <h3 class="text-lg font-bold">Tout savoir sur Salamèche</h3>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+          <h3 class="text-lg font-bold">Tout savoir sur {{ pokemon?.name }}</h3>
+          <p class="font-semibold text-gray-700 pt-2 border-l-2 px-2">{{ pokemon?.habitude }}</p>
         </div>
         <div class="mt-8 text-sm font-semibold text-gray-700">
           <h3 class="text-lg font-bold">Son Habitat et ses besoins</h3>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+          <p class="font-semibold text-gray-700 pt-2 border-l-2 px-2">{{ pokemon?.habitat }}</p>
         </div>
       </div>
       <div class="mt-8">

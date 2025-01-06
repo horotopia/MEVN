@@ -48,4 +48,40 @@ export class SessionService {
         }).populate('user');
         return res;
     }
+
+    // stat
+    async countSessionByMonth(): Promise<{ currentMonthSession: number; lastMonthSession: number; growthRateSession: number }> {
+    const date = new Date();
+
+    const currentMonthSession = date.getMonth();
+    const currentYear = date.getFullYear();
+    const lastMonthUser = currentMonthSession === 0 ? 11 : currentMonthSession - 1;
+    const lastYear = currentMonthSession === 0 ? currentYear - 1 : currentYear;
+
+    const currentMonthSessions = await this.model.countDocuments({
+      createdAt: {
+        $gte: new Date(currentYear, currentMonthSession, 1),
+        $lt: new Date(currentYear, currentMonthSession + 1, 1),
+      },
+    });
+
+    const lastMonthSessions = await this.model.countDocuments({
+      createdAt: {
+        $gte: new Date(lastYear, lastMonthUser, 1),
+        $lt: new Date(lastYear, lastMonthUser + 1, 1),
+      },
+    });
+
+    const growthRateSession = lastMonthSessions > 0
+      ? ((currentMonthSessions - lastMonthSessions) / lastMonthSessions) * 100
+      : currentMonthSessions > 0
+      ? 100
+      : 0;
+
+    return {
+      currentMonthSession: currentMonthSessions,
+      lastMonthSession: lastMonthSessions,
+      growthRateSession: parseFloat(growthRateSession.toFixed(2)),
+    };
+  }
 }

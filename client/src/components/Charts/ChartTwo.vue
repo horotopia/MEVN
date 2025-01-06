@@ -4,97 +4,64 @@ import { ref } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
 
 const chartData = {
-  series: [
-    {
-      name: 'Commandes',
-      data: [44, 55, 41, 67, 22, 43, 65]
-    },
-    {
-      name: 'Profit',
-      data: [13, 23, 20, 8, 13, 27, 15]
-    }
-  ],
-  labels: ['L', 'M', 'M', 'J', 'V', 'S', 'D']
+  series: [65, 34, 45, 12],
+  labels: ['Desktop', 'Tablet', 'Mobile', 'Unknown']
 }
 
 const chart = ref(null)
 
 const apexOptions = {
-  colors: ['#3056D3', '#80CAEE'],
   chart: {
-    type: 'bar',
-    height: 335,
-    stacked: true,
-    toolbar: {
-      show: false
-    },
-    zoom: {
-      enabled: false
-    }
+    type: 'donut',
+    width: 380
   },
-  responsive: [
-    {
-      breakpoint: 1536,
-      options: {
-        plotOptions: {
-          bar: {
-            borderRadius: 0,
-            columnWidth: '25%'
-          }
-        }
-      }
-    }
-  ],
+  colors: ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF'],
+  labels: chartData.labels,
+  legend: {
+    show: false,
+    position: 'bottom'
+  },
   plotOptions: {
-    bar: {
-      horizontal: false,
-      borderRadius: 0,
-      columnWidth: '25%',
-      borderRadiusApplication: 'end',
-      borderRadiusWhenStacked: 'last'
+    pie: {
+      donut: {
+        size: '65%',
+        background: 'transparent'
+      }
     }
   },
   dataLabels: {
     enabled: false
   },
-  xaxis: {
-    type: 'category',
-    categories: chartData.labels
-  },
-  legend: {
-    position: 'top',
-    horizontalAlign: 'left',
-    fontFamily: 'Satoshi',
-    fontWeight: 500,
-    fontSize: '14px',
-
-    markers: {
-      radius: 99
+  responsive: [
+    {
+      breakpoint: 640,
+      options: {
+        chart: {
+          width: 200
+        }
+      }
     }
-  },
-  fill: {
-    opacity: 1
-  }
+  ]
 }
 </script>
 
 <template>
   <div
-    class="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default xl:col-span-4"
+    class="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default sm:px-7.5 xl:col-span-6"
   >
-    <div class="mb-4 justify-between gap-4 sm:flex">
+    <div class="mb-3 justify-between gap-4 sm:flex">
       <div>
-        <h4 class="text-xl font-bold text-black">Nombres de commandes</h4>
+        <h4 class="text-xl font-bold text-black">Produits vendu</h4>
       </div>
       <div>
         <div class="relative z-20 inline-block">
           <select
-            name="#"
-            id="#"
+            name=""
+            id=""
             class="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
           >
-            <option value="">cette semaine</option>
-            <option value="">dernière semaine</option>
+            <option value="">Mois</option>
+            <option value="">Année</option>
           </select>
           <span class="absolute top-1/2 right-3 z-10 -translate-y-1/2">
             <svg
@@ -119,16 +86,53 @@ const apexOptions = {
         </div>
       </div>
     </div>
-
-    <div>
-      <div id="chartTwo" class="-ml-5 -mb-9">
+    <div class="mb-2">
+      <div id="chartThree" class="mx-auto flex justify-center">
         <VueApexCharts
-          type="bar"
-          height="335"
+          type="donut"
+          width="340"
           :options="apexOptions"
           :series="chartData.series"
           ref="chart"
         />
+      </div>
+    </div>
+    <div class="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
+      <div class="w-full px-8 sm:w-1/2">
+        <div class="flex w-full items-center">
+          <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
+          <p class="flex w-full justify-between text-sm font-medium text-black">
+            <span> Pikachu </span>
+            <span> 65% </span>
+          </p>
+        </div>
+      </div>
+      <div class="w-full px-8 sm:w-1/2">
+        <div class="flex w-full items-center">
+          <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
+          <p class="flex w-full justify-between text-sm font-medium text-black">
+            <span> Tiplouf </span>
+            <span> 34% </span>
+          </p>
+        </div>
+      </div>
+      <div class="w-full px-8 sm:w-1/2">
+        <div class="flex w-full items-center">
+          <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
+          <p class="flex w-full justify-between text-sm font-medium text-black">
+            <span> Leviator </span>
+            <span> 45% </span>
+          </p>
+        </div>
+      </div>
+      <div class="w-full px-8 sm:w-1/2">
+        <div class="flex w-full items-center">
+          <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
+          <p class="flex w-full justify-between text-sm font-medium text-black">
+            <span> Dracofeu </span>
+            <span> 12% </span>
+          </p>
+        </div>
       </div>
     </div>
   </div>

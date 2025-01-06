@@ -105,6 +105,44 @@ const changeItemsPerPage = function(event) {
 	currentPage.value = 1;
 }
 
+const exportCsv = function() {
+    const items = props.data
+
+    const replacer = (key, value) => value === null ? '' : value
+
+    let header = []
+    for(const field of props.fields) {
+        if (field.exportCsv !== false) {
+            header.push(field.label)
+        }
+    }
+
+    let csv = []
+    for(const row of items) {
+        let rowArray = []
+        for (const field of props.fields) {
+            if (field.exportCsv !== false) {
+                if (!hasNamedSlot(field.key)) {
+                    rowArray.push(JSON.stringify(row[field.key], replacer))
+                } else {
+                    rowArray.push(slots[field.key]({ item: row })[0].children)
+                }
+            }
+        }
+        csv.push(rowArray.join(';'))
+    }
+
+    csv.unshift(header.join(';'))
+
+    const csvArray = csv.join('\r\n')
+
+    const anchor = document.createElement('a');
+    anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvArray);
+    anchor.target = '_blank';
+    anchor.download = 'export.csv'
+    anchor.click();
+}
+
 watch(search, () => {
     currentPage.value = 1;
 })
@@ -130,6 +168,16 @@ watch(search, () => {
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                             </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="ml-3" v-if="props.options.search">
+                <div class="w-full max-w-sm min-w-[200px] relative">
+                    <div class="relative">
+                        <button class="my-auto px-2 flex items-center bg-white rounded "
+                            type="button" @click="exportCsv">
+                            Exporter en csv
                         </button>
                     </div>
                 </div>

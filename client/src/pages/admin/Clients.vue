@@ -140,6 +140,10 @@ async function fetchUsers() {
                 console.error('Jeton expiré ou non valide');
                 return;
             }
+            if (response.status === 403) {
+                window.location.href = '/logout';
+                return;
+            }
             throw new Error('Erreur lors de la récupération des utilisateurs');
         }
 
@@ -151,7 +155,10 @@ async function fetchUsers() {
             }
         }
 
-        fields.value.push({ key: 'action', label: 'Action' });
+        fields.value.push({ key: 'action', label: 'Action', exportCsv: false });
+
+        const index = fields.value.findIndex(field => field.key === 'pictures');
+        fields.value[index].exportCsv = false;
 
         for (const item of data) {
             tableData.value.push(item);
