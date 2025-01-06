@@ -7,31 +7,20 @@
 
           <form @submit.prevent="handleBillingSubmit">
             <div class="mb-4">
-              <label for="billing-name" class="block text-sm font-medium text-gray-700">Nom complet</label>
+              <label for="billing-name" class="block text-sm font-medium text-gray-700">Adresse complete</label>
               <input
                 id="billing-name"
                 type="text"
-                v-model="billing.name"
+                v-model="billing.street"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 required
               />
             </div>
 
             <div class="mb-4">
-              <label for="billing-address" class="block text-sm font-medium text-gray-700">Adresse</label>
+              <label for="billing-address" class="block text-sm font-medium text-gray-700">Ville</label>
               <input
                 id="billing-address"
-                type="text"
-                v-model="billing.address"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div class="mb-4">
-              <label for="billing-city" class="block text-sm font-medium text-gray-700">Ville</label>
-              <input
-                id="billing-city"
                 type="text"
                 v-model="billing.city"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -40,11 +29,22 @@
             </div>
 
             <div class="mb-4">
-              <label for="billing-postal" class="block text-sm font-medium text-gray-700">Code postal</label>
+              <label for="billing-city" class="block text-sm font-medium text-gray-700">Code Postal</label>
+              <input
+                id="billing-city"
+                type="text"
+                v-model="billing.postalCode"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="billing-postal" class="block text-sm font-medium text-gray-700">Pays</label>
               <input
                 id="billing-postal"
                 type="text"
-                v-model="billing.postalCode"
+                v-model="billing.country"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 required
               />
@@ -57,31 +57,20 @@
 
             <form @submit.prevent="handleShippingSubmit">
               <div class="mb-4">
-                <label for="shipping-name" class="block text-sm font-medium text-gray-700">Nom complet</label>
+                <label for="shipping-name" class="block text-sm font-medium text-gray-700">Addresse complète</label>
                 <input
                   id="shipping-name"
                   type="text"
-                  v-model="shipping.name"
+                  v-model="shipping.street"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                   required
                 />
               </div>
 
               <div class="mb-4">
-                <label for="shipping-address" class="block text-sm font-medium text-gray-700">Adresse</label>
+                <label for="shipping-address" class="block text-sm font-medium text-gray-700">Ville</label>
                 <input
                   id="shipping-address"
-                  type="text"
-                  v-model="shipping.address"
-                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                  required
-                />
-              </div>
-
-              <div class="mb-4">
-                <label for="shipping-city" class="block text-sm font-medium text-gray-700">Ville</label>
-                <input
-                  id="shipping-city"
                   type="text"
                   v-model="shipping.city"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
@@ -90,11 +79,22 @@
               </div>
 
               <div class="mb-4">
-                <label for="shipping-postal" class="block text-sm font-medium text-gray-700">Code postal</label>
+                <label for="shipping-city" class="block text-sm font-medium text-gray-700">Code postal</label>
+                <input
+                  id="shipping-city"
+                  type="text"
+                  v-model="shipping.postalCode"
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                  required
+                />
+              </div>
+
+              <div class="mb-4">
+                <label for="shipping-postal" class="block text-sm font-medium text-gray-700">Pays</label>
                 <input
                   id="shipping-postal"
                   type="text"
-                  v-model="shipping.postalCode"
+                  v-model="shipping.country"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                   required
                 />
@@ -122,54 +122,157 @@ import "vue3-toastify/dist/index.css";
 
 export default {
   props: {
-      totalAmount: {
+    totalAmount: {
       type: Number,
       required: true,
-      },
+    },
   },
   data() {
     return {
       billing: {
-        name: '',
-        address: '',
-        city: '',
-        postalCode: '',
+        id: null,
+        street: "",
+        city: "",
+        postalCode: "",
+        country: "",
       },
       shipping: {
-        name: '',
-        address: '',
-        city: '',
-        postalCode: '',
+        id: null,
+        street: "",
+        city: "",
+        postalCode: "",
+        country: "",
       },
+      user: JSON.parse(localStorage.getItem("user")) || null,
     };
   },
   computed: {
     hasNonPokemonItems() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    return cart.some((item) => item.category !== "pokémon");
-  },
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      return cart.some((item) => item.category !== "pokémon");
+    },
   },
   methods: {
-    handleBillingSubmit() {
-      console.log('Facturation:', this.billing);
+    async fetchUserAddresses() {
+      const jwtToken = localStorage.getItem("jwtToken");
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/address/${this.user._id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la récupération des adresses.");
+        }
+
+        const addresses = await response.json();
+
+        if (addresses.length > 0) {
+          const billingAddress = addresses[0];
+          this.billing = {
+            id: billingAddress._id || null,
+            street: billingAddress.street || "",
+            city: billingAddress.city || "",
+            postalCode: billingAddress.postalCode || "",
+            country: billingAddress.country || "",
+          };
+
+          this.shipping = { ...this.billing, id: null};
+        } else {
+          console.log("Aucune adresse disponible pour l'utilisateur.");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des adresses :", error);
+      }
     },
-    handleShippingSubmit() {
-      console.log('Livraison:', this.shipping);
+    async saveAddress(address, type) {
+      const jwtToken = localStorage.getItem("jwtToken");
+      const url = address.id
+        ? `http://localhost:5000/api/address/${address.id}`
+        : `http://localhost:5000/api/address`;
+
+      const method = address.id ? "PUT" : "POST";
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify({
+            userId: this.user._id,
+            street: address.street,
+            city: address.city,
+            postalCode: address.postalCode,
+            country: address.country,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Erreur lors de l'enregistrement de l'adresse de ${type}.`
+          );
+        }
+
+        const savedAddress = await response.json();
+        setTimeout(() => {
+          toast.success(
+            `Adresse de ${type === "billing" ? "facturation" : "livraison"} ${
+              method === "POST" ? "créée" : "mise à jour"
+            } avec succès.`,
+            {
+              position: "top-right",
+              autoClose: 3000,
+            }
+          );
+        }, 500)
+        
+
+        return savedAddress;
+      } catch (error) {
+        console.error( 
+          `Erreur lors de l'enregistrement de l'adresse ${type} :`,
+          error
+        );
+        toast.error(`Erreur lors de l'enregistrement de l'adresse ${type}.`);
+      }
     },
-    submitAll() {
-      this.$router.push({
-        name: 'paiement',
-        query: { totalAmount: this.totalAmount },
-      });
-      toast.success(`Coordonées enregistrée`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+    async submitAll() {
+      try {
+        const savedBillingAddress = await this.saveAddress(
+          this.billing,
+          "billing"
+        );
+        if (savedBillingAddress) {
+          this.billing.id = savedBillingAddress._id;
+        }
+
+        const savedShippingAddress = await this.saveAddress(
+          this.shipping,
+          "shipping"
+        );
+        if (savedShippingAddress) {
+          this.shipping.id = savedShippingAddress._id;
+        }
+
+        this.$router.push({
+          name: "paiement",
+          query: { totalAmount: this.totalAmount },
+        });
+      } catch (error) {
+        console.error("Erreur lors de l'enregistrement des adresses :", error);
+      }
     },
+  },
+  mounted() {
+    if (this.user) {
+      this.fetchUserAddresses();
+    }
   },
 };
 </script>
