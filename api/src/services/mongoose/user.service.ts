@@ -87,16 +87,8 @@ export class UserService {
   }
 
   // update
-  async updateUser(id: string, user: UpdateUser): Promise<User | null> {
-    const res = await this.model.findByIdAndUpdate(
-      id,
-      { $set: user },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    return res;
+  async updateUser(id: string, update: Partial<User>): Promise<User | null> {
+    return this.model.findByIdAndUpdate(id, update, { new: true });
   }
 
   // delete
@@ -148,13 +140,18 @@ export class UserService {
     const growthRateUser = lastMonthUsers > 0
       ? ((currentMonthUsers - lastMonthUsers) / lastMonthUsers) * 100
       : currentMonthUsers > 0
-      ? 100
-      : 0;
+        ? 100
+        : 0;
 
     return {
       currentMonthUser: currentMonthUsers,
       lastMonthUser: lastMonthUsers,
       growthRateUser: parseFloat(growthRateUser.toFixed(2)),
     };
+  }
+
+  async findUserByVerificationToken(token: string): Promise<User | null> {
+    const user = await this.model.findOne({ emailVerificationToken: token });
+    return user;
   }
 }

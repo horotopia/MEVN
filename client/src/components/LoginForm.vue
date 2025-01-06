@@ -7,7 +7,8 @@ export default {
       password: '',
       emailError: '',
       passwordError: '',
-      errorMessage: ''
+      errorMessage: '',
+      isVerifying: false
     };
   },
   methods: {
@@ -45,23 +46,26 @@ export default {
           body: JSON.stringify({ email: this.email, password: this.password })
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('Erreur lors de la connexion');
+          if (response.status === 403) {
+            this.errorMessage = "Votre compte n'est pas encore vérifié. Veuillez vérifier vos emails et cliquer sur le lien de confirmation.";
+            return;
+          }
+          throw new Error(data.message || 'Erreur lors de la connexion');
         }
 
-        const data = await response.json();
         if (data.jwtToken) {
           localStorage.setItem('jwtToken', data.jwtToken);
           localStorage.setItem('userRole', data.user.role);
-
           localStorage.setItem('user', JSON.stringify(data.user));
-
           this.$router.push('/dashboard');
         } else {
           this.errorMessage = 'Erreur de connexion : jeton non reçu.';
         }
       } catch (error) {
-        this.errorMessage = 'Email ou mot de passe incorrect.';
+        this.errorMessage = error.message || 'Email ou mot de passe incorrect.';
         console.error('Erreur de connexion', error);
       }
     },

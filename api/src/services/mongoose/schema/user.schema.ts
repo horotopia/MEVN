@@ -71,6 +71,18 @@ export const userSchema = new Schema<User>(
     address: {
       type: Schema.Types.ObjectId,
       ref: "Address",
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false
+    },
+    emailVerificationToken: {
+      type: String,
+      default: null
+    },
+    emailVerificationTokenExpires: {
+      type: Date,
+      default: null
     }
   },
   {

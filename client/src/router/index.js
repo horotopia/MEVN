@@ -25,6 +25,7 @@ import Products from '../pages/admin/Products.vue';
 import PaymentStripe from '../components/PaymentStripe.vue';
 import Orders from '../pages/admin/Orders.vue';
 import Commandes from '../pages/admin/Commandes.vue'
+import VerifyEmail from '../pages/user/VerifyEmail.vue';
 
 const routes = [
   {
@@ -40,7 +41,8 @@ const routes = [
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },
       { path: 'contact', name: 'Contact', component: Contact },
       { path: 'panier', name: 'Panier', component: Panier },
-      { path: 'panier/informations', name: 'infopanier', component: PanierInformations,  props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }),
+      {
+        path: 'panier/informations', name: 'infopanier', component: PanierInformations, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }),
         beforeEnter: (to, from, next) => {
           const cart = JSON.parse(localStorage.getItem('cart')) || [];
           const user = JSON.parse(localStorage.getItem('user'));
@@ -68,8 +70,9 @@ const routes = [
             next();
           }
         },
-     },
+      },
       { path: 'paiement', name: 'paiement', component: PaymentStripe, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
+      { path: 'verify-email', name: 'VerifyEmail', component: VerifyEmail },
     ]
   },
   {

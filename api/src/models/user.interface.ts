@@ -9,4 +9,9 @@ export interface User extends Timestamps {
   role?: string;
   tel: string;
   address?: Schema.Types.ObjectId;
+  isEmailVerified: boolean;
+  emailVerificationToken?: string | null;
+  emailVerificationTokenExpires?: Date | null;
 }
+
+export type UpdateUser = Partial<User>;
