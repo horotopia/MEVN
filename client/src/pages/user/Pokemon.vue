@@ -181,19 +181,16 @@ export default {
         throw new Error("Les données reçues ne sont pas un tableau");
       }
 
-      this.products = data.map((item) => {
-        console.log("Traitement du produit:", item);
-        return {
-          _id: item._id,
-          name: item.name || "Sans nom",
-          description: item.description || "Pas de description",
-          image: (item.pictures && item.pictures[0]?.name) 
-            ? `${this.publicPath}/products/${item._id}/${item.pictures[0].name}` 
-            : `https://via.placeholder.com/150?text=${encodeURIComponent(item.name || 'Pokemon')}`,
-          price: item.price || 0,
-          type: item.type || "normal"
-        };
-      });
+      this.products = data.map(item => ({
+        _id: item._id,
+        name: item.name,
+        description: item.description,
+        image: item.pictures?.[0]?.name
+          ? `${this.publicPath}/products/${item._id}/${item.pictures[0].name}`
+          : `https://via.placeholder.com/150?text=${item.name || 'Pokemon'}`,
+        price: item.price,
+        type: item.type
+      }));
 
       console.log("Produits transformés:", this.products);
     } catch (error) {
