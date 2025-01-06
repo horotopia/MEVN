@@ -26,6 +26,8 @@ import PaymentStripe from '../components/PaymentStripe.vue';
 import Orders from '../pages/admin/Orders.vue';
 import Commandes from '../pages/admin/Commandes.vue'
 import VerifyEmail from '../pages/user/VerifyEmail.vue';
+import ForgotPassword from '../pages/user/ForgotPassword.vue';
+import ResetPassword from '../pages/user/ResetPassword.vue';
 
 const routes = [
   {
@@ -81,6 +83,8 @@ const routes = [
     children: [
       { path: 'login', name: 'Login', component: Login },
       { path: 'register', name: 'Register', component: Register },
+      { path: 'forgot-password', name: 'ForgotPassword', component: ForgotPassword },
+      { path: 'reset-password', name: 'ResetPassword', component: ResetPassword },
       {
         path: 'logout',
         name: 'Logout',
@@ -94,10 +98,10 @@ const routes = [
   {
     path: '/',
     component: AdminLayout,
-    meta: { requiresAuth: true }, // requiresAdmin
+    meta: { requiresAuth: true },
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
-      { path: 'dashboard/statistiques', name: 'Statistiques', component: Statistiques },
+      { path: 'dashboard/statistiques', name: 'Statistiques', component: Statistiques, meta: { requiresAdmin: true } },
       { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
       { path: 'dashboard/clients', name: 'Clients', component: Clients, meta: { requiresAdmin: true } },
@@ -129,7 +133,7 @@ router.beforeEach((to, from, next) => {
         next();
       }
     }
-  } else if ((to.name === 'Login' || to.name === 'Register') && token) {
+  } else if ((to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' || to.name === 'ResetPassword') && token) {
     if (userRole === 'ROLE_ADMIN') {
       next({ name: 'Statistiques' });
     } else {

@@ -1,6 +1,25 @@
 <script>
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 export default {
   name: 'LoginPage',
+  mounted() {
+    // Vérifier si on a un message de notification dans les query params
+    const notification = this.$route.query.notification;
+    if (notification) {
+      toast.success(notification, {
+        position: "top-right",
+        autoClose: 8000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      // Nettoyer l'URL après avoir affiché la notification
+      this.$router.replace({ query: {} });
+    }
+  },
   data() {
     return {
       email: '',
@@ -25,8 +44,6 @@ export default {
     checkPassword() {
       if (!this.password) {
         this.passwordError = "Le mot de passe est requis.";
-      } else if (this.password.length < 6) {
-        this.passwordError = "Le mot de passe doit contenir au moins 6 caractères.";
       } else {
         this.passwordError = '';
       }
@@ -62,11 +79,11 @@ export default {
           localStorage.setItem('user', JSON.stringify(data.user));
           this.$router.push('/dashboard');
         } else {
-          this.errorMessage = 'Erreur de connexion : jeton non reçu.';
+          throw new Error('Erreur de connexion : jeton non reçu.');
         }
       } catch (error) {
         this.errorMessage = error.message || 'Email ou mot de passe incorrect.';
-        console.error('Erreur de connexion', error);
+        console.error('Erreur de connexion:', error);
       }
     },
     validateForm() {
@@ -108,6 +125,9 @@ export default {
               class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-4 focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
               :class="{ 'border-red-500': passwordError }" required />
             <p v-if="passwordError" class="mt-1 text-sm text-red-600 font-secondary">{{ passwordError }}</p>
+            <router-link to="/forgot-password" class="text-[#4A90E2] hover:text-[#357ABD] text-sm font-secondary">
+              Mot de passe oublié ?
+            </router-link>
           </div>
 
           <p v-if="errorMessage" class="text-center mt-4 text-red-600 font-secondary">{{ errorMessage }}</p>
