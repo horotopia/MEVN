@@ -263,7 +263,9 @@ db.orders.insertMany([
       },
     ],
     totalAmount: 125001,
-    status: "completed"
+    status: "completed",
+    createdAt: new Date('2024-05-18T13:00:00Z'),
+    updatedAt: new Date('2024-05-20T12:00:00Z')
   },
   {
     userId: ObjectId("60f4b6e1e9f0f4001f6b3b50"),
@@ -275,7 +277,9 @@ db.orders.insertMany([
       },
     ],
     totalAmount: 126000,
-    status: "pending"
+    status: "pending",
+    createdAt: new Date('2024-05-18T13:00:00Z'),
+    updatedAt: new Date('2024-05-20T12:00:00Z')
   },
   {
     userId: ObjectId("60f4b6e1e9f0f4001f6b3b53"),
@@ -292,7 +296,9 @@ db.orders.insertMany([
       },
     ],
     totalAmount: 105003,
-    status: "cancelled"
+    status: "cancelled",
+    createdAt: new Date('2024-05-18T13:00:00Z'),
+    updatedAt: new Date('2024-05-20T12:00:00Z')
   },
   {
     userId: ObjectId("60f4b6e1e9f0f4001f6b3b51"),
@@ -304,7 +310,9 @@ db.orders.insertMany([
       },
     ],
     totalAmount: 180004,
-    status: "completed"
+    status: "completed",
+    createdAt: new Date('2024-05-18T13:00:00Z'),
+    updatedAt: new Date('2024-05-20T12:00:00Z')
   },
   {
     userId: ObjectId("60f4b6e1e9f0f4001f6b3b4f"),
@@ -321,6 +329,148 @@ db.orders.insertMany([
       },
     ],
     totalAmount: 115001,
-    status: "pending"
+    status: "pending",
+    createdAt: new Date('2024-05-18T13:00:00Z'),
+    updatedAt: new Date('2024-05-20T12:00:00Z')
   },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840c1'),
+    userId: ObjectId('677ba5466d3761f898e9496a'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111111'),
+        quantity: 2,
+        price: 40000,
+        _id: ObjectId('677ba9272b2996c7e63840c2')
+      }
+    ],
+    totalAmount: 80000,
+    status: 'completed',
+    createdAt: new Date('2024-01-10T10:00:00Z'),
+    updatedAt: new Date('2024-01-12T12:00:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840c3'),
+    userId: ObjectId('677ba5466d3761f898e9496b'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111112'),
+        quantity: 1,
+        price: 25000,
+        _id: ObjectId('677ba9272b2996c7e63840c4')
+      },
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111113'),
+        quantity: 3,
+        price: 20000,
+        _id: ObjectId('677ba9272b2996c7e63840c5')
+      }
+    ],
+    totalAmount: 85000,
+    status: 'pending',
+    createdAt: new Date('2024-02-15T15:00:00Z'),
+    updatedAt: new Date('2024-02-15T15:00:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840c6'),
+    userId: ObjectId('677ba5466d3761f898e9496c'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111114'),
+        quantity: 1,
+        price: 120000,
+        _id: ObjectId('677ba9272b2996c7e63840c7')
+      }
+    ],
+    totalAmount: 120000,
+    status: 'completed',
+    createdAt: new Date('2024-03-05T11:00:00Z'),
+    updatedAt: new Date('2024-03-07T14:00:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840c8'),
+    userId: ObjectId('677ba5466d3761f898e9496d'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111115'),
+        quantity: 2,
+        price: 35000,
+        _id: ObjectId('677ba9272b2996c7e63840c9')
+      }
+    ],
+    totalAmount: 70000,
+    status: 'pending',
+    createdAt: new Date('2024-04-25T16:30:00Z'),
+    updatedAt: new Date('2024-04-25T16:30:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840ca'),
+    userId: ObjectId('677ba5466d3761f898e9496e'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111116'),
+        quantity: 4,
+        price: 15000,
+        _id: ObjectId('677ba9272b2996c7e63840cb')
+      }
+    ],
+    totalAmount: 60000,
+    status: 'completed',
+    createdAt: new Date('2024-05-18T13:00:00Z'),
+    updatedAt: new Date('2024-05-20T12:00:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840cc'),
+    userId: ObjectId('677ba5466d3761f898e9496f'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111117'),
+        quantity: 2,
+        price: 60000,
+        _id: ObjectId('677ba9272b2996c7e63840cd')
+      },
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111118'),
+        quantity: 1,
+        price: 40000,
+        _id: ObjectId('677ba9272b2996c7e63840ce')
+      }
+    ],
+    totalAmount: 160000,
+    status: 'cancelled',
+    createdAt: new Date('2024-06-30T10:15:00Z'),
+    updatedAt: new Date('2024-07-01T08:00:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840cf'),
+    userId: ObjectId('677ba5466d3761f898e94960'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111119'),
+        quantity: 1,
+        price: 45000,
+        _id: ObjectId('677ba9272b2996c7e63840d0')
+      }
+    ],
+    totalAmount: 45000,
+    status: 'pending',
+    createdAt: new Date('2024-07-20T09:00:00Z'),
+    updatedAt: new Date('2024-07-20T09:00:00Z')
+  },
+  {
+    _id: ObjectId('677ba9272b2996c7e63840d1'),
+    userId: ObjectId('677ba5466d3761f898e94961'),
+    items: [
+      {
+        productId: ObjectId('60f4b6e1e9f0f4001b111120'),
+        quantity: 3,
+        price: 30000,
+        _id: ObjectId('677ba9272b2996c7e63840d2')
+      }
+    ],
+    totalAmount: 90000,
+    status: 'completed',
+    createdAt: new Date('2024-08-14T10:00:00Z'),
+    updatedAt: new Date('2024-08-15T15:00:00Z')
+  }
 ]);

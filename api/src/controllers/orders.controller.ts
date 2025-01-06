@@ -451,8 +451,122 @@ export class OrdersController {
     }
   }
 
+  /**
+   * @swagger
+   * /api/orders/calculateAverageOrderAmount:
+   *   get:
+   *     summary: Obtenir la moyenne des montants des commandes
+   *     tags: [Orders]
+   *     description: Cette route calcule et retourne le montant moyen des commandes pour le mois en cours, pour le mois précédent, et le taux de croissance.
+   *     responses:
+   *       200:
+   *         description: Commandes trouvées avec succès.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 currentMonthOrder:
+   *                   type: number
+   *                   format: float
+   *                   description: Montant moyen des commandes pour le mois en cours.
+   *                   example: 150.75
+   *                 lastMonthOrder:
+   *                   type: number
+   *                   format: float
+   *                   description: Montant moyen des commandes pour le mois précédent.
+   *                   example: 125.50
+   *                 growthRateOrder:
+   *                   type: number
+   *                   format: float
+   *                   description: Taux de croissance du montant moyen des commandes entre le mois précédent et le mois en cours (en pourcentage).
+   *                   example: 20.12
+   *       400:
+   *         description: Requête invalide.
+   *       401:
+   *         description: Non autorisé.
+   *       403:
+   *         description: Accès refusé.
+   *       404:
+   *         description: Commandes non trouvées.
+   *       500:
+   *         description: Erreur interne du serveur.
+   */
+  async calculateAverageOrderAmount(req: Request, res: Response, next: NextFunction) {
+    console.log("calculateAverageOrderAmount");
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.ordersService.calculateAverageOrderAmount();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/orders/totalAmountByMonth/{year}:
+   *   get:
+   *     summary: Obtenir le total des montants des commandes par mois
+   *     tags: [Orders]
+   *     description: Cette route retourne le total des montants des commandes "complétées" pour chaque mois d'une année donnée.
+   *     parameters:
+   *       - name: year
+   *         in: path
+   *         required: true
+   *         description: Année pour laquelle on veut obtenir le total des montants des commandes.
+   *         schema:
+   *           type: number
+   *           format: integer
+   *           example: 2024
+   *     responses:
+   *       200:
+   *         description: Totaux mensuels des montants des commandes calculés avec succès.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: number
+   *                 format: float
+   *                 description: Total des montants des commandes pour un mois donné.
+   *                 example: 15000.75
+   *       400:
+   *         description: Requête invalide.
+   *       401:
+   *         description: Non autorisé.
+   *       403:
+   *         description: Accès refusé.
+   *       500:
+   *         description: Erreur interne du serveur.
+   */
+  async getOrdersTotalAmount(req: Request, res: Response, next: NextFunction) {
+    console.log("getOrdersTotalAmount");
+    try {
+      if (!req.params || !req.params.year) {
+        res.status(400);
+        throw new Error("Missing year");
+      }
+      const year = parseInt(req.params.year);
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.ordersService.totalAmountOrdersByMonth(year);
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
+    router.get("/calculateAverageOrderAmount", authenticateToken, validateRoleAdmin, this.calculateAverageOrderAmount.bind(this));
+    router.get("/totalAmountByMonth/:year", this.getOrdersTotalAmount.bind(this));
+
     router.post("/", authenticateToken, validateRoleUser, this.createOrder);
     router.get(
       "/:id",
