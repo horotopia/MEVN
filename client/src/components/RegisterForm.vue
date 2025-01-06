@@ -26,10 +26,11 @@ import "vue3-toastify/dist/index.css";
         }
       },
       checkPassword() {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
         if (!this.password) {
           this.passwordError = "Le mot de passe est requis.";
-        } else if (this.password.length < 6) {
-          this.passwordError = "Le mot de passe doit contenir au moins 6 caractères.";
+        } else if (!passwordRegex.test(this.password)) {
+          this.passwordError = "Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.";
         } else {
           this.passwordError = '';
         }
@@ -49,19 +50,16 @@ import "vue3-toastify/dist/index.css";
             body: JSON.stringify({ email: this.email, password: this.password, name: this.name, tel : this.tel})
           });
 
+          const data = await response.json();
+
           if (!response.ok) {
-            throw new Error('Erreur lors de l\'inscription');
+            throw new Error(data.message || 'Erreur lors de l\'inscription');
           }
 
-          const data = await response.json();
           if (data.response) {
-            // localStorage.setItem('jwtToken', data.jwtToken);
-            // localStorage.setItem('userRole', data.user.role);
-            // localStorage.setItem('user', JSON.stringify(data.user));
-            
-            this.$router.push('/login').then( async () => { 
+            this.$router.push('/login').then(() => { 
               setTimeout(() =>  {
-                toast.success(`Votre compte à été crée avec succès`, {
+                toast.success(data.message || 'Votre compte a été créé avec succès', {
                   position: "top-right",
                   autoClose: 3000,
                   hideProgressBar: false,
@@ -70,13 +68,13 @@ import "vue3-toastify/dist/index.css";
                   draggable: true,
                 });
               }, 500)
-            });;
+            });
           } else {
-            this.errorMessage = 'Erreur de connexion : jeton non reçu.';
+            toast.error(data.message || 'Erreur lors de l\'inscription');
           }
         } catch (error) {
-          this.errorMessage = 'Email ou mot de passe incorrect.';
-          console.error('Erreur de connexion', error);
+          toast.error(error.message || 'Erreur lors de l\'inscription');
+          console.error('Erreur d\'inscription:', error);
         }
       },
       validateForm() {

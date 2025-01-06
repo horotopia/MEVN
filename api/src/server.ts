@@ -41,7 +41,6 @@ const app: Express = express();
 // config
 configureCORS(app);
 configureHelmet(app);
-app.use(cors());
 app.use(bodyParser.json());
 
 app.use(

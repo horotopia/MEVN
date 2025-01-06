@@ -15,9 +15,21 @@ export class ProductService {
   constructor(mongooseService: MongooseService) {
     this.mongooseService = mongooseService;
     const mongoose = this.mongooseService.mongoose;
-    this.model = mongoose.model("Product", productSchema);
-    this.pictureModel = mongoose.model("Picture", picturesSchema);
-    this.ordersModel = mongoose.model("Orders", ordersSchema);
+    try {
+      this.model = mongoose.model<Product>("Product");
+    } catch (error) {
+      this.model = mongoose.model<Product>("Product", productSchema);
+    }
+    try {
+      this.pictureModel = mongoose.model<Pictures>("Picture");
+    } catch (error) {
+      this.pictureModel = mongoose.model<Pictures>("Picture", picturesSchema);
+    }
+    try {
+      this.ordersModel = mongoose.model<Orders>("Orders");
+    } catch (error) {
+      this.ordersModel = mongoose.model<Orders>("Orders", ordersSchema);
+    }
   }
 
   // create

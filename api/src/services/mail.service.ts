@@ -97,3 +97,34 @@ class MailService {
 }
 
 export const mailService = new MailService();
+
+export const sendResetPasswordEmail = async (email: string, resetLink: string): Promise<void> => {
+    const mailService = new MailService();
+    const mailOptions: MailData = {
+        from: process.env.MAIL_FROM,
+        to: email,
+        subject: 'Réinitialisation de votre mot de passe - PokéShop',
+        htmlContent: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h1 style="color: #C73D3D; text-align: center;">Réinitialisation de votre mot de passe</h1>
+                <p>Bonjour,</p>
+                <p>Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le lien ci-dessous pour définir un nouveau mot de passe :</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${resetLink}" style="background-color: #C73D3D; color: white; padding: 12px 24px; text-decoration: none; border-radius: 25px; display: inline-block;">
+                        Réinitialiser mon mot de passe
+                    </a>
+                </div>
+                <p>Ce lien est valable pendant 1 heure.</p>
+                <p>Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.</p>
+                <p>Cordialement,<br>L'équipe PokéShop</p>
+            </div>
+        `
+    };
+
+    try {
+        await mailService.sendEmail(mailOptions);
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'email de réinitialisation:', error);
+        throw new Error('Erreur lors de l\'envoi de l\'email de réinitialisation');
+    }
+};

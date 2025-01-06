@@ -1,13 +1,26 @@
 <script setup>
 import { onClickOutside } from '@vueuse/core'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Avatar from './../Avatar.vue'
 
 const publicPath = 'http://localhost:5000/uploads'
 
 const target = ref(null)
 const dropdownOpen = ref(false)
-const user = JSON.parse(localStorage.getItem('user'))
+const user = ref(JSON.parse(localStorage.getItem('user')) || {
+  name: 'Utilisateur',
+  role: 'USER',
+  pictures: []
+})
+
+const userName = computed(() => user.value?.name || 'Utilisateur')
+const userRole = computed(() => user.value?.role === 'ROLE_ADMIN' ? 'Administrateur' : 'Utilisateur')
+const userAvatar = computed(() => {
+  if (user.value?.pictures?.[0]?.name) {
+    return `${publicPath}/users/${user.value._id}/${user.value.pictures[0].name}`
+  }
+  return ''
+})
 
 onClickOutside(target, () => {
   dropdownOpen.value = false
@@ -18,15 +31,12 @@ onClickOutside(target, () => {
   <div class="relative" ref="target">
     <router-link class="flex items-center gap-4" to="#" @click.prevent="dropdownOpen = !dropdownOpen">
       <span class="hidden text-right lg:block">
-        <span class="block text-sm font-medium text-black">{{ user.name }}</span>
-        <span class="block text-xs font-medium text-gray-500">{{ user.role === 'ROLE_ADMIN' ? 'Administrateur' :
-          'Utilisateur' }}</span>
+        <span class="block text-sm font-medium text-black">{{ userName }}</span>
+        <span class="block text-xs font-medium text-gray-500">{{ userRole }}</span>
       </span>
 
       <span class="h-12 w-12 rounded-full">
-        <!-- <img src="../../assets/img/POKESHOP_LOGO_MOBILE.png" alt="User" /> -->
-        <Avatar :fullname="user.name" :size="40"
-          :image="(user.pictures[0]?.name) ? `${publicPath}/users/${user._id}/${user.pictures[0]?.name}` : ''" />
+        <Avatar :fullname="userName" :size="40" :image="userAvatar" />
       </span>
 
       <svg :class="dropdownOpen && 'rotate-180'" class="hidden fill-current sm:block" width="12" height="8"

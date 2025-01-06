@@ -1,5 +1,5 @@
 <template>
-  <footer class="h-28 flex justify-between items-center bg-gray-900 p-4 text-white">
+  <footer class="h-28 flex justify-between items-center bg-gray-900 p-4 text-white w-full">
     <router-link to="/">
         <img class="size-20 object-cover" src="../assets/img/POKESHOP_LOGO_MOBILE.png" alt="Logo Pokeshop" />
     </router-link>
@@ -12,8 +12,11 @@
   </footer>
 </template>
   
-  <script>
-  export default {
-    name: 'FooTer'
-  }
-  </script>
+<script>
+export default {
+  name: 'FooTer'
+}
+</script>
+
+<style scoped>
+</style>

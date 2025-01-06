@@ -17,9 +17,21 @@ export class UserService {
   constructor(mongooseService: MongooseService) {
     this.mongooseService = mongooseService;
     const mongoose = this.mongooseService.mongoose;
-    this.model = mongoose.model("User", userSchema);
-    this.pictureModel = mongoose.model("Picture", picturesSchema);
-    this.addressModel = mongoose.model("Address", addressSchema);
+    try {
+      this.model = mongoose.model<User>("User");
+    } catch (error) {
+      this.model = mongoose.model<User>("User", userSchema);
+    }
+    try {
+      this.pictureModel = mongoose.model<Pictures>("Picture");
+    } catch (error) {
+      this.pictureModel = mongoose.model<Pictures>("Picture", picturesSchema);
+    }
+    try {
+      this.addressModel = mongoose.model<Address>("Address");
+    } catch (error) {
+      this.addressModel = mongoose.model<Address>("Address", addressSchema);
+    }
   }
 
   // register
@@ -35,6 +47,10 @@ export class UserService {
     });
     if (!user) {
       return null;
+    }
+
+    if (!user.isEmailVerified && user.role !== 'ROLE_ADMIN') {
+      throw new Error('Votre compte n\'est pas encore vérifié. Veuillez vérifier vos emails.');
     }
 
     const userId = user._id;
@@ -87,16 +103,8 @@ export class UserService {
   }
 
   // update
-  async updateUser(id: string, user: UpdateUser): Promise<User | null> {
-    const res = await this.model.findByIdAndUpdate(
-      id,
-      { $set: user },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    return res;
+  async updateUser(id: string, update: Partial<User>): Promise<User | null> {
+    return this.model.findByIdAndUpdate(id, update, { new: true });
   }
 
   // delete
@@ -148,13 +156,18 @@ export class UserService {
     const growthRateUser = lastMonthUsers > 0
       ? ((currentMonthUsers - lastMonthUsers) / lastMonthUsers) * 100
       : currentMonthUsers > 0
-      ? 100
-      : 0;
+        ? 100
+        : 0;
 
     return {
       currentMonthUser: currentMonthUsers,
       lastMonthUser: lastMonthUsers,
       growthRateUser: parseFloat(growthRateUser.toFixed(2)),
     };
+  }
+
+  async findUserByVerificationToken(token: string): Promise<User | null> {
+    const user = await this.model.findOne({ emailVerificationToken: token });
+    return user;
   }
 }
