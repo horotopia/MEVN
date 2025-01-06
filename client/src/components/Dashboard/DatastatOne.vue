@@ -5,13 +5,23 @@ const cardItems = ref([]);
 
 const fetchProductData = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/product/countProductSellInMonth');
-    
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`);
+    const urls = [
+      'http://localhost:5000/api/product/countProductSellInMonth',
+      'http://localhost:5000/api/users/countUsersByMonth',
+      'http://localhost:5000/api/orders/calculateAverageOrderAmount',
+    ];
+
+    const [productResponse, userResponse, orderResponse] = await Promise.all(
+      urls.map((url) => fetch(url))
+    );
+
+    if (!productResponse.ok || !userResponse.ok || !orderResponse.ok) {
+      throw new Error('Une ou plusieurs requêtes ont échoué.');
     }
 
-    const { currrentMonth, growthRate, currentMonthUser, growthRateUser, currentMonthOrder, growthRateOrder } = await response.json();
+    const productData = await productResponse.json();
+    const userData = await userResponse.json();
+    const orderData = await orderResponse.json();
 
     cardItems.value = [
       {
@@ -33,8 +43,8 @@ const fetchProductData = async () => {
                 />
               </svg>`,
         title: 'Produits vendus',
-        total: currrentMonth.toLocaleString(),
-        growthRate: growthRate
+        total: productData.currrentMonth.toLocaleString(),
+        growthRate: productData.growthRate
       },
       {
         icon: `<svg
@@ -59,8 +69,8 @@ const fetchProductData = async () => {
                 />
               </svg>`,
         title: 'Utilisateurs',
-        total: currentMonthUser,
-        growthRate: growthRateUser
+        total: userData.currentMonthUser,
+        growthRate: userData.growthRateUser
       },
       {
         icon: `<svg
@@ -85,8 +95,8 @@ const fetchProductData = async () => {
                 />
               </svg>`,
         title: 'Panier moyen',
-        total: currentMonthOrder,
-        growthRate: growthRateOrder
+        total: orderData.currentMonthOrder,
+        growthRate: orderData.growthRateOrder
       },
       {
         icon: `<svg

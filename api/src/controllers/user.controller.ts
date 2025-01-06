@@ -256,7 +256,7 @@ export class UserController {
 
   buildRouter(): Router {
     const router = Router();
-    router.get("/countUsersByMonth", validateObjectId, this.countUsersByMonth.bind(this));
+    router.get("/countUsersByMonth", this.countUsersByMonth.bind(this));
     router.get(
       "/:id",
       authenticateToken,
