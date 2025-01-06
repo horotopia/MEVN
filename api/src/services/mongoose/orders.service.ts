@@ -135,15 +135,15 @@ export class OrdersService {
       throw new Error("Year is in the future");
     }
     if (year === new Date().getFullYear()) {
-      maxMonth = new Date().getMonth();
+      maxMonth = new Date().getMonth()+1;
     }
     console.log("maxMonth:",maxMonth);
     for (let i = 0; i < maxMonth; i++) {
       const orders = await this.model.find({
         status: "completed",
         createdAt: {
-          $gte: new Date(year, i, 30),
-          $lt: new Date(year, i + 1, 30),
+          $gte: new Date(year, i, 1),
+          $lt: new Date(year, i + 1, 1),
         },
       });
       console.log("orders:",orders);
@@ -156,4 +156,26 @@ export class OrdersService {
     console.log("totalAmounts:",totalAmounts);
     return totalAmounts;
   }
+
+  // // obtenir tous les produits vendus par nom (partie admin) ainsi que le nombre de fois qu'ils ont été vendus
+  // async findAllProductsSoldByName(): Promise<any[]> {
+  //   const orders = await this.model.find({ status: "completed" }).populate({ path: 'items.productId', select: 'product' });
+  //   const products = orders.reduce((acc: Record<string, number>, order) => {
+  //     order.items.forEach((item) => {
+  //       const productName = item.productId.name;
+  //       console.log("productName:",productName);
+  //       if (acc[productName]) {
+  //         acc[productName] += item.quantity;
+  //       } else {
+  //         acc[productName] = item.quantity;
+  //       }
+  //       console.log("acc:",acc);
+  //     });
+  //     return acc;
+  //   }, {});
+  //   return Object.keys(products).map((name) => ({
+  //     name,
+  //     quantity: products[name],
+  //   }));
+  // }
 }

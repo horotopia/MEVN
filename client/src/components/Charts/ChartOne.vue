@@ -1,30 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue';
 // @ts-ignore
-import VueApexCharts from 'vue3-apexcharts'
+import VueApexCharts from 'vue3-apexcharts';
 
-const chartData = {
-  series: [
-    {
-      name: 'Product One',
-      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45]
-    },
+const orders2024 = ref<number[]>([]);
+const orders2025 = ref<number[]>([]);
+const chart = ref(null);
 
-    {
-      name: 'Product Two',
-      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51]
-    }
-  ],
-  labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jui', 'Jui', 'Aou']
-}
-
-const chart = ref(null)
-
-const apexOptions = {
+const apexOptions = ref({
   legend: {
     show: false,
     position: 'top',
-    horizontalAlign: 'left'
+    horizontalAlign: 'left',
   },
   colors: ['#3C50E0', '#80CAEE'],
   chart: {
@@ -37,89 +24,130 @@ const apexOptions = {
       top: 10,
       blur: 4,
       left: 0,
-      opacity: 0.1
+      opacity: 0.1,
     },
-
     toolbar: {
-      show: false
-    }
+      show: false,
+    },
   },
   responsive: [
     {
       breakpoint: 1024,
       options: {
         chart: {
-          height: 300
-        }
-      }
+          height: 300,
+        },
+      },
     },
     {
       breakpoint: 1366,
       options: {
         chart: {
-          height: 350
-        }
-      }
-    }
+          height: 350,
+        },
+      },
+    },
   ],
   stroke: {
     width: [2, 2],
-    curve: 'straight'
-  },
-
-  labels: {
-    show: false,
-    position: 'top'
-  },
-  grid: {
-    xaxis: {
-      lines: {
-        show: true
-      }
-    },
-    yaxis: {
-      lines: {
-        show: true
-      }
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  markers: {
-    size: 4,
-    colors: '#fff',
-    strokeColors: ['#3056D3', '#80CAEE'],
-    strokeWidth: 3,
-    strokeOpacity: 0.9,
-    strokeDashArray: 0,
-    fillOpacity: 1,
-    discrete: [],
-    hover: {
-      size: undefined,
-      sizeOffset: 5
-    }
+    curve: 'straight',
   },
   xaxis: {
     type: 'category',
-    categories: chartData.labels,
+    categories: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jui', 'Jui', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'],
     axisBorder: {
-      show: false
+      show: false,
     },
     axisTicks: {
-      show: false
-    }
+      show: false,
+    },
   },
   yaxis: {
     title: {
       style: {
-        fontSize: '0px'
-      }
+        fontSize: '0px',
+      },
     },
     min: 0,
-    max: 100
+    max: 400000,
+  },
+});
+
+const chartData = ref({
+  series: [
+    {
+      name: 'CA 2024',
+      data: orders2024.value,
+    },
+    {
+      name: 'CA 2025',
+      data: orders2025.value,
+    },
+  ],
+});
+
+const fetchOrders = async (urlApi: string): Promise<number[] | null> => {
+  const jwtToken = localStorage.getItem('jwtToken');
+  try {
+    const response = await fetch(urlApi, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        console.error('Jeton expiré ou non valide');
+        return null;
+      }
+      throw new Error('Erreur lors de la récupération des commandes');
+    }
+
+    const data = await response.json();
+    console.log('commandes:', data);
+    return data;
+  } catch (error) {
+    console.error('Erreur:', error);
+    return null;
   }
-}
+};
+
+const loadOrders = async () => {
+  const url2024 = 'http://localhost:5000/api/orders/totalAmountByMonth/2024';
+  const url2025 = 'http://localhost:5000/api/orders/totalAmountByMonth/2025';
+
+  const [data2024, data2025] = await Promise.all([
+    fetchOrders(url2024),
+    fetchOrders(url2025),
+  ]);
+
+  if (data2024) orders2024.value = data2024;
+  if (data2025) orders2025.value = data2025;
+
+  chartData.value.series[0].data = orders2024.value;
+  chartData.value.series[1].data = orders2025.value;
+
+  const maxValue = Math.max(
+    Math.max(...orders2024.value),
+    Math.max(...orders2025.value)
+  );
+  apexOptions.value.yaxis.max = maxValue*1.1;
+  if (chart.value) {
+    chart.value.updateOptions({
+      yaxis: {
+        max: maxValue,
+      },
+    });
+  }
+};
+
+onMounted(() => {
+  loadOrders();
+  console.log('Orders 2024:', orders2024.value);
+  console.log('Orders 2025:', orders2025.value);
+});
 </script>
 
 <template>
@@ -135,8 +163,7 @@ const apexOptions = {
             <span class="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
           </span>
           <div class="w-full">
-            <p class="font-semibold text-primary">Chiffre d'affaire</p>
-            <p class="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+            <p class="font-semibold text-primary">Chiffre d'affaire 2024</p>
           </div>
         </div>
         <div class="flex min-w-47.5">
@@ -146,8 +173,7 @@ const apexOptions = {
             <span class="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
           </span>
           <div class="w-full">
-            <p class="font-semibold text-secondary">Ventes totales</p>
-            <p class="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+            <p class="font-semibold text-secondary">Chiffre d'affaire 2025</p>
           </div>
         </div>
       </div>

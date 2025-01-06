@@ -3,9 +3,43 @@ import { ref } from 'vue'
 // @ts-ignore
 import VueApexCharts from 'vue3-apexcharts'
 
+// const urlApi = 'http://localhost:5000/api/orders';
+// const jwtToken = localStorage.getItem('jwtToken');
+//     console.log('JWT Token:', jwtToken);
+
+//     try {
+//         const response = await fetch(urlApi, {
+//             method: 'GET',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${jwtToken}`,
+//             },
+//         });
+
+//         if (!response.ok) {
+//             if (response.status === 401) {
+//                 console.error('Jeton expiré ou non valide');
+//                 return;
+//             }
+//             throw new Error('Erreur lors de la récupération des utilisateurs');
+//         }
+
+//         const data = await response.json();
+//         console.log('Utilisateurs:', data);
+//     } catch (error) {
+//         console.error('Erreur:', error);
+//     }
+
+
+const chartDataRef = ref({
+  pikachu: 65,
+  tiplouf: 34,
+  leviator: 45,
+  dracofeu: 12
+})
 const chartData = {
-  series: [65, 34, 45, 12],
-  labels: ['Desktop', 'Tablet', 'Mobile', 'Unknown']
+  series: [65, 34, 45, 12], // TODO: Nombre de pdts vendus
+  labels: ['Pikachu', 'Tiplouf', 'Leviator', 'Dracofeu']
 }
 
 const chart = ref(null)
@@ -102,7 +136,7 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Pikachu </span>
+            <span> Pikachu (mettre un ref dynamique) </span> 
             <span> 65% </span>
           </p>
         </div>
