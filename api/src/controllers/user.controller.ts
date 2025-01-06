@@ -239,6 +239,45 @@ export class UserController {
     }
   }
 
+  /**
+   * @swagger
+   * /api/users/countUsersByMonth:
+   *   get:
+   *     summary: Compter le nombre d'utilisateurs par mois
+   *     tags: [Users]
+   *     description: Cette route retourne le nombre d'utilisateurs enregistrés pour le mois en cours, le mois précédent, et le taux de croissance d'enregistrement des utilisateurs.
+   *     responses:
+   *       200:
+   *         description: Commandes trouvées avec succès.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 currentMonthUser:
+   *                   type: integer
+   *                   description: Nombre d'utilisateurs enregistrés pour le mois en cours.
+   *                   example: 250
+   *                 lastMonthUser:
+   *                   type: integer
+   *                   description:  Nombre d'utilisateurs enregistrés pour le mois précédent.
+   *                   example: 200
+   *                 growthRateUser:
+   *                   type: number
+   *                   format: float
+   *                   description: Taux de croissance des utilisateurs enregistrés entre le mois précédent et le mois en cours (en pourcentage).
+   *                   example: 25.0
+   *       400:
+   *         description: Requête invalide.
+   *       401:
+   *         description: Non autorisé.
+   *       403:
+   *         description: Accès refusé.
+   *       404:
+   *         description: Commandes non trouvées.
+   *       500:
+   *         description: Erreur interne du serveur.
+   */
   // countUsersByMonth
   async countUsersByMonth(req: Request, res: Response, next: NextFunction) {
     console.log("countUsersByMonth");
@@ -283,6 +322,7 @@ export class UserController {
       validateObjectId,
       this.deleteUser.bind(this)
     );
+    router.get("/countUsersByMonth",authenticateToken, validateRoleAdmin, this.countUsersByMonth.bind(this));
     return router;
   }
 }

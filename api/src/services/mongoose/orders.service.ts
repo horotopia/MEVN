@@ -123,4 +123,37 @@ export class OrdersService {
       growthRateOrder: parseFloat(growthRateOrder.toFixed(2)),
     };
   }
+
+  async totalAmountOrdersByMonth(year: number): Promise<number[]> {
+    console.log("year:",year);
+    const totalAmounts = [];
+    let maxMonth = 12;
+    if (year < 2024) {
+      throw new Error("Invalid year");
+    }
+    if (year > new Date().getFullYear()) {
+      throw new Error("Year is in the future");
+    }
+    if (year === new Date().getFullYear()) {
+      maxMonth = new Date().getMonth();
+    }
+    console.log("maxMonth:",maxMonth);
+    for (let i = 0; i < maxMonth; i++) {
+      const orders = await this.model.find({
+        status: "completed",
+        createdAt: {
+          $gte: new Date(year, i, 30),
+          $lt: new Date(year, i + 1, 30),
+        },
+      });
+      console.log("orders:",orders);
+      const totalAmount = orders.length > 0
+        ? orders.reduce((acc, order) => acc + order.totalAmount, 0)
+        : 0;
+      console.log("totalAmount:",totalAmount);
+      totalAmounts.push(totalAmount);
+    }
+    console.log("totalAmounts:",totalAmounts);
+    return totalAmounts;
+  }
 }
