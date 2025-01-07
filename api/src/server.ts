@@ -44,7 +44,6 @@ app.use(bodyParser.json());
 
 app.use(
   compression({
-    // Compress all HTTP responses
     filter: (req: Request, res: Response) => {
       if (req.headers["x-no-compression"]) {
         return false;
@@ -55,23 +54,21 @@ app.use(
   })
 );
 
-// Endpoint pour créer un PaymentIntent
 app.post('/create-payment-intent', async (req, res) => {
   try {
-    const { amount, currency } = req.body; // Récupération des données du frontend
+    const { amount, currency } = req.body;
     
     if (!amount || !currency) {
       throw new Error('Le montant et la devise sont requis.');
     }
 
-    // Création du PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount, // Montant en centimes (5000 pour 50,00 €)
-      currency, // Devise (par exemple, 'eur')
+      amount,
+      currency,
     });
 
     res.status(200).send({
-      clientSecret: paymentIntent.client_secret, // Envoyer le client_secret au frontend
+      clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
     res.status(500).send({});

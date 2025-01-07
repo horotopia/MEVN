@@ -182,8 +182,6 @@ export default {
           };
 
           this.shipping = { ...this.billing, id: null};
-        } else {
-          console.log("Aucune adresse disponible pour l'utilisateur.");
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des adresses :", error);

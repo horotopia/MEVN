@@ -87,7 +87,6 @@ const modalDelete = ref({
 
 async function fetchUsers() {
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     try {
         const response = await fetch(urlApi, {

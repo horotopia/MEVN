@@ -493,7 +493,6 @@ export class OrdersController {
    *         description: Erreur interne du serveur.
    */
   async calculateAverageOrderAmount(req: Request, res: Response, next: NextFunction) {
-    console.log("calculateAverageOrderAmount");
     try {
       const mongooseService = await MongooseService.get();
       const count = await mongooseService.ordersService.calculateAverageOrderAmount();
@@ -544,7 +543,6 @@ export class OrdersController {
    *         description: Erreur interne du serveur.
    */
   async getOrdersTotalAmount(req: Request, res: Response, next: NextFunction) {
-    console.log("getOrdersTotalAmount");
     try {
       if (!req.params || !req.params.year) {
         res.status(400);

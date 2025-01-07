@@ -108,11 +108,9 @@ export class UploadController {
                 const filePath = path.join(__dirname, '../uploads/tmp', filename);
 
                 if (!fs.existsSync(path.join(__dirname, '../uploads', type, id))) {
-                    console.log('Creating directory:', path.join('../../uploads', type, id));
                     fs.mkdirSync(path.join(__dirname, '../uploads', type, id), { recursive: true });
                 }
 
-                console.log(path.join(__dirname));
                 fs.renameSync(filePath, path.join(__dirname, '../uploads', type, id, filename));
 
                 res.json(

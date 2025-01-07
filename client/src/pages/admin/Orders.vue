@@ -100,7 +100,6 @@ const formEdit = ref({
 
 async function fetchOrders() {
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     try {
         const response = await fetch(urlApi, {
@@ -343,8 +342,6 @@ function handleSubmit(updatedItem) {
         tableData.value[index] = data;
     }
 
-    console.log('Updated Item:', updatedItem, data);
-
     updateOrder(data);
 
     closeModal();
@@ -353,11 +350,8 @@ function handleSubmit(updatedItem) {
 const addProduct = () => {
     // const countItems = formEdit.forms.filter(i => i.key.includes('_id_')).length;
     const countItems = formEdit.forms.filter((i) => {
-        console.log('Key:', i.key, i.key.includes('_id_'));
         return i.key.includes('_id_');
     })
-
-    console.log('Count Items:', countItems, countItems.length);
 
     formEdit.forms = []
 }

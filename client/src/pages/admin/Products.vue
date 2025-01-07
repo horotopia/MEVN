@@ -140,7 +140,6 @@ const getData = () => {
 
 const onSubmit = () => {
     isLoading.value = true;
-    console.log('Submit');
 }
 
 const initMedia = (media) => {
@@ -154,8 +153,6 @@ const changeMedia = (media) => {
 
 const addMedia = async (media) => {
     post.value.media.added.push(media)
-
-    console.log('Added:', media);
 
     const pictures = {
         productId: formEdit.value.item._id,
@@ -196,8 +193,6 @@ const addMedia = async (media) => {
 
 const removeMedia = async (media) => {
     post.value.media.removed.push(media)
-
-    console.log('Removed:', post.value.media.removed);
 
     try {
         const jwtToken = localStorage.getItem('jwtToken');

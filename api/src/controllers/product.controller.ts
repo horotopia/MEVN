@@ -391,9 +391,7 @@ export class ProductController {
     }
   }
 
-  // countProductSellInMonth
   async countProductSellInMonth(req: Request, res: Response, next: NextFunction) {
-    console.log("countProductSellInMonth");
     try {
       const mongooseService = await MongooseService.get();
       const count = await mongooseService.productService.countProductSellInMonth();

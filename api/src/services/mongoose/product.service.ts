@@ -130,8 +130,6 @@ export class ProductService {
       }
     });
 
-    console.log(currentMonthOrders, lastMonthOrders);
-
     const currentMonthSell = currentMonthOrders.reduce((acc, order) => acc + order.items.reduce((acc, item) => acc + item.quantity, 0), 0);
 
     const lastMonthSell = lastMonthOrders.reduce((acc, order) => acc + order.items.reduce((acc, item) => acc + item.quantity, 0), 0);

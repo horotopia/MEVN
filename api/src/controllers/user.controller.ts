@@ -278,9 +278,7 @@ export class UserController {
    *       500:
    *         description: Erreur interne du serveur.
    */
-  // countUsersByMonth
   async countUsersByMonth(req: Request, res: Response, next: NextFunction) {
-    console.log("countUsersByMonth");
     try {
       const mongooseService = await MongooseService.get();
       const count = await mongooseService.userService.countUsersByMonth();

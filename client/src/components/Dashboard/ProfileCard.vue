@@ -33,7 +33,6 @@ async function fetchUserAddress() {
     }
     
     const addressData = await response.json();
-    console.log('Données récupérées:', addressData);
 
     if (Array.isArray(addressData) && addressData.length > 0) {
       const address = addressData[0];
@@ -59,7 +58,6 @@ async function handleSubmit() {
 
   try {
     if (!addressId.value) {
-      console.log('Création d\'une nouvelle adresse...');
       const response = await fetch(`http://localhost:5000/api/address`, {
         method: 'POST',
         headers: {
@@ -80,11 +78,9 @@ async function handleSubmit() {
       }
 
       const newAddress = await response.json();
-      console.log('Adresse créée avec succès :', newAddress);
       alert('Adresse créée avec succès !');
       addressId.value = newAddress._id;
     } else {
-      console.log('Mise à jour de l\'adresse existante...');
       const response = await fetch(`http://localhost:5000/api/address/${addressId.value}`, {
         method: 'PUT',
         headers: {
@@ -104,7 +100,6 @@ async function handleSubmit() {
       }
 
       const updatedAddress = await response.json();
-      console.log('Adresse mise à jour avec succès :', updatedAddress);
       alert('Adresse mise à jour avec succès !');
     }
   } catch (error) {

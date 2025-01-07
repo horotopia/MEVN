@@ -125,7 +125,6 @@ export class OrdersService {
   }
 
   async totalAmountOrdersByMonth(year: number): Promise<number[]> {
-    console.log("year:",year);
     const totalAmounts = [];
     let maxMonth = 12;
     if (year < 2024) {
@@ -137,7 +136,6 @@ export class OrdersService {
     if (year === new Date().getFullYear()) {
       maxMonth = new Date().getMonth()+1;
     }
-    console.log("maxMonth:",maxMonth);
     for (let i = 0; i < maxMonth; i++) {
       const orders = await this.model.find({
         status: "completed",
@@ -146,14 +144,11 @@ export class OrdersService {
           $lt: new Date(year, i + 1, 1),
         },
       });
-      console.log("orders:",orders);
       const totalAmount = orders.length > 0
         ? orders.reduce((acc, order) => acc + order.totalAmount, 0)
         : 0;
-      console.log("totalAmount:",totalAmount);
       totalAmounts.push(totalAmount);
     }
-    console.log("totalAmounts:",totalAmounts);
     return totalAmounts;
   }
 

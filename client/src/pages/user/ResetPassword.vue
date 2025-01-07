@@ -55,11 +55,6 @@ export default {
           throw new Error('Token de réinitialisation invalide ou expiré');
         }
 
-        console.log('Données envoyées:', {
-          token,
-          password: this.password
-        });
-
         const response = await fetch(`${__VITE_API_URL__}/api/auth/reset-password`, {
           method: 'POST',
           headers: {

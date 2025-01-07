@@ -126,7 +126,6 @@ const modalDelete = ref({
 
 async function fetchUsers() {
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     try {
         const response = await fetch(urlApi, {
@@ -255,8 +254,6 @@ const changeMedia = (media) => {
 const addMedia = async (media) => {
     post.value.media.added.push(media)
 
-    console.log('Added:', media);
-
     try {
         const jwtToken = localStorage.getItem('jwtToken');
 
@@ -292,8 +289,6 @@ const addMedia = async (media) => {
 const removeMedia = async (media) => {
     post.value.media.removed.push(media)
 
-    console.log('Removed:', post.value.media.removed);
-
     try {
         const jwtToken = localStorage.getItem('jwtToken');
 
@@ -323,8 +318,6 @@ const removeMedia = async (media) => {
 
 onMounted(() => {
     fetchUsers();
-
-    console.log(import.meta.env.VITE_API_URL);
 });
 
 function getForms() {

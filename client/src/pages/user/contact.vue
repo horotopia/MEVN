@@ -24,8 +24,6 @@ export default {
         this.emailError = 'Veuillez entrer une adresse e-mail valide';
         return;
       }
-      // Logique d'envoi du formulaire
-      console.log('Message envoyé:', { nom: this.nom, email: this.email, message: this.message });
     }
   }
 }

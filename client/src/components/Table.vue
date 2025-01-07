@@ -75,7 +75,6 @@ const endItem = computed(() => {
 })
 
 const rowSelected = function(item) {
-	console.log('Row selected:', item)
 	emit('rowSelected', item)
 }
 

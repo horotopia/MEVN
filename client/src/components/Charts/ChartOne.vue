@@ -106,7 +106,6 @@ const fetchOrders = async (urlApi: string): Promise<number[] | null> => {
     }
 
     const data = await response.json();
-    console.log('commandes:', data);
     return data;
   } catch (error) {
     console.error('Erreur:', error);
@@ -147,8 +146,6 @@ const loadOrders = async () => {
 
 onMounted(() => {
   loadOrders();
-  console.log('Orders 2024:', orders2024.value);
-  console.log('Orders 2025:', orders2025.value);
 });
 </script>
 

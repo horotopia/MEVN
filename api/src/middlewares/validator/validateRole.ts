@@ -37,7 +37,6 @@ const validateRoleAdmin = async (
 ) => {
   try {
     const user = await getUser(req, res);
-    console.log("userLOL",user);
     if (user.role !== "ROLE_ADMIN") {
       res.status(403);
       throw new Error("You are not authorized to access this route");

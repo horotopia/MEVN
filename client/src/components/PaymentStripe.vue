@@ -135,7 +135,6 @@
       async createOrder(orderDetails) {
         try {
           const jwtToken = localStorage.getItem('jwtToken');
-          console.log('Token JWT :', jwtToken);
 
           if (!jwtToken) {
             console.error('Token JWT manquant');
@@ -151,14 +150,12 @@
             body: JSON.stringify(orderDetails),
           });
 
-          console.log('Données envoyées :', orderDetails);
 
           if (!response.ok) {
             throw new Error('Erreur lors de la création de la commande');
           }
 
           const data = await response.json();
-          console.log('Commande créée avec succès :', data);
         } catch (error) {
           console.error('Erreur :', error.message);
         }

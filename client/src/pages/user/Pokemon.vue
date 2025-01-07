@@ -215,7 +215,6 @@ export default {
   },
   async created() {
     try {
-      console.log("Tentative de récupération des produits...");
       const response = await fetch(`${__VITE_API_URL__}/api/product`);
       
       if (!response.ok) {
@@ -223,14 +222,12 @@ export default {
       }
 
       const data = await response.json();
-      console.log("Données reçues:", data);
 
       if (!Array.isArray(data)) {
         throw new Error("Les données reçues ne sont pas un tableau");
       }
 
       this.products = data.filter(item => item.category === "pokémon").map((item) => {
-        console.log("Traitement du produit:", item);
         return {
           _id: item._id,
           name: item.name || "Sans nom",
@@ -243,7 +240,6 @@ export default {
         };
       });
 
-      console.log("Produits transformés:", this.products);
     } catch (error) {
       console.error("Erreur détaillée:", error);
       this.error = `Erreur lors de la récupération des produits: ${error.message}`;
