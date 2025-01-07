@@ -44,12 +44,12 @@ services:
     container_name: client
     build:
       context: ./client
-      target: ${CONTEXT:-development}
+      target: production
     volumes:
       - ./client:/app
     ports:
       - 3000:5173
-      - 8080:80
+      - 8083:80
     networks:
       - mevn
 

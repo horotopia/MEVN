@@ -17,21 +17,6 @@
 
       <div class="bg-white p-8 mb-16">
         <div class="flex flex-wrap gap-6 justify-center">
-          <CardPokémon
-            pokemonName="mewtwo"
-            price="1200€"
-            bgColor="bg-purple-500"
-          />
-          <CardPokémon
-            pokemonName="pikachu"
-            price="14€"
-            bgColor="bg-yellow-300"
-          />
-          <CardPokémon
-            pokemonName="empoleon"
-            price="300€"
-            bgColor="bg-blue-900"
-          />
         </div>
       </div>
     </div>
@@ -39,13 +24,11 @@
 </template>
 
 <script>
-import CardPokémon from "@/components/CardPokémon.vue";
 import ImageCarrousel from "@/components/Carousel.vue";
 
 export default {
   name: "HomePage",
   components: {
-    CardPokémon,
     ImageCarrousel,
   },
 };

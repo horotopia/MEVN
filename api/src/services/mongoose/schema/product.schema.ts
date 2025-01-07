@@ -169,7 +169,15 @@ export const productSchema = new Schema<Product>(
       type: Number,
       default: 0,
       min: 0,
-    }
+    },
+    habitat: {
+      type: String,
+      required: false,
+    },
+    habitude: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

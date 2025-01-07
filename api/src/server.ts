@@ -5,7 +5,6 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 import bodyParser from 'body-parser';
 import { Stripe } from 'stripe';
-import cors from 'cors';
 
 // Configurations
 import configureCORS from "./config/cors";

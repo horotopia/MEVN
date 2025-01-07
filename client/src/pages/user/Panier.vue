@@ -72,9 +72,9 @@
         <div class="mt-4">
           <p class="text-sm">NOUS ACCEPTONS :</p>
           <div class="flex space-x-2 mt-2">
-            <img src="../../assets/img/logo-cb-1.jpg" alt="Visa" class="w-5 h-5" />
+            <!-- <img src="../../assets/img/logo-cb-1.jpg" alt="Visa" class="w-5 h-5" />
             <img src="../../assets/img/logo-visa-carte-1.png" alt="Mastercard" class="w-5 h-5" />
-            <img src="../../assets/img/MasterCard_Logo.svg.webp" alt="PayPal" class="w-5 h-5"/>
+            <img src="../../assets/img/MasterCard_Logo.svg.webp" alt="PayPal" class="w-5 h-5"/> -->
           </div>
         </div>
         <div class="mt-6 p-4 bg-gray-100 rounded-lg">

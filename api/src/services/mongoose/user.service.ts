@@ -8,6 +8,8 @@ import { AddressService } from "./address.service";
 export type CreateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 export type UpdateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 
+export type IUser = Omit<User, "password">;
+
 export class UserService {
   readonly mongooseService: MongooseService;
   readonly model: Model<User>;
@@ -35,13 +37,13 @@ export class UserService {
   }
 
   // register
-  async createUser(user: CreateUser): Promise<User> {
+  async createUser(user: CreateUser): Promise<IUser> {
     const res = await this.model.create(user);
     return res;
   }
 
   // login
-  async findUser(email: string): Promise<User | null> {
+  async findUser(email: string): Promise<IUser | null> {
     const user = await this.model.findOne({
       email: email,
     });
@@ -66,7 +68,7 @@ export class UserService {
   }
 
   // read one
-  async findUserById(id: string): Promise<User | null> {
+  async findUserById(id: string): Promise<IUser | null> {
     const user = await this.model.findById(id);
     if (!user) {
       return null;
@@ -85,7 +87,7 @@ export class UserService {
   }
 
   // read all
-  async findAllUsers(): Promise<User[]> {
+  async findAllUsers(): Promise<IUser[]> {
     const users = await this.model.find();
 
     const userIds = users.map(user => user._id);
@@ -103,12 +105,12 @@ export class UserService {
   }
 
   // update
-  async updateUser(id: string, update: Partial<User>): Promise<User | null> {
+  async updateUser(id: string, update: Partial<User>): Promise<IUser | null> {
     return this.model.findByIdAndUpdate(id, update, { new: true });
   }
 
   // delete
-  async deleteUser(id: string): Promise<User | null> {
+  async deleteUser(id: string): Promise<IUser | null> {
     const res = await this.model.findByIdAndUpdate(
       id,
       {
@@ -166,7 +168,7 @@ export class UserService {
     };
   }
 
-  async findUserByVerificationToken(token: string): Promise<User | null> {
+  async findUserByVerificationToken(token: string): Promise<IUser | null> {
     const user = await this.model.findOne({ emailVerificationToken: token });
     return user;
   }
