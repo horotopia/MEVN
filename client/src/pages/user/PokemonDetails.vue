@@ -86,168 +86,168 @@ export default {
 </script>
 
 <template>
-<div class="bg-slate-100 -z-14">
-  <div class="container mx-auto bg-white shadow-9 -z-12">
-    <div class="mx-8 py-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
-      <div class="flex h-100 w-full">
-        <div class="flex-1">
-          <div class="w-full h-full bg-slate-500 flex items-center justify-center text-white font-bold text-xl">
-            Image Non Disponible
+  <div class="min-h-screen bg-gray-100">
+    <div class="max-w-7xl mx-auto p-4 md:p-6">
+      <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Section Images -->
+          <div class="space-y-4">
+            <div class="aspect-square rounded-lg border-2 border-gray-300 p-4">
+              <div class="h-full w-full rounded-lg border-2 border-gray-300">
+                <img 
+                  :src="pokemon?.pictures?.[0]?.name ? `${publicPath}/products/${pokemon._id}/${pokemon.pictures[0].name}` : 'https://via.placeholder.com/400'" 
+                  :alt="pokemon?.name"
+                  class="h-full w-full object-contain"
+                >
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+              <div v-for="n in 3" :key="n" class="aspect-square rounded-lg border-2 border-gray-300 p-2">
+                <div class="h-full w-full rounded-lg border-2 border-gray-300 bg-gray-50"></div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="w-1/3 flex flex-col space-y-2 ml-2">
-          <div class="w-full h-1/3 bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
-            Image 2
-          </div>
-          <div class="w-full h-1/3 bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
-            Image 3
-          </div>
-          <div class="w-full h-1/3 bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
-            Image 4
-          </div>
-        </div>
-      </div>
-      <div class="h-100  flex flex-col justify-between">
-        <div>
-          <h2 class="mx-auto rounded-md px-6 py-3 font-extrabold text-white uppercase w-3/4 text-center text-3xl" :class="getTypeColor(pokemon?.type)">{{ pokemon?.name }}</h2>
-        </div>
-        <div>
-          <div class="py-2 flex-1">
-            <div class="font-semibold text-gray-700 pt-2 border-l-2 px-2">{{ pokemon?.description }}</div>
-          </div>
-        </div>
-        <div>
-          <span class="inline-block mt-4 px-8 py-4 text-lg font-bold bg-gray-100 text-gray-800 rounded-md">
-            {{ pokemon?.price }} €
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center space-x-4">
-            <div class="flex items-center">
+
+          <!-- Section Informations -->
+          <div class="space-y-6">
+            <h1 
+              class="text-2xl md:text-3xl montserrat-extrabold uppercase tracking-wide text-white text-center py-3 rounded-lg shadow-md"
+              :class="getTypeColor(pokemon?.type)"
+            >
+              {{ pokemon?.name }}
+            </h1>
+
+            <p class="text-gray-600 montserrat-medium">{{ pokemon?.description }}</p>
+
+            <div class="flex items-center justify-between">
+              <span class="text-2xl montserrat-extrabold text-[#ff4c4c]">{{ pokemon?.price }}€ HT</span>
               <span 
-                class="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold"
+                class="px-4 py-1.5 rounded-full text-sm montserrat-medium"
                 :class="pokemon?.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
               >
-                <svg v-if="pokemon?.stock > 0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-green-600">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-red-600">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
                 {{ pokemon?.stock > 0 ? pokemon.stock + ' en stock' : 'Rupture de stock' }}
               </span>
             </div>
-            <div class="flex items-center">
-              <button 
-                class="rounded-l-lg border border-gray-300 px-3 py-1"
-                @click.prevent.stop="diminuerQuantite"
-              >-</button>
-              <input 
-                type="text" 
-                v-model="quantite" 
-                class="w-12 text-center border-y border-gray-300 py-1"
-                @click.prevent.stop
-              />
-              <button 
-                class="rounded-r-lg border border-gray-300 px-3 py-1"
-                @click.prevent.stop="augmenterQuantite"
-              >+</button>
-            </div>
-            <div class="flex items-center flex-grow">
-              <button
-                v-if="pokemon?.stock > 0"
-                @click="addToCart(pokemon)"
-                class="bg-[#ff4c4c] w-full text-white font-bold py-2 px-4 rounded-lg hover:bg-[#cc3c3c]"
-              >
-                Ajouter au panier
-              </button>
+
+            <div class="space-y-4">
+              <p class="text-[10px] md:text-xs text-gray-600 text-left font-medium">QUANTITÉ</p>
+              <div class="flex items-center gap-4">
+                <div class="inline-flex text-sm">
+                  <button 
+                    class="rounded-l-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-100 transition-colors"
+                    @click="diminuerQuantite"
+                  >-</button>
+                  <input 
+                    type="text" 
+                    v-model="quantite" 
+                    class="w-12 text-center border-y border-gray-300"
+                    readonly
+                  />
+                  <button 
+                    class="rounded-r-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-100 transition-colors"
+                    @click="augmenterQuantite"
+                  >+</button>
+                </div>
+
+                <button
+                  v-if="pokemon?.stock > 0"
+                  @click="addToCart(pokemon)"
+                  class="flex-1 rounded-full bg-[#ff4c4c] border-2 border-[#D43C3C] px-4 py-2 text-white transition ease-in-out active:bg-[#CC3C3C] active:border-[#A82E2E] montserrat-extrabold text-sm"
+                >
+                  AJOUTER AU PANIER
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="col-span-1 sm:col-span-2 lg:grid-cols-2 mt-6">
-        <div class="relative text-sm font-semibold text-gray-700">
-          <!-- <div class="absolute inset-0 h-20 mt-10 opacity-20 rounded-md" :class="getTypeColor(pokemon?.type)"></div> -->
-          <h3 class="text-lg font-bold">Tout savoir sur {{ pokemon?.name }}</h3>
-          <p class="font-semibold text-gray-700 pt-2 border-l-2 px-2">{{ pokemon?.habitude }}</p>
-        </div>
-        <div class="mt-8 text-sm font-semibold text-gray-700">
-          <h3 class="text-lg font-bold">Son Habitat et ses besoins</h3>
-          <p class="font-semibold text-gray-700 pt-2 border-l-2 px-2">{{ pokemon?.habitat }}</p>
-        </div>
-      </div>
-      <div class="mt-8">
-        <table class="w-full border-collapse bg-white shadow-lg rounded-lg overflow-hidden">
-          <thead class="text-white text-left" :class="getTypeColor(pokemon?.type)">
-            <tr>
-              <th class="px-4 py-3 text-lg font-semibold">Attaque</th>
-              <th class="px-4 py-3 text-lg font-semibold">Type</th>
-              <th class="px-4 py-3 text-lg font-semibold">Puissance</th>
-              <th class="px-4 py-3 text-lg font-semibold">Précision</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="hover:bg-orange-100 transition">
-              <td class="px-6 py-4 border-b text-gray-800">Flammèche</td>
-              <td class="px-6 py-4 border-b text-gray-600">Feu</td>
-              <td class="px-6 py-4 border-b text-gray-800">40</td>
-              <td class="px-6 py-4 border-b text-gray-800">100%</td>
-            </tr>
-            <tr class="bg-gray-50 hover:bg-orange-100 transition">
-              <td class="px-6 py-4 border-b text-gray-800">Griffe</td>
-              <td class="px-6 py-4 border-b text-gray-600">Normal</td>
-              <td class="px-6 py-4 border-b text-gray-800">50</td>
-              <td class="px-6 py-4 border-b text-gray-800">95%</td>
-            </tr>
-            <tr class="hover:bg-orange-100 transition">
-              <td class="px-6 py-4 border-b text-gray-800">Jet de Flammes</td>
-              <td class="px-6 py-4 border-b text-gray-600">Feu</td>
-              <td class="px-6 py-4 border-b text-gray-800">90</td>
-              <td class="px-6 py-4 border-b text-gray-800">85%</td>
-            </tr>
-            <tr class="bg-gray-50 hover:bg-orange-100 transition">
-              <td class="px-6 py-4 border-b text-gray-800">Lance-Flammes</td>
-              <td class="px-6 py-4 border-b text-gray-600">Feu</td>
-              <td class="px-6 py-4 border-b text-gray-800">110</td>
-              <td class="px-6 py-4 border-b text-gray-800">80%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4 text-center">Informations supplémentaires</h3>
-        <div class="py-2">
-          <p><strong>Poids :</strong></p>
-          <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">{{ pokemon?.weight }} g</span>
-          <p><strong>Taille :</strong></p>
-          <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">{{ pokemon?.height }} cm</span>
-          <p><strong>Age :</strong></p>
-          <span class="inline-block px-3 py-1 text-sm font-bold bg-gray-100 text-gray-800 rounded-md">{{ pokemon?.age }} ans</span>
-        </div>
-      </div>
-      <div class="col-span-1 sm:col-span-2 lg:grid-cols-2">
-        <div class="flex flex-col items-center p-4">
-          <h3 class="text-lg font-semibold text-gray-700 mb-4 text-center">
-            Les évolutions de Salamèche : Niveau d'évolution actuel 1
-          </h3>
-          <div class="flex justify-between w-full space-x-4">
-            <div class="w-1/3 object-cover rounded bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
-              Image 2
+
+          <!-- Section Description -->
+          <div class="md:col-span-2 space-y-6">
+            <div class="space-y-4">
+              <h3 class="text-xl montserrat-extrabold text-gray-800">Tout savoir sur {{ pokemon?.name }}</h3>
+              <p class="text-gray-600 montserrat-medium border-l-4 border-[#ff4c4c] pl-4">{{ pokemon?.habitude }}</p>
             </div>
-            <div class="flex justify-between w-full space-x-4">
-              <div class="w-1/3 object-cover rounded bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
-              Image 2
+
+            <div class="space-y-4">
+              <h3 class="text-xl montserrat-extrabold text-gray-800">Son Habitat et ses besoins</h3>
+              <p class="text-gray-600 montserrat-medium border-l-4 border-[#ff4c4c] pl-4">{{ pokemon?.habitat }}</p>
             </div>
-            <div class="flex justify-between w-full space-x-4">
-              <div class="w-1/3 object-cover rounded bg-slate-300 flex items-center justify-center text-white font-bold text-sm">
-              Image 2
+
+            <!-- Tableau des attaques -->
+            <div class="overflow-hidden rounded-lg border border-gray-200">
+              <table class="w-full">
+                <thead :class="getTypeColor(pokemon?.type)">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-sm montserrat-extrabold text-white">Attaque</th>
+                    <th class="px-4 py-3 text-left text-sm montserrat-extrabold text-white">Type</th>
+                    <th class="px-4 py-3 text-left text-sm montserrat-extrabold text-white">Puissance</th>
+                    <th class="px-4 py-3 text-left text-sm montserrat-extrabold text-white">Précision</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 text-sm montserrat-medium">Flammèche</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">Feu</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">40</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">100%</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 text-sm montserrat-medium">Griffe</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">Normal</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">50</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">95%</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 text-sm montserrat-medium">Jet de Flammes</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">Feu</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">90</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">85%</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3 text-sm montserrat-medium">Lance-Flammes</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">Feu</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">110</td>
+                    <td class="px-4 py-3 text-sm montserrat-medium">80%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Informations supplémentaires -->
+            <div class="grid grid-cols-3 gap-4">
+              <div class="space-y-2">
+                <p class="text-sm montserrat-extrabold text-gray-600">POIDS</p>
+                <span class="inline-block px-4 py-2 text-sm montserrat-medium bg-gray-100 text-gray-800 rounded-lg">
+                  {{ pokemon?.weight }} g
+                </span>
+              </div>
+              <div class="space-y-2">
+                <p class="text-sm montserrat-extrabold text-gray-600">TAILLE</p>
+                <span class="inline-block px-4 py-2 text-sm montserrat-medium bg-gray-100 text-gray-800 rounded-lg">
+                  {{ pokemon?.height }} cm
+                </span>
+              </div>
+              <div class="space-y-2">
+                <p class="text-sm montserrat-extrabold text-gray-600">ÂGE</p>
+                <span class="inline-block px-4 py-2 text-sm montserrat-medium bg-gray-100 text-gray-800 rounded-lg">
+                  {{ pokemon?.age }} ans
+                </span>
+              </div>
+            </div>
+
+            <!-- Évolutions -->
+            <div class="space-y-4">
+              <h3 class="text-xl montserrat-extrabold text-gray-800 text-center">
+                Les évolutions de {{ pokemon?.name }} : Niveau d'évolution actuel 1
+              </h3>
+              <div class="grid grid-cols-3 gap-4">
+                <div v-for="n in 3" :key="n" class="aspect-square rounded-lg border-2 border-gray-300 p-2">
+                  <div class="h-full w-full rounded-lg border-2 border-gray-300 bg-gray-50"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-</div>
-</div>
 </template>

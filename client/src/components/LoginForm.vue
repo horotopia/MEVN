@@ -64,6 +64,7 @@ export default {
         });
 
         const data = await response.json();
+        console.log('Réponse du serveur:', data); // Debug
 
         if (!response.ok) {
           if (response.status === 403) {
@@ -74,9 +75,11 @@ export default {
         }
 
         if (data.jwtToken) {
+          console.log('Données utilisateur:', data.user);
           localStorage.setItem('jwtToken', data.jwtToken);
-          localStorage.setItem('userRole', data.user.role);
-          localStorage.setItem('user', JSON.stringify(data.user));
+          const userRole = data.user.role || 'ROLE_USER';
+          localStorage.setItem('userRole', userRole);
+          localStorage.setItem('user', JSON.stringify({...data.user, role: userRole}));
           this.$router.push('/dashboard');
         } else {
           throw new Error('Erreur de connexion : jeton non reçu.');
