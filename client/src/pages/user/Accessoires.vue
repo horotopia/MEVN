@@ -113,7 +113,7 @@
                     class="rounded-lg px-4 py-2 montserrat-extrabold text-white uppercase transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#ff4c4c] focus:ring-offset-2"
                     :class="[
                       obtenirCouleurType(type.value),
-                      type.label === 'Hydratation' ? 'text-xs' : 'text-sm',
+                      type.label === 'Hydratation' ? 'text-[10px]' : 'text-xs',
                       typeSelectionne === '' ? 'opacity-100 hover:brightness-90' : 
                       typeSelectionne === type.value ? 'opacity-100 ring-2 ring-[#ff4c4c] ring-offset-2 hover:brightness-90' : 
                       'opacity-70 hover:opacity-100'
