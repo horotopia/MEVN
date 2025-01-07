@@ -162,6 +162,8 @@
 import PokeballLoader from '@/components/pokeballLoader.vue';
 import PokemonCard from '../../components/PokemonCard.vue'
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 export default {
   name: 'PokemonPage',
   components: {
@@ -170,7 +172,7 @@ export default {
   },
   data() {
     return {
-      publicPath: 'http://localhost:5000' + '/uploads',
+      publicPath: `${__VITE_API_URL__}/uploads`,
       products: [],
       typeSelectionne: '',
       prixMaximum: 1000000,
@@ -214,7 +216,7 @@ export default {
   async created() {
     try {
       console.log("Tentative de récupération des produits...");
-      const response = await fetch("http://localhost:5000/api/product");
+      const response = await fetch(`${__VITE_API_URL__}/api/product`);
       
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
@@ -304,7 +306,7 @@ export default {
   },
   async created() {
     try {
-      const response = await fetch("http://localhost:5000/api/product");
+      const response = await fetch(`${__VITE_API_URL__}/api/product`);
       
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);

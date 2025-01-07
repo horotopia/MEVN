@@ -2,6 +2,8 @@
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 export default {
   props: {
     id: {
@@ -11,7 +13,7 @@ export default {
   },
   data() {
     return {
-      publicPath: 'http://localhost:5000' + '/uploads',
+      publicPath: `${__VITE_API_URL__}/uploads`,
       quantite: 1,
       pokemon: null,
       loading: true,
@@ -20,7 +22,7 @@ export default {
   },
   async created() {
     try {
-      const response = await fetch(`http://localhost:5000/api/product/${this.id}`);
+      const response = await fetch(`${__VITE_API_URL__}/api/product/${this.id}`);
       this.pokemon = await response.json();
     } catch (err) {
       this.error = 'Erreur lors du chargement des détails du Pokémon.';

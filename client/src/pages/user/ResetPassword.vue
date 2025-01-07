@@ -3,6 +3,8 @@ import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useRouter, useRoute } from 'vue-router';
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 export default {
   name: 'ResetPassword',
   setup() {
@@ -58,7 +60,7 @@ export default {
           password: this.password
         });
 
-        const response = await fetch('http://localhost:5000/api/auth/reset-password', {
+        const response = await fetch(`${__VITE_API_URL__}/api/auth/reset-password`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

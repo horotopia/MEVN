@@ -16,14 +16,16 @@
   </div>
 </template>
   
-  <script>
+<script>
   import { loadStripe } from '@stripe/stripe-js';
+
+  const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
   
   export default {
     props: {
         totalAmount: {
-        type: Number,
-        required: true,
+          type: Number,
+          required: true,
         },
     },
     data() {
@@ -75,7 +77,7 @@
         this.successMessage = null;
   
         try {
-          const response = await fetch('http://localhost:5000/create-payment-intent', {
+          const response = await fetch(`${__VITE_API_URL__}/create-payment-intent`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -140,7 +142,7 @@
             return;
           }
 
-          const response = await fetch('http://localhost:5000/api/orders', {
+          const response = await fetch(`${__VITE_API_URL__}/api/orders`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

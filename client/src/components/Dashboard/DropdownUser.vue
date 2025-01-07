@@ -3,7 +3,9 @@ import { onClickOutside } from '@vueuse/core'
 import { ref, computed } from 'vue'
 import Avatar from './../Avatar.vue'
 
-const publicPath = 'http://localhost:5000/uploads'
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const publicPath = `${__VITE_API_URL__}/uploads`
 
 const target = ref(null)
 const dropdownOpen = ref(false)

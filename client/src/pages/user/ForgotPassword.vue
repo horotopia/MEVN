@@ -3,6 +3,8 @@ import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useRouter } from 'vue-router';
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 export default {
   name: 'ForgotPassword',
   setup() {
@@ -34,7 +36,7 @@ export default {
       
       this.isLoading = true;
       try {
-        const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+        const response = await fetch(`${__VITE_API_URL__}/api/auth/forgot-password`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

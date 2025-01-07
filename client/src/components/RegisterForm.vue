@@ -2,6 +2,8 @@
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
   export default {
     name: 'RegistrationPage',
     data() {
@@ -41,7 +43,7 @@ import "vue3-toastify/dist/index.css";
         }
 
         try {
-          const response = await fetch('http://localhost:5000/api/auth/register', {
+          const response = await fetch(`${__VITE_API_URL__}/api/auth/register`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

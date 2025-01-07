@@ -89,8 +89,10 @@ import Form from '../../components/forms/Form.vue';
 
 import Uploader from '../../components/Uploader.vue';
 
-const urlApi = 'http://localhost:5000/api/product';
-const urlApiPicture = 'http://localhost:5000/api/pictures';
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const urlApi = `${__VITE_API_URL__}/api/product`;
+const urlApiPicture = `${__VITE_API_URL__}/api/pictures`;
 
 const fields = ref([]);
 const tableData = ref([]);

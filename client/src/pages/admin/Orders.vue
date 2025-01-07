@@ -78,7 +78,9 @@ import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
 import Form from '../../components/forms/Form.vue';
 
-const urlApi = 'http://localhost:5000/api/orders';
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const urlApi = `${__VITE_API_URL__}/api/orders`;
 
 const fields = ref([]);
 const tableData = ref([]);

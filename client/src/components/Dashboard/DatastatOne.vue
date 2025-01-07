@@ -5,11 +5,13 @@ const cardItems = ref([]);
 
 const fetchProductData = async () => {
   try {
+    const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
     const urls = [
-      'http://localhost:5000/api/product/countProductSellInMonth',
-      'http://localhost:5000/api/users/countUsersByMonth',
-      'http://localhost:5000/api/orders/calculateAverageOrderAmount',
-      'http://localhost:5000/api/auth/countSessionByMonth',
+      `${__VITE_API_URL__}/api/product/countProductSellInMonth`,
+      `${__VITE_API_URL__}/api/users/countUsersByMonth`,
+      `${__VITE_API_URL__}/api/orders/calculateAverageOrderAmount`,
+      `${__VITE_API_URL__}/api/auth/countSessionByMonth`,
     ];
 
     const [productResponse, userResponse, orderResponse, sessionResponse] = await Promise.all(

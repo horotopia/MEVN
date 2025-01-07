@@ -115,8 +115,10 @@ const fetchOrders = async (urlApi: string): Promise<number[] | null> => {
 };
 
 const loadOrders = async () => {
-  const url2024 = 'http://localhost:5000/api/orders/totalAmountByMonth/2024';
-  const url2025 = 'http://localhost:5000/api/orders/totalAmountByMonth/2025';
+  const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+  const url2024 = `${__VITE_API_URL__}/api/orders/totalAmountByMonth/2024`;
+  const url2025 = `${__VITE_API_URL__}/api/orders/totalAmountByMonth/2025`;
 
   const [data2024, data2025] = await Promise.all([
     fetchOrders(url2024),

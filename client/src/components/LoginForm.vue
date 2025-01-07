@@ -5,7 +5,6 @@ import 'vue3-toastify/dist/index.css';
 export default {
   name: 'LoginPage',
   mounted() {
-    // Vérifier si on a un message de notification dans les query params
     const notification = this.$route.query.notification;
     if (notification) {
       toast.success(notification, {
@@ -16,7 +15,6 @@ export default {
         pauseOnHover: true,
         draggable: true,
       });
-      // Nettoyer l'URL après avoir affiché la notification
       this.$router.replace({ query: {} });
     }
   },
@@ -54,7 +52,8 @@ export default {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/auth/login', {
+        const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${__VITE_API_URL__}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

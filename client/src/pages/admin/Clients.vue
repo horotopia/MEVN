@@ -85,9 +85,11 @@ import Form from '../../components/forms/Form.vue';
 import Avatar from '../../components/Avatar.vue';
 import Uploader from '../../components/Uploader.vue';
 
-const urlApi = 'http://localhost:5000/api/users';
-const publicPath = 'http://localhost:5000/uploads';
-const urlApiPicture = 'http://localhost:5000/api/pictures';
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const urlApi = __VITE_API_URL__ + '/api/users';
+const publicPath = __VITE_API_URL__ + '/uploads';
+const urlApiPicture = __VITE_API_URL__ + '/api/pictures';
 
 const fields = ref([]);
 const tableData = ref([]);
@@ -321,6 +323,8 @@ const removeMedia = async (media) => {
 
 onMounted(() => {
     fetchUsers();
+
+    console.log(import.meta.env.VITE_API_URL);
 });
 
 function getForms() {
