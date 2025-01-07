@@ -13,7 +13,7 @@
           >
             <div class="flex items-center">
               <img
-                :src="item.image"
+                :src="item.image ? `${publicPath}/products/${item.id}/${item.image}` : 'https://via.placeholder.com/400'"
                 :alt="item.name"
                 class="w-20 h-20 object-cover rounded"
               />
@@ -94,6 +94,7 @@
 export default {
   data() {
     return {
+      publicPath: `${import.meta.env.VITE_API_URL}/uploads`,
       cartItems: [],
     };
   },
