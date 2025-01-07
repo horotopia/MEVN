@@ -1,13 +1,28 @@
 <script setup>
 import { onClickOutside } from '@vueuse/core'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Avatar from './../Avatar.vue'
 
-const publicPath = 'http://localhost:5000/uploads'
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const publicPath = `${__VITE_API_URL__}/uploads`
 
 const target = ref(null)
 const dropdownOpen = ref(false)
-const user = JSON.parse(localStorage.getItem('user'))
+const user = ref(JSON.parse(localStorage.getItem('user')) || {
+  name: 'Utilisateur',
+  role: 'USER',
+  pictures: []
+})
+
+const userName = computed(() => user.value?.name || 'Utilisateur')
+const userRole = computed(() => user.value?.role === 'ROLE_ADMIN' ? 'Administrateur' : 'Utilisateur')
+const userAvatar = computed(() => {
+  if (user.value?.pictures?.[0]?.name) {
+    return `${publicPath}/users/${user.value._id}/${user.value.pictures[0].name}`
+  }
+  return ''
+})
 
 onClickOutside(target, () => {
   dropdownOpen.value = false
@@ -18,15 +33,12 @@ onClickOutside(target, () => {
   <div class="relative" ref="target">
     <router-link class="flex items-center gap-4" to="#" @click.prevent="dropdownOpen = !dropdownOpen">
       <span class="hidden text-right lg:block">
-        <span class="block text-sm font-medium text-black">{{ user.name }}</span>
-        <span class="block text-xs font-medium text-gray-500">{{ user.role === 'ROLE_ADMIN' ? 'Administrateur' :
-          'Utilisateur' }}</span>
+        <span class="block text-sm font-medium text-black">{{ userName }}</span>
+        <span class="block text-xs font-medium text-gray-500">{{ userRole }}</span>
       </span>
 
       <span class="h-12 w-12 rounded-full">
-        <!-- <img src="../../assets/img/POKESHOP_LOGO_MOBILE.png" alt="User" /> -->
-        <Avatar :fullname="user.name" :size="40"
-          :image="(user.pictures[0]?.name) ? `${publicPath}/users/${user._id}/${user.pictures[0]?.name}` : ''" />
+        <Avatar :fullname="userName" :size="40" :image="userAvatar" />
       </span>
 
       <svg :class="dropdownOpen && 'rotate-180'" class="hidden fill-current sm:block" width="12" height="8"
@@ -36,8 +48,6 @@ onClickOutside(target, () => {
           fill="" />
       </svg>
     </router-link>
-
-    <!-- Dropdown Start -->
     <div v-show="dropdownOpen"
       class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default">
       <ul class="flex flex-col gap-5 border-b border-stroke px-6 py-7.5">
@@ -57,9 +67,6 @@ onClickOutside(target, () => {
           </router-link>
         </li>
       </ul>
-      <!-- <button
-        class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-      > -->
       <router-link to="/logout"
         class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
         <svg class="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none"
@@ -74,6 +81,5 @@ onClickOutside(target, () => {
         Se deconnecter
       </router-link>
     </div>
-    <!-- Dropdown End -->
   </div>
 </template>

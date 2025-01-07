@@ -12,37 +12,23 @@ const formData = ref({
 import userPhoto from '../../assets/img/POKESHOP_LOGO.png'
 
 const handleSubmit = () => {
-  // Handle form submission for personal information
 }
-
 const handleCancel = () => {
-  // Handle cancel action for personal information
 }
-
 const handlePhotoSubmit = () => {
-  // Handle form submission for user photo
 }
-
 const handleFileChange = () => {
-  // Handle file change for user photo
 }
-
 const handlePhotoCancel = () => {
-  // Handle cancel action for user photo
 }
-
 const deletePhoto = () => {
-  // Handle delete action for user photo
 }
-
 const updatePhoto = () => {
-  // Handle update action for user photo
 }
 </script>
 
 <template>
   <div class="grid grid-cols-5 gap-8">
-    <!-- Personal Information Section -->
     <div class="col-span-5 xl:col-span-3">
       <div
         class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
@@ -52,7 +38,6 @@ const updatePhoto = () => {
         </div>
         <div class="p-7">
           <form @submit.prevent="handleSubmit">
-            <!-- Full Name Section -->
             <div class="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
               <div class="w-full sm:w-1/2">
                 <label
@@ -96,8 +81,6 @@ const updatePhoto = () => {
                   />
                 </div>
               </div>
-
-              <!-- Phone Number Section -->
               <div class="w-full sm:w-1/2">
                 <label
                   class="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -114,8 +97,6 @@ const updatePhoto = () => {
                 />
               </div>
             </div>
-
-            <!-- Email Address Section -->
             <div class="mb-5.5">
               <label
                 class="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -158,8 +139,6 @@ const updatePhoto = () => {
                 />
               </div>
             </div>
-
-            <!-- Username Section -->
             <div class="mb-5.5">
               <label
                 class="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -175,8 +154,6 @@ const updatePhoto = () => {
                 placeholder="devidjhon24"
               />
             </div>
-
-            <!-- Bio Section -->
             <div class="mb-5.5">
               <label class="mb-3 block text-sm font-medium text-black dark:text-white" for="bio"
                 >BIO</label
@@ -222,8 +199,6 @@ const updatePhoto = () => {
                 ></textarea>
               </div>
             </div>
-
-            <!-- Save and Cancel Buttons -->
             <div class="flex justify-end gap-4.5">
               <button
                 class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
@@ -243,8 +218,6 @@ const updatePhoto = () => {
         </div>
       </div>
     </div>
-
-    <!-- Your Photo Section -->
     <div class="col-span-5 xl:col-span-2">
       <div
         class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
@@ -254,7 +227,6 @@ const updatePhoto = () => {
         </div>
         <div class="p-7">
           <form @submit.prevent="handlePhotoSubmit">
-            <!-- User Photo Section -->
             <div class="mb-4 flex items-center gap-3">
               <div class="h-14 w-14 rounded-full">
                 <img :src="userPhoto" alt="User" />
@@ -271,8 +243,6 @@ const updatePhoto = () => {
                 </span>
               </div>
             </div>
-
-            <!-- File Upload Section -->
             <div
               id="FileUpload"
               class="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
@@ -321,8 +291,6 @@ const updatePhoto = () => {
                 <p class="text-sm font-medium">(max, 800 X 800px)</p>
               </div>
             </div>
-
-            <!-- Save and Cancel Buttons for Photo Section -->
             <div class="flex justify-end gap-4.5">
               <button
                 class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"

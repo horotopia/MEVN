@@ -23,21 +23,34 @@
         </template>
         <template #action="{ item }">
             <button class="btn btn-primary px-4" @click="editItem(item)">Edit</button>
-            <button class="btn btn-danger" @click="deleteItem(item)">Delete</button>
         </template>
     </Table>
-    <Form
-        v-else
-        :visible="formEdit.isVisible"
-        :text="{ title: 'Modifier un produit', submit: 'Enregistrer' }"
-        :forms="getForms()"
-        @submit="handleSubmit"
-    >
-        <template #footer>
-            <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: 'red', color: '#fff' }" @click="formEdit.isVisible = false; formEdit.item = null">Annuler</button>
-        </template>
-    </Form>
-    <ModalForm
+
+    <div v-if="formEdit.isVisible">
+        <div class="flex items-center justify-between">
+            <div></div>
+            <div class="ml-3">
+                <div class="w-full max-w-sm relative">
+                    <div class="relative">
+                        <button class="p-1.5 rounded-md bg-blue-500 text-white" @click="addProduct">Ajouter un produit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <Form
+            v-if="formEdit.isVisible"
+            :visible="formEdit.isVisible"
+            :text="{ title: 'Modifier un produit', submit: 'Enregistrer' }"
+            :forms="getForms()"
+            @submit="handleSubmit"
+        >
+            <template #footer>
+                <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: '#1d2632', color: '#fff' }" @click="formEdit.isVisible = false; formEdit.item = null">Retour</button>
+            </template>
+        </Form>
+    </div>
+    <!-- <ModalForm
         v-if="modalDelete.item"
         :visible="modalDelete.isVisible"
         :text="{
@@ -56,7 +69,7 @@
         :disableFields="['id', 'email']"
         @close="closeModal"
         @submit="handleDelete"
-    />
+    /> -->
 </template>
 
 <script setup>
@@ -65,7 +78,9 @@ import Table from '../../components/Table.vue';
 import ModalForm from '../../components/ModalForm.vue';
 import Form from '../../components/forms/Form.vue';
 
-const urlApi = 'http://localhost:5000/api/orders';
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const urlApi = `${__VITE_API_URL__}/api/orders`;
 
 const fields = ref([]);
 const tableData = ref([]);
@@ -78,14 +93,13 @@ const formEdit = ref({
     item: null
 })
 
-const modalDelete = ref({
-    isVisible: false,
-    item: null
-})
+// const modalDelete = ref({
+//     isVisible: false,
+//     item: null
+// })
 
-async function fetchUsers() {
+async function fetchOrders() {
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken);
 
     try {
         const response = await fetch(urlApi, {
@@ -106,32 +120,48 @@ async function fetchUsers() {
 
         const data = await response.json();
 
+        const fieldsTemp = [];
+        const tableDataTemp = [];
+
         for (const key in data[0]) {
             if (!disableKey.value.includes(key)) {
-                fields.value.push({ key, label: key.charAt(0).toUpperCase() + key.slice(1) });
+                fieldsTemp.push({ key, label: key.charAt(0).toUpperCase() + key.slice(1) });
             }
         }
 
-        fields.value.push({ key: 'action', label: 'Action' });
+        fieldsTemp.push({ key: 'action', label: 'Action', exportCsv: false });
 
         for (const item of data) {
-            tableData.value.push(item);
+            tableDataTemp.push(item);
         }
+
+        fields.value = fieldsTemp;
+        tableData.value = tableDataTemp;
     } catch (error) {
         console.error('Erreur lors de la récupération des utilisateurs', error);
     }
 }
 
-async function updateUser(item) {
-    if (!item._id) {
-        return;
-    }
-
+async function updateOrder(item) {
     const jwtToken = localStorage.getItem('jwtToken');
 
-    delete item.createdAt;
-    delete item.updatedAt;
-    delete item.password;
+    item.items = [];
+
+    for(const key in item) {
+        if (key.includes('_id_')) {
+            const index = key.split('_')[2];
+            item.items.push({
+                productId: item['_id_' + index],
+                quantity: item['quantity_' + index],
+                price: item['price_' + index]
+            });
+
+            delete item['_id_' + index];
+            delete item['quantity_' + index];
+            delete item['price_' + index];
+            delete item['name_' + index];
+        }
+    }
 
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
@@ -148,55 +178,17 @@ async function updateUser(item) {
                 console.error('Jeton expiré ou non valide');
                 return;
             }
-            throw new Error('Erreur lors de la mise à jour de l\'utilisateur');
+            throw new Error('Erreur lors de la mise à jour de la commande');
         }
 
-        const data = await response.json();
-
-        return data;
+        fetchOrders();
     } catch (error) {
-        console.error('Erreur lors de la mise à jour de l\'utilisateur', error);
-    }
-}
-
-async function deleteUser(item) {
-    if (!item?._id) {
-        return;
-    }
-
-    const jwtToken = localStorage.getItem('jwtToken');
-
-    try {
-        const response = await fetch(`${urlApi}/${item._id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwtToken}`,
-            },
-        });
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                console.error('Jeton expiré ou non valide');
-                return;
-            }
-            throw new Error('Erreur lors de la suppression de l\'utilisateur');
-        }
-
-        const data = await response.json();
-
-        const index = tableData.value.findIndex(i => i._id === item._id);
-
-        tableData.value[index] = data;
-
-        return item;
-    } catch (error) {
-        console.error('Erreur lors de la suppression de l\'utilisateur', error);
+        console.error('Erreur lors de la mise à jour de la commande', error);
     }
 }
 
 onMounted(() => {
-    fetchUsers();
+    fetchOrders();
 });
 
 function getForms() {
@@ -218,31 +210,113 @@ function editItem(item) {
             value: item._id,
             disabled: true,
             placeholder: 'ID',
-            label: 'Identifiant unique du produit',
+            label: 'Identifiant unique de la commande',
             columns: {
-                container: 'w-1/2'
+                container: 'w-1/3'
             }
         },
         {
             type: 'text',
             key: 'name',
-            value: item.name,
-            placeholder: 'Nom du produit',
-            label: 'Nom du produit',
-            max: 100,
-            columns: 6,
+            value: item.userId.name,
+            placeholder: 'Nom',
+            label: 'Nom',
             columns: {
-                container: 'w-1/2'
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'text',
+            key: 'email',
+            value: item.userId.email,
+            placeholder: 'Email',
+            label: 'Email',
+            columns: {
+                container: 'w-1/3'
             }
         }
     ]
-}
 
-function deleteItem(item) {
-    modalDelete.value = {
-        isVisible: true,
-        item: item
+    for(const key in item.items) {
+        formEdit.forms.push(
+            {
+                type: 'text',
+                key: '_id_' + key,
+                value: item.items[key].productId._id,
+                disabled: false,
+                placeholder: 'Identifiant unique du produit',
+                label: 'Identifiant unique du produit',
+                columns: {
+                    container: 'w-1/5'
+                }
+            },
+            {
+                type: 'text',
+                key: 'name_' + key,
+                value: item.items[key].productId.name,
+                placeholder: 'Nom',
+                disabled: true,
+                label: 'Nom du produit',
+                columns: {
+                    container: 'w-1/5'
+                }
+            },
+            {
+                type: 'text',
+                key: 'quantity_' + key,
+                value: item.items[key].quantity,
+                placeholder: 'Quantité',
+                label: 'Quantité',
+                columns: {
+                    container: 'w-1/5'
+                }
+            },
+            {
+                type: 'text',
+                key: 'price_' + key,
+                value: item.items[key].price,
+                placeholder: 'Prix',
+                label: 'Prix',
+                columns: {
+                    container: 'w-1/5'
+                }
+            },
+            {
+                type: 'custom',
+                key: 'custom_delete',
+                // content: `<button type="button" class="p-1.5 rounded-md bg-red-500 text-white" @click="deleteItem(${key})">Supprimer</button>`,
+                columns: {
+                    container: 'w-1/5'
+                }
+            }
+        )
     }
+
+    formEdit.forms.push({
+        type: 'text',
+        key: 'total',
+        value: item.totalAmount,
+        placeholder: 'Total',
+        label: 'Total',
+        columns: {
+            container: 'w-1/3'
+        }
+    },
+    {
+        type: 'select',
+        key: 'status',
+        value: item.status,
+        placeholder: 'Statut',
+        label: 'Statut',
+        options: [
+            { value: 'pending', text: 'En attente' },
+            { value: 'completed', text: 'Terminée' },
+            { value: 'cancelled', text: 'Annulée' }
+        ],
+        columns: {
+            container: 'w-1/3'
+        }
+    })
 }
 
 function closeModal() {
@@ -250,27 +324,40 @@ function closeModal() {
         isVisible: false,
         item: null
     }
-    modalDelete.value = {
-        isVisible: false,
-        item: null
-    }
+    // modalDelete.value = {
+    //     isVisible: false,
+    //     item: null
+    // }
 }
 
 function handleSubmit(updatedItem) {
-    const index = tableData.value.findIndex(i => i._id === updatedItem._id);
-
-    if (index !== -1) {
-        tableData.value[index] = updatedItem;
+    const data = {};
+    for(const key in updatedItem) {
+        data[updatedItem[key].key] = updatedItem[key].value || updatedItem[key].content;
     }
 
-    updateUser(updatedItem);
+    const index = tableData.value.findIndex(i => i._id === data._id);
+
+    if (index !== -1) {
+        tableData.value[index] = data;
+    }
+
+    updateOrder(data);
 
     closeModal();
 }
 
-function handleDelete() {
-    deleteUser(modalDelete.value.item);
+const addProduct = () => {
+    // const countItems = formEdit.forms.filter(i => i.key.includes('_id_')).length;
+    const countItems = formEdit.forms.filter((i) => {
+        return i.key.includes('_id_');
+    })
 
-    closeModal();
+    formEdit.forms = []
 }
+// function handleDelete() {
+//     deleteOrder(modalDelete.value.item);
+
+//     closeModal();
+// }
 </script>

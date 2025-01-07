@@ -5,8 +5,10 @@ import { userSchema, picturesSchema, addressSchema } from "./schema";
 
 import { AddressService } from "./address.service";
 
-export type CreateUser = Omit<User, "_id" | "name" | "createdAt" | "updatedAt">;
+export type CreateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
 export type UpdateUser = Omit<User, "_id" | "createdAt" | "updatedAt">;
+
+export type IUser = Omit<User, "password">;
 
 export class UserService {
   readonly mongooseService: MongooseService;
@@ -17,24 +19,40 @@ export class UserService {
   constructor(mongooseService: MongooseService) {
     this.mongooseService = mongooseService;
     const mongoose = this.mongooseService.mongoose;
-    this.model = mongoose.model("User", userSchema);
-    this.pictureModel = mongoose.model("Picture", picturesSchema);
-    this.addressModel = mongoose.model("Address", addressSchema);
+    try {
+      this.model = mongoose.model<User>("User");
+    } catch (error) {
+      this.model = mongoose.model<User>("User", userSchema);
+    }
+    try {
+      this.pictureModel = mongoose.model<Pictures>("Picture");
+    } catch (error) {
+      this.pictureModel = mongoose.model<Pictures>("Picture", picturesSchema);
+    }
+    try {
+      this.addressModel = mongoose.model<Address>("Address");
+    } catch (error) {
+      this.addressModel = mongoose.model<Address>("Address", addressSchema);
+    }
   }
 
   // register
-  async createUser(user: CreateUser): Promise<User> {
+  async createUser(user: CreateUser): Promise<IUser> {
     const res = await this.model.create(user);
     return res;
   }
 
   // login
-  async findUser(email: string): Promise<User | null> {
+  async findUser(email: string): Promise<IUser | null> {
     const user = await this.model.findOne({
       email: email,
     });
     if (!user) {
       return null;
+    }
+
+    if (!user.isEmailVerified && user.role !== 'ROLE_ADMIN') {
+      throw new Error('Votre compte n\'est pas encore vérifié. Veuillez vérifier vos emails.');
     }
 
     const userId = user._id;
@@ -50,7 +68,7 @@ export class UserService {
   }
 
   // read one
-  async findUserById(id: string): Promise<User | null> {
+  async findUserById(id: string): Promise<IUser | null> {
     const user = await this.model.findById(id);
     if (!user) {
       return null;
@@ -69,7 +87,7 @@ export class UserService {
   }
 
   // read all
-  async findAllUsers(): Promise<User[]> {
+  async findAllUsers(): Promise<IUser[]> {
     const users = await this.model.find();
 
     const userIds = users.map(user => user._id);
@@ -87,20 +105,12 @@ export class UserService {
   }
 
   // update
-  async updateUser(id: string, user: UpdateUser): Promise<User | null> {
-    const res = await this.model.findByIdAndUpdate(
-      id,
-      { $set: user },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    return res;
+  async updateUser(id: string, update: Partial<User>): Promise<IUser | null> {
+    return this.model.findByIdAndUpdate(id, update, { new: true });
   }
 
   // delete
-  async deleteUser(id: string): Promise<User | null> {
+  async deleteUser(id: string): Promise<IUser | null> {
     const res = await this.model.findByIdAndUpdate(
       id,
       {
@@ -120,5 +130,46 @@ export class UserService {
     await addressService.anonymise(id);
 
     return res;
+  }
+
+  // stat
+  async countUsersByMonth(): Promise<{ currentMonthUser: number; lastMonthUser: number; growthRateUser: number }> {
+    const date = new Date();
+
+    const currentMonthUser = date.getMonth();
+    const currentYear = date.getFullYear();
+    const lastMonthUser = currentMonthUser === 0 ? 11 : currentMonthUser - 1;
+    const lastYear = currentMonthUser === 0 ? currentYear - 1 : currentYear;
+
+    const currentMonthUsers = await this.model.countDocuments({
+      createdAt: {
+        $gte: new Date(currentYear, currentMonthUser, 1),
+        $lt: new Date(currentYear, currentMonthUser + 1, 1),
+      },
+    });
+
+    const lastMonthUsers = await this.model.countDocuments({
+      createdAt: {
+        $gte: new Date(lastYear, lastMonthUser, 1),
+        $lt: new Date(lastYear, lastMonthUser + 1, 1),
+      },
+    });
+
+    const growthRateUser = lastMonthUsers > 0
+      ? ((currentMonthUsers - lastMonthUsers) / lastMonthUsers) * 100
+      : currentMonthUsers > 0
+        ? 100
+        : 0;
+
+    return {
+      currentMonthUser: currentMonthUsers,
+      lastMonthUser: lastMonthUsers,
+      growthRateUser: parseFloat(growthRateUser.toFixed(2)),
+    };
+  }
+
+  async findUserByVerificationToken(token: string): Promise<IUser | null> {
+    const user = await this.model.findOne({ emailVerificationToken: token });
+    return user;
   }
 }

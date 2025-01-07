@@ -4,6 +4,8 @@ export interface Product extends Timestamps {
   _id: string;
   name: string;
   description: string;
+  habitat: string;
+  habitude: string;
   type: string;
   evolutionLevel: number;
   evolutionReference: string;

@@ -1,11 +1,22 @@
 <template>
+    <div class="flex items-center justify-end mb-4">
+        <div class="ml-3">
+            <div class="w-full max-w-sm relative">
+                <div class="relative">
+                    <button class="p-1.5 rounded-md bg-blue-500 text-white" @click="addProduct">Ajouter un produit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <Table
         v-if="!formEdit.isVisible"
         :options="{
             header: {
                 title: 'Liste des produits'
             },
-            search: true
+            search: true,
+            export: true
         }"
         :fields="fields"
         :data="tableData"
@@ -41,9 +52,9 @@
                 <div>
                     <Uploader
                         v-if="hasResponse"
-                        :server="`http://localhost:5000/api/upload/products/${formEdit.item._id}`"
+                        :server="`${__VITE_API_URL__}/api/upload/products/${formEdit.item._id}`"
                         :media="getData()"
-                        location="http://localhost:5000/uploads/products"
+                        :location="`${__VITE_API_URL__}/uploads/products`"
                         @init="initMedia"
                         @change="changeMedia"
                         @add="addMedia"
@@ -58,6 +69,43 @@
             </div>
         </form>
     </div>
+
+    <Form
+        v-if="formAdd.isVisible"
+        :visible="formAdd.isVisible"
+        :text="{ title: 'Ajouter un produit', submit: 'Enregistrer' }"
+        :forms="getFormAdd()"
+        @submit="handleSubmit"
+    >
+        <template #footer>
+            <button type="button" class="p-1.5 rounded-md" :style="{ backgroundColor: '#1d2632', color: '#fff' }" @click="formAdd.isVisible = false; formAdd.item = null">Retour</button>
+        </template>
+    </Form>
+
+    <!-- <div class="bg-white p-6 w-full" v-if="formAdd.isVisible">
+        <form @submit.prevent="onSubmit" class="">
+            <div class="mb-4">
+                <label class="form-label">Media</label>
+                <div>
+                    <Uploader
+                        v-if="hasResponse"
+                        :server="`${__VITE_API_URL__}/api/upload/products/${formAdd.item._id}`"
+                        :media="getData()"
+                        :location="`${__VITE_API_URL__}/uploads/products`"
+                        @init="initMedia"
+                        @change="changeMedia"
+                        @add="addMedia"
+                        @remove="removeMedia"
+                    />
+                </div>
+                <p v-if="errors['media.list']" class="text-danger">{{ errors['media.list'][0] }}</p>
+            </div>
+
+            <div class="flex justify-end mt-4" :disabled="isLoading">
+                <button type="button" class="p-1.5 rounded-md" style="background-color: rgb(29, 38, 50); color: rgb(255, 255, 255);" @click="formEdit.isVisible = false; formEdit.item = null">Retour</button>
+            </div>
+        </form>
+    </div> -->
 
     <ModalForm
         v-if="modalDelete.item"
@@ -89,13 +137,15 @@ import Form from '../../components/forms/Form.vue';
 
 import Uploader from '../../components/Uploader.vue';
 
-const urlApi = 'http://localhost:5000/api/product';
-const urlApiPicture = 'http://localhost:5000/api/pictures';
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
+const urlApi = `${__VITE_API_URL__}/api/product`;
+const urlApiPicture = `${__VITE_API_URL__}/api/pictures`;
 
 const fields = ref([]);
 const tableData = ref([]);
 const disableKey = ref([
-    '_id', 'createdAt', 'updatedAt'
+    '_id', 'createdAt', 'updatedAt', 'habitat', 'habitude', 'description'
 ]);
 
 const post = ref({
@@ -120,20 +170,22 @@ const formEdit = ref({
     forms: {}
 })
 
+const formAdd = ref({
+    isVisible: false,
+    item: null,
+    forms: {}
+})
+
 const modalDelete = ref({
     isVisible: false,
     item: null
 })
 
-
-
 const getData = () => {
-    // post.value.media.saved = formEdit.value.item.pictures || []
-
     post.value.media.saved = formEdit.value.item.pictures.map(picture => {
         return {
             _id: picture._id,
-            name: picture.productId + '/' + picture.name,
+            name: picture.userId + '/' + picture.name,
         }
     }) || []
 
@@ -142,7 +194,6 @@ const getData = () => {
 
 const onSubmit = () => {
     isLoading.value = true;
-    console.log('Submit');
 }
 
 const initMedia = (media) => {
@@ -156,8 +207,6 @@ const changeMedia = (media) => {
 
 const addMedia = async (media) => {
     post.value.media.added.push(media)
-
-    console.log('Added:', media);
 
     const pictures = {
         productId: formEdit.value.item._id,
@@ -198,8 +247,6 @@ const addMedia = async (media) => {
 
 const removeMedia = async (media) => {
     post.value.media.removed.push(media)
-
-    console.log('Removed:', post.value.media.removed);
 
     try {
         const jwtToken = localStorage.getItem('jwtToken');
@@ -274,7 +321,6 @@ async function updateProduct(item) {
 
     delete item.createdAt;
     delete item.updatedAt;
-    delete item.password;
 
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
@@ -294,9 +340,7 @@ async function updateProduct(item) {
             throw new Error('Erreur lors de la mise à jour du produit');
         }
 
-        const data = await response.json();
-
-        return data;
+        fetchProducts();
     } catch (error) {
         console.error('Erreur lors de la mise à jour du produit', error);
     }
@@ -381,6 +425,22 @@ function editItem(item) {
             placeholder: 'Description du produit',
             label: 'Description du produit',
             max: 500,
+        },
+        {
+            type: 'textarea',
+            key: 'habitat',
+            content: item.habitat,
+            placeholder: 'Habitat du produit',
+            label: 'Habitat du produit',
+            max: 500
+        },
+        {
+            type: 'textarea',
+            key: 'habitude',
+            content: item.habitude,
+            placeholder: 'Habitude du produit',
+            label: 'Habitude du produit',
+            max: 500
         },
         {
             type: 'select',
@@ -503,13 +563,6 @@ function editItem(item) {
                 { value: 'médicaments', text: 'Médicaments' },
             ],
         },
-        // {
-        //     type: 'multifile',
-        //     key: 'pictures',
-        //     value: item.pictures,
-        //     label: 'Images du produit',
-        //     max: 5,
-        // },
         {
             type: 'text',
             key: 'createdAt',
@@ -535,8 +588,176 @@ function editItem(item) {
     ]
 }
 
-function getForms() {
+function addProduct() {
+    formAdd.value = {
+        isVisible: true,
+        item: {}
+    }
+
+    formAdd.forms = [
+        {
+            type: 'text',
+            key: '_id',
+            disabled: true,
+            placeholder: 'ID',
+            label: 'Identifiant unique du produit',
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'text',
+            key: 'name',
+            placeholder: 'Nom du produit',
+            label: 'Nom du produit',
+            max: 100,
+            columns: 6,
+            columns: {
+                container: 'w-1/2'
+            }
+        },
+        {
+            type: 'textarea',
+            key: 'description',
+            placeholder: 'Description du produit',
+            label: 'Description du produit',
+            max: 500,
+        },
+        {
+            type: 'textarea',
+            key: 'habitat',
+            placeholder: 'Habitat du produit',
+            label: 'Habitat du produit',
+            max: 500
+        },
+        {
+            type: 'textarea',
+            key: 'habitude',
+            placeholder: 'Habitude du produit',
+            label: 'Habitude du produit',
+            max: 500
+        },
+        {
+            type: 'select',
+            key: 'type',
+            options: [
+                { value: 'combat', text: 'Combat' },
+                { value: 'acier', text: 'Acier' },
+                { value: 'eau', text: 'Eau' },
+                { value: 'féé', text: 'Féé' },
+                { value: 'normal', text: 'Normal' },
+                { value: 'psy', text: 'Psy' },
+                { value: 'vol', text: 'Vol' },
+                { value: 'spectre', text: 'Spectre' },
+                { value: 'poison', text: 'Poison' },
+                { value: 'feu', text: 'Feu' },
+                { value: 'électrique', text: 'Électrique' },
+                { value: 'plante', text: 'Plante' },
+            ],
+            label: 'Type du produit',
+        },
+        {
+            type: 'radio',
+            key: 'evolutionLevel',
+            placeholder: 'Niveau d\'évolution',
+            label: 'Niveau d\'évolution',
+            items: [
+                {
+                    value: 1,
+                    text: '1'
+                },
+                {
+                    value: 2,
+                    text: '2'
+                },
+                {
+                    value: 3,
+                    text: '3'
+                }
+            ]
+        },
+        {
+            type: 'text',
+            key: 'evolutionReference',
+            placeholder: 'Référence d\'évolution',
+            label: 'Référence d\'évolution',
+            max: 100,
+            columns: {
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'number',
+            key: 'weight',
+            placeholder: 'Poids du produit',
+            label: 'Poids du produit',
+            min: 0,
+            columns: {
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'number',
+            key: 'height',
+            placeholder: 'Taille du produit',
+            label: 'Taille du produit',
+            min: 0,
+            columns: {
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'number',
+            key: 'age',
+            placeholder: 'Age du produit',
+            label: 'Age du produit',
+            min: 0,
+            columns: {
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'number',
+            key: 'price',
+            placeholder: 'Prix du produit',
+            label: 'Prix du produit',
+            min: 0,
+            columns: {
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'text',
+            key: 'stock',
+            placeholder: 'Stock du produit',
+            label: 'Stock du produit',
+            min: 0,
+            columns: {
+                container: 'w-1/3'
+            }
+        },
+        {
+            type: 'select',
+            key: 'category',
+            placeholder: 'Catégorie du produit',
+            label: 'Catégorie du produit',
+            options: [
+                { value: 'pokémon', text: 'Pokémon' },
+                { value: 'pokéball', text: 'Pokéball' },
+                { value: 'baie', text: 'Baie' },
+                { value: 'objets', text: 'Objets' },
+                { value: 'médicaments', text: 'Médicaments' },
+            ],
+        }
+    ]
+}
+
+const getForms = () => {
     return formEdit.forms;
+}
+
+const getFormAdd = () => {
+    return formAdd.forms
 }
 
 function deleteItem(item) {
@@ -554,6 +775,10 @@ function closeModal() {
     modalDelete.value = {
         isVisible: false,
         item: null
+    }
+    formAdd.value = {
+        isVisible: false,
+        item : null
     }
 }
 

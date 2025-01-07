@@ -67,20 +67,6 @@ export class PicturesController {
 
   async createPicture(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.body);
-      console.log(
-        !req.body,
-        !req.body.name,
-        !req.body.description,
-        !req.body.userId,
-        !req.body.productId
-      )
-      console.log(
-        !req.body ||
-          !req.body.name ||
-          !req.body.description ||
-          !(!req.body.userId || !req.body.productId)
-      )
       if (
         !req.body || !req.body.name || !req.body.description ||
         !( !req.body.userId || !req.body.productId )
@@ -327,8 +313,6 @@ export class PicturesController {
         res.status(404);
         throw new Error("Not Found");
       }
-
-      console.log(picture);
 
       const filePath = path.join(__dirname, '../uploads', (picture?.userId)? `users/${picture?.userId}/${picture.name}` : `products/${picture?.productId}/${picture?.name}`);
 

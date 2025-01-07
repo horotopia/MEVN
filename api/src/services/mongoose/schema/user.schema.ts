@@ -17,6 +17,9 @@ import { User } from "../../../models";
  *         email:
  *           type: string
  *           description: L'email de l'utilisateur
+ *         tel:
+ *           type: string
+ *           description: telephone de l'utilisateur
  *         password:
  *           type: string
  *           description: Le mot de passe de l'utilisateur
@@ -31,6 +34,7 @@ import { User } from "../../../models";
  *       example:
  *         name: John Doe
  *         email: john.doe@toto.com
+ *         tel: 0102030405
  *         password: password
  *         role: ROLE_USER
  *         address:
@@ -51,6 +55,10 @@ export const userSchema = new Schema<User>(
       unique: true,
       required: true,
     },
+    tel: {
+      type: String,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
@@ -63,6 +71,18 @@ export const userSchema = new Schema<User>(
     address: {
       type: Schema.Types.ObjectId,
       ref: "Address",
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false
+    },
+    emailVerificationToken: {
+      type: String,
+      default: null
+    },
+    emailVerificationTokenExpires: {
+      type: Date,
+      default: null
     }
   },
   {

@@ -3,7 +3,7 @@ services:
     container_name: api
     build:
       context: ./api
-      target: ${CONTEXT:-development}
+      target: development
     env_file: ./api/.env
     volumes:
       - ./api:/api
@@ -12,6 +12,7 @@ services:
       - 8081:80
     depends_on:
       - mongodb
+      - mailhog
     networks:
       - mevn
 
@@ -48,7 +49,16 @@ services:
       - ./client:/app
     ports:
       - 3000:5173
-      - 8080:80
+      - 8083:80
+    networks:
+      - mevn
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     networks:
       - mevn
 

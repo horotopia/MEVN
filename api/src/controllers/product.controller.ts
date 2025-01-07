@@ -23,6 +23,8 @@ export class ProductController {
    *           example:
    *             name: Pikachu
    *             description: Pokémon électrique
+   *             habitat: son habitat
+   *             habitude: ses habitudes
    *             type: électrique
    *             evolutionLevel: 2
    *             evolutionReference: Pichu
@@ -56,6 +58,8 @@ export class ProductController {
         !req.body ||
         !req.body.name ||
         !req.body.description ||
+        !req.body.habitat ||
+        !req.body.habitude ||
         !req.body.type ||
         !req.body.evolutionLevel ||
         !req.body.evolutionReference ||
@@ -73,6 +77,8 @@ export class ProductController {
       const product = await mongooseService.productService.createProduct({
         name: req.body.name,
         description: req.body.description,
+        habitat: req.body.habitat,
+        habitude: req.body.habitude,
         type: req.body.type,
         evolutionLevel: req.body.evolutionLevel,
         evolutionReference: req.body.evolutionReference,
@@ -385,20 +391,34 @@ export class ProductController {
     }
   }
 
+  async countProductSellInMonth(req: Request, res: Response, next: NextFunction) {
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.productService.countProductSellInMonth();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
+    router.get("/countProductSellInMonth", this.countProductSellInMonth.bind(this));
+    router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
+    router.get(
+      "/:attribute/:value",
+      validateAttributeAndValue,
+      this.getProductByAttribute.bind(this)
+    );
+    router.get("/", this.getProducts.bind(this));
     router.post(
       "/",
       authenticateToken,
       validateRoleAdmin,
       this.createProduct.bind(this)
-    );
-    router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
-    router.get("/", this.getProducts.bind(this));
-    router.get(
-      "/:attribute/:value",
-      validateAttributeAndValue,
-      this.getProductByAttribute.bind(this)
     );
     router.put(
       "/:id",
@@ -414,6 +434,7 @@ export class ProductController {
       validateObjectId,
       this.deleteProduct.bind(this)
     );
+
     return router;
   }
 }

@@ -22,6 +22,8 @@ import { Product } from "../../../models";
  *         type:
  *           type: string
  *           description: Le type du produit
+ *           habitat: Le habitat du produit
+ *           habitude: Les habitudes du produit
  *           required: true
  *           enum: [combat, acier, eau, féé, normal, psy, vol, spectre, poison, feu, électrique, plante]
  *           default: feu
@@ -167,7 +169,15 @@ export const productSchema = new Schema<Product>(
       type: Number,
       default: 0,
       min: 0,
-    }
+    },
+    habitat: {
+      type: String,
+      required: false,
+    },
+    habitude: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

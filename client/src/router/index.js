@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import "vue3-toastify/dist/index.css";
 import DefaultLayout from '../Layouts/DefaultLayout.vue'
 import AuthLayout from '../Layouts/AuthLayout.vue'
 import AdminLayout from '../Layouts/AdminLayout.vue'
@@ -6,6 +8,7 @@ import Home from '../pages/user/Home.vue';
 import Login from '../pages/auth/Login.vue';
 import Register from '../pages/auth/Register.vue';
 import Dashboard from '../pages/admin/Dashboard.vue';
+import Statistiques from '../pages/admin/Statistiques.vue';
 import PokemonDetails from '../pages/user/PokemonDetails.vue';
 import Pokemon from '../pages/user/Pokemon.vue';
 import Accessoires from '../pages/user/Accessoires.vue';
@@ -21,6 +24,10 @@ import PanierInformations from '../pages/user/PanierInformations.vue'
 import Products from '../pages/admin/Products.vue';
 import PaymentStripe from '../components/PaymentStripe.vue';
 import Orders from '../pages/admin/Orders.vue';
+import Commandes from '../pages/admin/Commandes.vue'
+import VerifyEmail from '../pages/user/VerifyEmail.vue';
+import ForgotPassword from '../pages/user/ForgotPassword.vue';
+import ResetPassword from '../pages/user/ResetPassword.vue';
 
 const routes = [
   {
@@ -34,10 +41,40 @@ const routes = [
       { path: 'mentions-legales', name: 'MentionsLégales', component: MentionsLegales },
       { path: 'conditions-generales-de-vente', name: 'ConditionsGeneraleDeVente', component: Cgv },
       { path: 'politique-de-confidentialite', name: 'PolitiqueDeConfidentialité', component: Politique },
-      { path: 'panier', name: 'Panier', component: Panier },
       { path: 'contact', name: 'Contact', component: Contact },
-      { path: 'panier/informations', name: 'Informations', component: PanierInformations },
+      { path: 'panier', name: 'Panier', component: Panier },
+      {
+        path: 'panier/informations', name: 'infopanier', component: PanierInformations, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }),
+        beforeEnter: (to, from, next) => {
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const user = JSON.parse(localStorage.getItem('user'));
+          if (cart.length === 0) {
+            toast.error('Votre panier est vide. Ajoutez des articles pour procéder au paiement.', {
+              position: 'top-right',
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+            next({ name: 'Panier' });
+          } else if (!user) {
+            toast.error('Veuillez vous connecter pour accéder aux paiement de votre panier.', {
+              position: 'top-right',
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+            next({ name: 'Panier' }); // à rediriger vers le login
+          } else {
+            next();
+          }
+        },
+      },
       { path: 'paiement', name: 'paiement', component: PaymentStripe, props: (route) => ({ totalAmount: Number(route.query.totalAmount) || 0 }), },
+      { path: 'verify-email', name: 'VerifyEmail', component: VerifyEmail },
     ]
   },
   {
@@ -46,6 +83,8 @@ const routes = [
     children: [
       { path: 'login', name: 'Login', component: Login },
       { path: 'register', name: 'Register', component: Register },
+      { path: 'forgot-password', name: 'ForgotPassword', component: ForgotPassword },
+      { path: 'reset-password', name: 'ResetPassword', component: ResetPassword },
       {
         path: 'logout',
         name: 'Logout',
@@ -59,14 +98,16 @@ const routes = [
   {
     path: '/',
     component: AdminLayout,
-    meta: { requiresAuth: true }, // requiresAdmin
+    meta: { requiresAuth: true },
     children: [
       { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+      { path: 'dashboard/statistiques', name: 'Statistiques', component: Statistiques, meta: { requiresAdmin: true } },
       { path: 'dashboard/profile', name: 'Profile', component: ProfileCard },
       { path: 'dashboard/setting', name: 'Setting', component: SettingsCard },
       { path: 'dashboard/clients', name: 'Clients', component: Clients, meta: { requiresAdmin: true } },
       { path: 'dashboard/products', name: 'Products', component: Products, meta: { requiresAdmin: true } },
       { path: 'dashboard/orders', name: 'Orders', component: Orders, meta: { requiresAdmin: true } },
+      { path: 'dashboard/commandes', name: 'Commandes', component: Commandes },
     ]
   },
 ];
@@ -86,10 +127,18 @@ router.beforeEach((to, from, next) => {
     } else if ((to.matched.some(record => record.meta.requiresAdmin) || to.matched.find(record => record.path === to.path)?.meta?.requiresAdmin) && userRole !== 'ROLE_ADMIN') {
       window.history.length > 1 ? router.go(-1) : next({ name: 'Dashboard' });
     } else {
-      next();
+      if (to.name === 'Dashboard' && userRole === 'ROLE_ADMIN') {
+        next({ name: 'Statistiques' });
+      } else {
+        next();
+      }
     }
-  } else if ((to.name === 'Login' || to.name === 'Register') && token) {
-    next({ name: 'Dashboard' });
+  } else if ((to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' || to.name === 'ResetPassword') && token) {
+    if (userRole === 'ROLE_ADMIN') {
+      next({ name: 'Statistiques' });
+    } else {
+      next({ name: 'Dashboard' });
+    }
   } else {
     next();
   }

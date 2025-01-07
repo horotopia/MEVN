@@ -22,9 +22,9 @@ export const emailTemplates = {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: white; padding: 32px; border-radius: 12px; border: 2px solid #DDDDDD; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
             <h1 style="font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 32px; font-family: var(--font-primary); color: #333;">POKÉSHOP</h1>
             
-            <h2 style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 24px; color: #333;">Réinitialisation du mot de passe</h2>
+            <h2 style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 24px; color: #333;">Réinitialisation de votre mot de passe</h2>
             
-            <p style="color: #4B5563; margin-bottom: 24px; font-family: var(--font-secondary); font-weight: 600;">Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous :</p>
+            <p style="color: #4B5563; margin-bottom: 24px; font-family: var(--font-secondary); font-weight: 600;">Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe :</p>
             
             <div style="text-align: center;">
                 <a href="${resetLink}" 
@@ -34,6 +34,8 @@ export const emailTemplates = {
             </div>
             
             <p style="color: #6B7280; margin-top: 24px; font-size: 14px; text-align: center;">Ce lien est valable pendant 1 heure.</p>
+            
+            <p style="color: #6B7280; margin-top: 16px; font-size: 14px; text-align: center;">Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.</p>
         </div>
     `,
 

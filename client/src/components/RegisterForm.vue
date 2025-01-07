@@ -1,42 +1,88 @@
 <script>
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
   export default {
     name: 'RegistrationPage',
     data() {
       return {
+        name: '',
+        tel: '',
         email: '',
         password: '',
         emailError: '',
+        passwordError: '',
       };
     },
     methods: {
-      validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      },
       checkEmail() {
-        this.emailError = '';
-        if (this.email && !this.validateEmail(this.email)) {
-          this.emailError = 'Veuillez entrer une adresse e-mail valide';
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!this.email) {
+          this.emailError = "L'adresse e-mail est requise.";
+        } else if (!emailPattern.test(this.email)) {
+          this.emailError = "L'adresse e-mail n'est pas valide.";
+        } else {
+          this.emailError = '';
         }
       },
-      handleSubmit() {
-        this.emailError = '';
-
-        if (!this.email) {
-          this.emailError = 'L\'adresse e-mail est requise';
-          return false;
-        }
-        if (!this.validateEmail(this.email)) {
-          this.emailError = 'Veuillez entrer une adresse e-mail valide';
-          return false;
-        }
+      checkPassword() {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
         if (!this.password) {
-          console.log("Le mot de passe est requis");
-          return false;
+          this.passwordError = "Le mot de passe est requis.";
+        } else if (!passwordRegex.test(this.password)) {
+          this.passwordError = "Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.";
+        } else {
+          this.passwordError = '';
+        }
+      },
+      async submitRegister() {
+        if (!this.validateForm()) {
+          return;
         }
 
-        console.log('Inscription réussie avec :', this.email, this.password);
-        return true;
+        try {
+          const response = await fetch(`${__VITE_API_URL__}/api/auth/register`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: '*/*',
+            },
+            body: JSON.stringify({ email: this.email, password: this.password, name: this.name, tel : this.tel})
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || 'Erreur lors de l\'inscription');
+          }
+
+          if (data.response) {
+            this.$router.push('/login').then(() => { 
+              setTimeout(() =>  {
+                toast.success(data.message || 'Votre compte a été créé avec succès', {
+                  position: "top-right",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                });
+              }, 500)
+            });
+          } else {
+            toast.error(data.message || 'Erreur lors de l\'inscription');
+          }
+        } catch (error) {
+          toast.error(error.message || 'Erreur lors de l\'inscription');
+          console.error('Erreur d\'inscription:', error);
+        }
+      },
+      validateForm() {
+        this.checkEmail();
+        this.checkPassword();
+        return !this.emailError && !this.passwordError;
       },
     },
   };
@@ -45,16 +91,43 @@
 <template>
   <div class="flex flex-col items-center pt-16 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-2xl">
-      <h1 class="text-5xl font-extrabold text-center mb-12 font-primary whitespace-nowrap">COMPTE POKÉSHOP</h1>
+      <h1 class="text-3xl md:text-2xl font-extrabold text-center mb-12 font-primary whitespace-nowrap">COMPTE POKÉSHOP</h1>
       
       <div class="bg-white rounded-xl border-2 border-[#DDDDDD] shadow-[0_4px_8px_rgba(0,0,0,0.3)] p-12 max-w-xl mx-auto">
         <h2 class="text-2xl font-bold text-center mb-10 font-primary">INSCRIPTION</h2>
         
         <form 
-          @submit.prevent="handleSubmit"
-          novalidate
+        @submit.prevent="submitRegister" novalidate
           class="space-y-8 font-secondary font-semibold"
         >
+          <div>
+            <label class="flex items-center space-x-2 mb-2">
+              <div class="w-1 h-5 bg-[#C73D3D]"></div>
+              <span class="font-medium font-secondary font-semibold text-gray-900">Nom & Prénom</span>
+            </label>
+            <input
+              type="name"
+              v-model="name"
+              placeholder="Nom & Prénom"
+              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="flex items-center space-x-2 mb-2">
+              <div class="w-1 h-5 bg-[#C73D3D]"></div>
+              <span class="font-medium font-secondary font-semibold text-gray-900">Téléphone</span>
+            </label>
+            <input
+              type="tel"
+              v-model="tel"
+              placeholder="Téléphone"
+              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C73D3D] font-secondary font-semibold placeholder-gray-400"
+              required
+            />
+          </div>
+
           <div>
             <label class="flex items-center space-x-2 mb-2">
               <div class="w-1 h-5 bg-[#C73D3D]"></div>

@@ -24,8 +24,6 @@ export default {
         this.emailError = 'Veuillez entrer une adresse e-mail valide';
         return;
       }
-      // Logique d'envoi du formulaire
-      console.log('Message envoyé:', { nom: this.nom, email: this.email, message: this.message });
     }
   }
 }
@@ -34,7 +32,7 @@ export default {
 <template>
   <div class="flex flex-col items-center pt-16 px-4 sm:px-6 lg:px-8 pb-16">
     <div class="w-full max-w-2xl">
-      <h1 class="text-5xl font-extrabold text-center mb-12 font-primary whitespace-nowrap">CONTACTEZ-NOUS</h1>
+      <h1 class="text-2xl md:text-5xl font-extrabold text-center mb-12 font-primary whitespace-nowrap">CONTACTEZ-NOUS</h1>
       
       <div class="bg-white rounded-xl border-2 border-[#DDDDDD] shadow-[0_4px_8px_rgba(0,0,0,0.3)] p-12 max-w-xl mx-auto">
         <h2 class="text-2xl font-bold text-center mb-10 font-primary">FORMULAIRE DE CONTACT</h2>

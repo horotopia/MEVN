@@ -12,7 +12,6 @@ const sidebarStore = useSidebarStore()
   >
     <div class="flex flex-grow items-center justify-between py-4 px-4 shadow-2 md:px-6 2xl:px-11">
       <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
-        <!-- Hamburger Toggle BTN -->
         <button
           class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm lg:hidden"
           @click="
@@ -48,7 +47,6 @@ const sidebarStore = useSidebarStore()
             </span>
           </span>
         </button>
-        <!-- Hamburger Toggle BTN -->
         <router-link class="block flex-shrink-0 lg:hidden" to="/">
           <img class="w-1/5" src="../../assets/img/POKESHOP_LOGO_MOBILE.png" alt="Logo" />
         </router-link>
@@ -79,7 +77,6 @@ const sidebarStore = useSidebarStore()
                 />
               </svg>
             </button>
-
             <input
               type="text"
               placeholder="Rechercher"

@@ -1,23 +1,26 @@
 <template>
-  <div class="relative flex justify-center">
-    <div class="relative box-border h-96 w-72 rounded-xl border-2 border-gray-300">
-      <div class="absolute left-0 top-0 box-border h-48 w-[calc(18rem-4px)] rounded-tl-xl rounded-tr-xl bg-white overflow-hidden">
-  <img :src="image" alt="Image Pokémon" class="h-full w-full pb-2 object-contain" />
-</div>
-      <div :class="`${bgColor} absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 transform border-l-2 border-r-2 border-gray-300 text-center font-bold text-white`">
-        {{ pokemonFrenchName || pokemonName.toUpperCase() }}
+  <div class="py-4 px-2">
+    <router-link 
+      :to="`/pokemon/${pokemonId}`"
+      class="block transform transition-transform duration-300 hover:scale-105"
+    >
+      <div class="relative flex justify-center">
+        <div class="relative box-border h-96 w-72 rounded-xl border-2 border-gray-300">
+          <div class="absolute left-0 top-0 box-border h-48 w-[calc(18rem-4px)] rounded-tl-xl rounded-tr-xl bg-white overflow-hidden">
+            <img :src="getPokemonImage()" alt="Image Pokémon" class="h-full w-full pb-2 object-contain" />
+          </div>
+          <div :class="`${bgColor} absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 transform border-l-2 border-r-2 border-gray-300 text-center font-bold text-white`">
+            {{ pokemonName.toUpperCase() }}
+          </div>
+          <div class="absolute top-[calc(50%+1rem-4px)] h-32 w-full pt-3 border-b-2 border-gray-300 bg-white text-center">
+            {{ tronquerDescription(pokemonDescription) }}
+          </div>
+          <div class="absolute top-[calc(87%-1px)] flex h-[calc(3rem+4px)] w-full items-center justify-center rounded-bl-xl rounded-br-xl border-b-2 border-gray-300 bg-white">
+            <span class="text-xl font-bold text-black">{{ price }}</span>
+          </div>
+        </div>
       </div>
-      <div class="absolute top-[calc(50%+1rem-4px)] h-32 w-full pt-3 border-b-2 border-gray-300 bg-white text-center">{{ pokemonDescription }}</div>
-      <div class="absolute top-[calc(87%-1px)] flex h-[calc(3rem+4px)] w-full items-center justify-between rounded-bl-xl rounded-br-xl border-b-2 border-gray-300 bg-white px-2">
-        <span class="text-xl font-bold text-black">{{ price }}</span>
-        <button class="rounded-full border-2 border-gray-300 bg-white px-3 py-0.5 font-bold text-black" @click="onButtonClick">
-          VOIR LE PRODUIT
-        </button>
-        <button class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 text-white" @click="onHeartClick">
-          ❤️
-        </button>
-      </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -40,9 +43,10 @@ export default {
   },
   data() {
     return {
-      image: "",
+      pokemonId: "",
       pokemonDescription: "Chargement...",
-      pokemonFrenchName: "",
+      isFavorite: false,
+      publicPath: 'http://localhost:5000/uploads'
     };
   },
   watch: {
@@ -56,39 +60,43 @@ export default {
   methods: {
     async fetchPokemonData() {
       try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${this.pokemonName.toLowerCase()}`);
-        const data = await response.json();
-        this.image = data.sprites.other["official-artwork"].front_default;
-
-        const speciesResponse = await fetch(data.species.url);
-        const speciesData = await speciesResponse.json();
+        const response = await fetch(`http://localhost:5000/api/product`);
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
         
-        const frenchName = speciesData.names.find(
-          name => name.language.name === "fr"
+        const products = await response.json();
+        const pokemon = products.find(p => 
+          p.name.toLowerCase() === this.pokemonName.toLowerCase() &&
+          (p.category?.toLowerCase() === "pokemon" || 
+           p.category?.toLowerCase() === "pokémon" ||
+           p.category?.toLowerCase() === "pokemons" ||
+           p.category?.toLowerCase() === "pokémons")
         );
-        this.pokemonFrenchName = frenchName ? frenchName.name.toUpperCase() : "";
 
-        const frenchDescription = speciesData.flavor_text_entries.find(
-          entry => entry.language.name === "fr"
-        );
-        
-        this.pokemonDescription = frenchDescription 
-          ? frenchDescription.flavor_text.replace(/\f/g, ' ') 
-          : "Description non disponible";
+        if (pokemon) {
+          this.pokemonId = pokemon._id;
+          this.pokemonDescription = pokemon.description || "Description non disponible";
+        } else {
+          throw new Error("Pokémon non trouvé");
+        }
 
       } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon :", error);
-        this.image = "";
         this.pokemonDescription = "Erreur de chargement";
-        this.pokemonFrenchName = "";
       }
     },
-    onButtonClick() {
-      this.$emit("button-click");
+    getPokemonImage() {
+      if (!this.pokemonId) return `https://via.placeholder.com/150?text=${this.pokemonName}`;
+      return `${this.publicPath}/products/${this.pokemonId}/${this.pokemonName.toLowerCase()}.png`;
     },
-    onHeartClick() {
-      this.$emit("heart-click");
+    toggleFavorite() {
+      this.isFavorite = !this.isFavorite;
     },
+    tronquerDescription(description) {
+      const mots = description.split(' ');
+      return mots.slice(0, 15).join(' ') + (mots.length > 15 ? '...' : '');
+    }
   },
 };
 </script>
