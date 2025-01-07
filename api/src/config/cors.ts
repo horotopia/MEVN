@@ -6,7 +6,7 @@ const configureCORS = (app: Application) => {
   const corsOptions = {
     origin: (origin: string | undefined, callback: Function) => {
       if (!origin) {
-        callback(new Error("Request from unauthorized origin"));
+        callback(null, true);
         return;
       }
 
