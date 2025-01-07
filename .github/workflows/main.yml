@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install API dependencies
+      - name: Move & Install API dependencies
         run: cd api && npm ci # Installe les dépendances du projet
 
       # - name: Lint
@@ -36,7 +36,7 @@ jobs:
       # - name: Run tests
       #   run: cd api && npm run test --if-present # Commande pour lancer vos tests Vitest, modifiez selon votre script de test
 
-      - name: Install Client dependencies
+      - name: Move & Install Client dependencies
         run: cd client && npm ci # Installe les dépendances du projet
 
       # - name: Lint

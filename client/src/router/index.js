@@ -7,7 +7,6 @@ import Register from '../pages/Register.vue';
 import Dashboard from '../pages/Dashboard.vue';
 import PokemonDetails from '../pages/PokemonDetails.vue';
 import Pokemon from '../pages/Pokemon.vue';
-import Pokeball from '../pages/Pokeball.vue';
 import Accessoires from '../pages/Accessoires.vue';
 import PokemonInfo from '../components/PokemonInfo.vue';
 
@@ -19,7 +18,6 @@ const routes = [
       { path: '', name: 'Home', component: Home },
       { path: 'pokemon', name: 'Pokemon', component: Pokemon },
       { path: 'pokemon/:id', name: 'PokemonDetails', component: PokemonDetails, props: true },
-      { path: 'pokeball', name: 'Pokeball', component: Pokeball },
       { path: 'accessoires', name: 'Accessoires', component: Accessoires },
     ]
   },
