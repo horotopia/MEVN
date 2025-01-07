@@ -217,13 +217,13 @@ export default {
               <div class="space-y-2">
                 <p class="text-sm montserrat-extrabold text-gray-600">POIDS</p>
                 <span class="inline-block px-4 py-2 text-sm montserrat-medium bg-gray-100 text-gray-800 rounded-lg">
-                  {{ pokemon?.weight }} g
+                  {{ (pokemon?.weight / 1000).toFixed(2) }} kg
                 </span>
               </div>
               <div class="space-y-2">
                 <p class="text-sm montserrat-extrabold text-gray-600">TAILLE</p>
                 <span class="inline-block px-4 py-2 text-sm montserrat-medium bg-gray-100 text-gray-800 rounded-lg">
-                  {{ pokemon?.height }} cm
+                  {{ (pokemon?.height / 100).toFixed(2) }} m
                 </span>
               </div>
               <div class="space-y-2">
