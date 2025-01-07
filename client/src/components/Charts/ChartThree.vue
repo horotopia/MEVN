@@ -85,7 +85,7 @@ const apexOptions = {
   >
     <div class="mb-3 justify-between gap-4 sm:flex">
       <div>
-        <h4 class="text-xl font-bold text-black">Produits vendu</h4>
+        <h4 class="text-xl font-bold text-black">Accéssoires vendu</h4>
       </div>
       <div>
         <div class="relative z-20 inline-block">
@@ -136,8 +136,8 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Pikachu (mettre un ref dynamique) </span> 
-            <span> 65% </span>
+            <span> Laisse Rétractable </span> 
+            <span> 25% </span>
           </p>
         </div>
       </div>
@@ -145,8 +145,8 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Tiplouf </span>
-            <span> 34% </span>
+            <span> Superball </span>
+            <span> 25% </span>
           </p>
         </div>
       </div>
@@ -154,8 +154,8 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Leviator </span>
-            <span> 45% </span>
+            <span> Pokeball </span>
+            <span> 20% </span>
           </p>
         </div>
       </div>
@@ -163,7 +163,16 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Dracofeu </span>
+            <span> Hyperball </span>
+            <span> 18% </span>
+          </p>
+        </div>
+      </div>
+      <div class="w-full px-8 sm:w-1/2">
+        <div class="flex w-full items-center">
+          <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
+          <p class="flex w-full justify-between text-sm font-medium text-black">
+            <span> Croquettes Premium </span>
             <span> 12% </span>
           </p>
         </div>

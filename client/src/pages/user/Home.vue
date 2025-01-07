@@ -136,6 +136,7 @@
 <script>
 import CardPokémon from "@/components/CardPokémon.vue";
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
 export default {
   name: "HomePage",
   components: {
@@ -147,13 +148,13 @@ export default {
       featuredPokemon: [],
       loading: true,
       error: null,
-      publicPath: 'http://localhost:5000/uploads'
+      publicPath: `${__VITE_API_URL__}/uploads`
     };
   },
   methods: {
     async fetchRandomPokemon() {
       try {
-        const response = await fetch("http://localhost:5000/api/product");
+        const response = await fetch(`${__VITE_API_URL__}/api/product`);
         
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
