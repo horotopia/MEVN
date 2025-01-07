@@ -35,7 +35,7 @@ export default {
             feu: 'bg-red-500',
             eau: 'bg-blue-500',
             plante: 'bg-green-500',
-            électricité: 'bg-yellow-500',
+            electrik: 'bg-yellow-500',
             glace: 'bg-blue-300',
             combat: 'bg-red-700',
             poison: 'bg-purple-500',
@@ -90,7 +90,7 @@ export default {
     <div class="max-w-7xl mx-auto p-4 md:p-6">
       <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Section Images -->
+
           <div class="space-y-4">
             <div class="aspect-square rounded-lg border-2 border-gray-300 p-4">
               <div class="h-full w-full rounded-lg border-2 border-gray-300">
@@ -108,7 +108,7 @@ export default {
             </div>
           </div>
 
-          <!-- Section Informations -->
+
           <div class="space-y-6">
             <h1 
               class="text-2xl md:text-3xl montserrat-extrabold uppercase tracking-wide text-white text-center py-3 rounded-lg shadow-md"
@@ -160,7 +160,7 @@ export default {
             </div>
           </div>
 
-          <!-- Section Description -->
+
           <div class="md:col-span-2 space-y-6">
             <div class="space-y-4">
               <h3 class="text-xl montserrat-extrabold text-gray-800">Tout savoir sur {{ pokemon?.name }}</h3>
@@ -172,7 +172,7 @@ export default {
               <p class="text-gray-600 montserrat-medium border-l-4 border-[#ff4c4c] pl-4">{{ pokemon?.habitat }}</p>
             </div>
 
-            <!-- Tableau des attaques -->
+
             <div class="overflow-hidden rounded-lg border border-gray-200">
               <table class="w-full">
                 <thead :class="getTypeColor(pokemon?.type)">
@@ -212,7 +212,7 @@ export default {
               </table>
             </div>
 
-            <!-- Informations supplémentaires -->
+
             <div class="grid grid-cols-3 gap-4">
               <div class="space-y-2">
                 <p class="text-sm montserrat-extrabold text-gray-600">POIDS</p>
@@ -234,7 +234,7 @@ export default {
               </div>
             </div>
 
-            <!-- Évolutions -->
+
             <div class="space-y-4">
               <h3 class="text-xl montserrat-extrabold text-gray-800 text-center">
                 Les évolutions de {{ pokemon?.name }} : Niveau d'évolution actuel 1
