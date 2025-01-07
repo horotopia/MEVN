@@ -104,8 +104,14 @@ export default {
               </div>
             </div>
             <div class="grid grid-cols-3 gap-4">
-              <div v-for="n in 3" :key="n" class="aspect-square rounded-lg border-2 border-gray-300 p-2">
-                <div class="h-full w-full rounded-lg border-2 border-gray-300 bg-gray-50"></div>
+              <div v-for="(picture, index) in pokemon.pictures.slice(1, 4)" :key="index"  class="aspect-square rounded-lg border-2 border-gray-300 p-2">
+                <div class="h-full w-full rounded-lg border-2 border-gray-300 bg-gray-50">
+                  <img 
+                    :src="picture.name ? `${publicPath}/products/${pokemon._id}/${picture.name}` : 'https://via.placeholder.com/400'" 
+                    :alt="pokemon?.name"
+                    class="h-full w-full object-contain"
+                  >
+                </div>
               </div>
             </div>
           </div>
