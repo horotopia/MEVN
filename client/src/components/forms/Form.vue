@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="flex justify-end mt-4">
-                <button type="submit" class="mr-2 p-1.5 rounded-md"
+                <button type="submit" class="mr-2 p-1.5 rounded-md" v-if="text.submit"
                     :style="{ backgroundColor: text.submit?.color || '#4CAF50', color: text.submit?.textColor || '#fff' }">
                     {{ text.submit?.text || text.submit }}
                 </button>

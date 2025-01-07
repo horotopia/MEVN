@@ -576,7 +576,7 @@ export class OrdersController {
     router.get(
       "/u/:userId",
       authenticateToken,
-      validateRoleAdminOrUserId,
+      validateRoleUser,
       validateObjectId,
       this.getOrdersByUserId
     );

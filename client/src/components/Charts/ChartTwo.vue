@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// @ts-ignore
 import VueApexCharts from 'vue3-apexcharts'
 
 const chartData = {
@@ -15,7 +14,7 @@ const apexOptions = {
     type: 'donut',
     width: 380
   },
-  colors: ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF'],
+  colors: ['#16DB65', '#058C42', '#04471C', '#0D2818'],
   labels: chartData.labels,
   legend: {
     show: false,
@@ -51,7 +50,7 @@ const apexOptions = {
   >
     <div class="mb-3 justify-between gap-4 sm:flex">
       <div>
-        <h4 class="text-xl font-bold text-black">Produits vendu</h4>
+        <h4 class="text-xl font-bold text-black">Pokémon vendu</h4>
       </div>
       <div>
         <div class="relative z-20 inline-block">
@@ -102,7 +101,7 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Pikachu </span>
+            <span> Mewtwo </span>
             <span> 65% </span>
           </p>
         </div>
@@ -111,7 +110,7 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Tiplouf </span>
+            <span> Caninos </span>
             <span> 34% </span>
           </p>
         </div>
@@ -120,7 +119,7 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Leviator </span>
+            <span> Magikarp </span>
             <span> 45% </span>
           </p>
         </div>
@@ -129,7 +128,7 @@ const apexOptions = {
         <div class="flex w-full items-center">
           <span class="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
           <p class="flex w-full justify-between text-sm font-medium text-black">
-            <span> Dracofeu </span>
+            <span> Raichu </span>
             <span> 12% </span>
           </p>
         </div>

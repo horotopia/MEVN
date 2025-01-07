@@ -96,9 +96,7 @@
                 class="transform transition-transform duration-300 hover:scale-105 shrink-0 p-4"
               >
                 <CardPokémon
-                  :pokemonName="pokemon.name"
-                  :price="pokemon.price"
-                  :bgColor="pokemon.bgColor"
+                  :item="pokemon"
                 />
               </div>
               
@@ -108,21 +106,7 @@
                 class="transform transition-transform duration-300 hover:scale-105 shrink-0 p-4"
               >
                 <CardPokémon
-                  :pokemonName="pokemon.name"
-                  :price="pokemon.price"
-                  :bgColor="pokemon.bgColor"
-                />
-              </div>
-              
-              <div 
-                v-for="(pokemon, index) in featuredPokemon" 
-                :key="`last-${pokemon.name}-${index}`"
-                class="transform transition-transform duration-300 hover:scale-105 shrink-0 p-4"
-              >
-                <CardPokémon
-                  :pokemonName="pokemon.name"
-                  :price="pokemon.price"
-                  :bgColor="pokemon.bgColor"
+                  :item="pokemon"
                 />
               </div>
             </div>
@@ -136,6 +120,7 @@
 <script>
 import CardPokémon from "@/components/CardPokémon.vue";
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
 export default {
   name: "HomePage",
   components: {
@@ -147,20 +132,20 @@ export default {
       featuredPokemon: [],
       loading: true,
       error: null,
-      publicPath: 'http://localhost:5000/uploads'
+      publicPath: `${__VITE_API_URL__}/uploads`
     };
   },
   methods: {
     async fetchRandomPokemon() {
       try {
-        const response = await fetch("http://localhost:5000/api/product");
-        
+        const response = await fetch(`${__VITE_API_URL__}/api/product`);
+
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
         }
 
         const data = await response.json();
-        
+
         const pokemonOnly = data.filter(item => {
           const categoryMatch = item.category?.toLowerCase() === "pokemon" || 
                               item.category?.toLowerCase() === "pokémon" ||
@@ -170,11 +155,14 @@ export default {
         });
 
         const shuffled = [...pokemonOnly].sort(() => 0.5 - Math.random());
-        
+
         const selected = shuffled.slice(0, 8);
 
         this.featuredPokemon = selected.map(pokemon => ({
+          _id: pokemon._id,
+          pictures: pokemon.pictures[0]? [pokemon.pictures[0]] : null,
           name: pokemon.name,
+          description: pokemon.description,
           price: `${pokemon.price}€`,
           bgColor: this.getTypeColor(pokemon.type?.toLowerCase() || 'normal'),
         }));
@@ -212,6 +200,7 @@ export default {
     }
   },
   async mounted() {
+    console.log("HomePage mounted");
     await this.fetchRandomPokemon();
   }
 };

@@ -220,18 +220,6 @@ export default {
         }
 
         const savedAddress = await response.json();
-        setTimeout(() => {
-          toast.success(
-            `Adresse de ${type === "billing" ? "facturation" : "livraison"} ${
-              method === "POST" ? "créée" : "mise à jour"
-            } avec succès.`,
-            {
-              position: "top-right",
-              autoClose: 3000,
-            }
-          );
-        }, 500)
-        
 
         return savedAddress;
       } catch (error) {

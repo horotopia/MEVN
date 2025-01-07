@@ -36,7 +36,7 @@ export class OrdersService {
   }
 
   async findAllOrdersByUserId(userId: string): Promise<Orders[]> {
-    const res = await this.model.find({ userId });
+    const res = await this.model.find({ userId }).populate("items.productId");
     return res;
   }
 
