@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-// @ts-ignore
 import VueApexCharts from 'vue3-apexcharts';
 
 const orders2024 = ref([]);
