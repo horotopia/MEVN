@@ -95,7 +95,7 @@ const urlApiPicture = 'http://localhost:5000/api/pictures';
 const fields = ref([]);
 const tableData = ref([]);
 const disableKey = ref([
-    '_id', 'createdAt', 'updatedAt'
+    '_id', 'createdAt', 'updatedAt', 'habitat', 'habitude'
 ]);
 
 const post = ref({
@@ -270,7 +270,6 @@ async function updateProduct(item) {
 
     delete item.createdAt;
     delete item.updatedAt;
-    delete item.password;
 
     try {
         const response = await fetch(`${urlApi}/${item._id}`, {
@@ -290,9 +289,7 @@ async function updateProduct(item) {
             throw new Error('Erreur lors de la mise à jour du produit');
         }
 
-        const data = await response.json();
-
-        return data;
+        fetchProducts();
     } catch (error) {
         console.error('Erreur lors de la mise à jour du produit', error);
     }
@@ -380,19 +377,19 @@ function editItem(item) {
         },
         {
             type: 'textarea',
-            key: 'Tout savoir',
-            content: item.toutSavoir,
-            placeholder: 'Tout savoir sur le produit',
-            label: 'Tout savoir sur le produit',
-            max: 500,
-        },
-        {
-            type: 'textarea',
-            key: 'Habitat',
+            key: 'habitat',
             content: item.habitat,
             placeholder: 'Habitat du produit',
             label: 'Habitat du produit',
-            max: 500,
+            max: 500
+        },
+        {
+            type: 'textarea',
+            key: 'habitude',
+            content: item.habitude,
+            placeholder: 'Habitude du produit',
+            label: 'Habitude du produit',
+            max: 500
         },
         {
             type: 'select',
