@@ -3,7 +3,8 @@ export default {
   name: 'NavBar',
   data() {
     return {
-      cartItemCount: 0
+      cartItemCount: 0,
+      showMobileMenu: false
     }
   },
   methods: {
@@ -21,14 +22,52 @@ export default {
 
 <template>
   <div>
-    <div class="bg-[#C73D3D] px-8 py-4 flex justify-between items-center">
+    <!-- Header mobile -->
+    <div class="bg-[#C73D3D] md:hidden">
+      <!-- Logo ligne -->
+      <div class="flex justify-center py-2">
+        <router-link to="/">
+          <img src="../assets/img/POKESHOP_LOGO.png" alt="Logo Pokeshop" class="h-16" />
+        </router-link>
+      </div>
+      
+      <!-- Boutons compte/panier -->
+      <div class="grid grid-cols-2 gap-4 px-8 py-2 border-t-2 border-[#A82E2E]">
+        <router-link to="/panier" class="text-white flex flex-col items-center hover:opacity-80">
+          <div class="relative">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 3H4L6 6L7 18H19L21 6H13L11 3" stroke="white" stroke-width="2"/>
+              <circle cx="8" cy="21" r="2" stroke="white" stroke-width="2"/>
+              <circle cx="18" cy="21" r="2" stroke="white" stroke-width="2"/>
+            </svg>
+            <div v-if="cartItemCount > 0" 
+                 class="absolute -top-2 -right-2 bg-[#F4D03F] text-[#C73D3D] rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs">
+              {{ cartItemCount }}
+            </div>
+          </div>
+          <span class="text-sm mt-1 tracking-wide primary-font">Mon Panier</span>
+        </router-link>
+        
+        <router-link to="/login" class="text-white flex flex-col items-center hover:opacity-80">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5"/>
+            <circle cx="12" cy="8" r="3.5" stroke="white" stroke-width="1.5"/>
+            <path d="M6 18C6 15.5 8 13.5 12 13.5C16 13.5 18 15.5 18 18" stroke="white" stroke-width="1.5"/>
+          </svg>
+          <span class="text-sm mt-1 tracking-wide primary-font">Mon Compte</span>
+        </router-link>
+      </div>
+    </div>
+
+    <!-- Header desktop -->
+    <div class="bg-[#C73D3D] hidden md:flex px-8 py-4 justify-between items-center">
       <div class="logo">
         <router-link to="/">
           <img src="../assets/img/POKESHOP_LOGO.png" alt="Logo Pokeshop" class="h-20" />
         </router-link>
       </div>
       
-      <div class="search-container relative flex flex-1 mx-12">
+      <div class="search-container relative flex-1 mx-12">
       </div>
 
       <div class="icons-container flex items-center gap-16">
@@ -58,7 +97,74 @@ export default {
       </div>
     </div>
 
-    <nav class="flex bg-[#FF5353]">
+    <!-- Menu hamburger mobile -->
+    <div class="md:hidden bg-[#FF5353] px-4 py-2">
+      <button 
+        @click="showMobileMenu = !showMobileMenu"
+        class="flex items-center justify-center w-full py-2 text-white primary-font"
+      >
+        <svg 
+          class="w-6 h-6 mr-2" 
+          :class="{ 'transform rotate-180': showMobileMenu }"
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d="M4 6h16M4 12h16m-7 6h7"
+          />
+        </svg>
+        Menu
+      </button>
+
+      <!-- Menu mobile déroulant -->
+      <transition
+        enter-active-class="transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-4"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-4"
+      >
+        <div 
+          v-if="showMobileMenu"
+          class="mt-2 space-y-2 origin-top"
+        >
+          <router-link 
+            to="/pokemon" 
+            class="block w-full py-2 px-4 text-center text-white primary-font text-lg nav-text-stroke border-2 border-[#C73D3D] rounded-lg transition-all duration-200"
+            :class="{ 'bg-[#FFD233] border-[#FFD233]': $route.path.startsWith('/pokemon') }"
+            @click="showMobileMenu = false"
+          >
+            Pokémon
+          </router-link>
+          
+          <router-link 
+            to="/accessoires" 
+            class="block w-full py-2 px-4 text-center text-white primary-font text-lg nav-text-stroke border-2 border-[#C73D3D] rounded-lg transition-all duration-200"
+            :class="{ 'bg-[#FFD233] border-[#FFD233]': $route.path.startsWith('/accessoires') }"
+            @click="showMobileMenu = false"
+          >
+            Accessoires
+          </router-link>
+          
+          <router-link 
+            to="/contact" 
+            class="block w-full py-2 px-4 text-center text-white primary-font text-lg nav-text-stroke border-2 border-[#C73D3D] rounded-lg transition-all duration-200"
+            :class="{ 'bg-[#FFD233] border-[#FFD233]': $route.path.startsWith('/contact') }"
+            @click="showMobileMenu = false"
+          >
+            Contact
+          </router-link>
+        </div>
+      </transition>
+    </div>
+
+    <!-- Navigation desktop -->
+    <nav class="hidden md:flex bg-[#FF5353]">
       <div class="w-8"></div>
       <router-link 
         to="/pokemon" 
@@ -99,7 +205,6 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
 
 .logo img {
-  height: 80px;
   width: auto;
 }
 
