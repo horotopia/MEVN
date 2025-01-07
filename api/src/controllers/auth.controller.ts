@@ -97,7 +97,7 @@ export class AuthController {
         template: 'confirmation',
         data: {
           username: user.name || 'Utilisateur',
-          confirmationLink: `http://localhost:3000/verify-email?token=${verificationToken}`
+          confirmationLink: `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`
         }
       });
 
@@ -244,7 +244,7 @@ export class AuthController {
         resetPasswordExpires: new Date(Date.now() + 3600000) // Token valide 1 heure
       });
 
-      const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
       await mailService.sendTemplatedEmail({
         to: email,
         subject: 'Réinitialisation de votre mot de passe',

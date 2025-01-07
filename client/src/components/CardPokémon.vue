@@ -7,7 +7,12 @@
       <div class="relative flex justify-center">
         <div class="relative box-border h-96 w-72 rounded-xl border-2 border-gray-300">
           <div class="absolute left-0 top-0 box-border h-48 w-[calc(18rem-4px)] rounded-tl-xl rounded-tr-xl bg-white overflow-hidden">
-            <img :src="getPokemonImage()" alt="Image Pokémon" class="h-full w-full pb-2 object-contain" />
+            <img 
+              :src="getPokemonImage()" 
+              :alt="pokemonName"
+              class="h-full w-full object-contain pb-2" 
+              @error="handleImageError"
+            />
           </div>
           <div :class="`${bgColor} absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 transform border-l-2 border-r-2 border-gray-300 text-center font-bold text-white`">
             {{ pokemonName.toUpperCase() }}
@@ -25,6 +30,7 @@
 </template>
 
 <script>
+const _VITE_API_URL = import.meta.env.VITE_API_URL;
 export default {
   name: "CardPokémon",
   props: {
@@ -46,7 +52,9 @@ export default {
       pokemonId: "",
       pokemonDescription: "Chargement...",
       isFavorite: false,
-      publicPath: 'http://localhost:5000/uploads'
+      publicPath: `${_VITE_API_URL}/uploads`,
+      imageError: false,
+      pokemonImage: null
     };
   },
   watch: {
@@ -60,7 +68,7 @@ export default {
   methods: {
     async fetchPokemonData() {
       try {
-        const response = await fetch(`http://localhost:5000/api/product`);
+        const response = await fetch(`${_VITE_API_URL}/api/product`);
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);
         }
@@ -77,6 +85,8 @@ export default {
         if (pokemon) {
           this.pokemonId = pokemon._id;
           this.pokemonDescription = pokemon.description || "Description non disponible";
+          this.pokemonImage = pokemon.pictures?.[0]?.name;
+          this.imageError = false;
         } else {
           throw new Error("Pokémon non trouvé");
         }
@@ -84,10 +94,18 @@ export default {
       } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon :", error);
         this.pokemonDescription = "Erreur de chargement";
+        this.imageError = true;
       }
     },
     getPokemonImage() {
-      if (!this.pokemonId) return `https://via.placeholder.com/150?text=${this.pokemonName}`;
+      if (this.imageError || !this.pokemonId) {
+        return `https://via.placeholder.com/150?text=${this.pokemonName}`;
+      }
+      
+      if (this.pokemonImage) {
+        return `${this.publicPath}/products/${this.pokemonId}/${this.pokemonImage}`;
+      }
+      
       return `${this.publicPath}/products/${this.pokemonId}/${this.pokemonName.toLowerCase()}.png`;
     },
     toggleFavorite() {
@@ -96,6 +114,9 @@ export default {
     tronquerDescription(description) {
       const mots = description.split(' ');
       return mots.slice(0, 15).join(' ') + (mots.length > 15 ? '...' : '');
+    },
+    handleImageError() {
+      this.imageError = true;
     }
   },
 };
