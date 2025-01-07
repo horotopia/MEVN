@@ -83,6 +83,7 @@ export class AuthController {
         name: req.body.name,
         email: req.body.email,
         tel: req.body.tel,
+        role: "ROLE_USER",
         password: await bcryptInstance.hashPassword(req.body.password),
         isEmailVerified: false,
         emailVerificationToken: verificationToken,
