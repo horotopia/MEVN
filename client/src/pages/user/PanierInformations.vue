@@ -120,6 +120,8 @@
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 export default {
   props: {
     totalAmount: {
@@ -157,7 +159,7 @@ export default {
       const jwtToken = localStorage.getItem("jwtToken");
 
       try {
-        const response = await fetch(`http://localhost:5000/api/address/${this.user._id}`, {
+        const response = await fetch(`${__VITE_API_URL__}/api/address/${this.user._id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -190,8 +192,8 @@ export default {
     async saveAddress(address, type) {
       const jwtToken = localStorage.getItem("jwtToken");
       const url = address.id
-        ? `http://localhost:5000/api/address/${address.id}`
-        : `http://localhost:5000/api/address`;
+        ? `${__VITE_API_URL__}/api/address/${address.id}`
+        : `${__VITE_API_URL__}/api/address`;
 
       const method = address.id ? "PUT" : "POST";
 

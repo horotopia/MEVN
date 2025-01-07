@@ -30,7 +30,7 @@
         <div class="flex items-center justify-between">
             <div></div>
             <div class="ml-3">
-                <div class="w-full max-w-sm min-w-[200px] relative">
+                <div class="w-full max-w-sm relative">
                     <div class="relative">
                         <button class="p-1.5 rounded-md bg-blue-500 text-white" @click="addProduct">Ajouter un produit</button>
                     </div>

@@ -43,9 +43,9 @@
                 <div>
                     <Uploader
                         v-if="hasResponse"
-                        :server="`http://localhost:5000/api/upload/users/${formEdit.item._id}`"
+                        :server="`${__VITE_API_URL__}/api/upload/users/${formEdit.item._id}`"
                         :media="getData()"
-                        location="http://localhost:5000/uploads/users"
+                        :location="`${__VITE_API_URL__}/uploads/users`"
                         :max="1"
                         @init="initMedia"
                         @change="changeMedia"

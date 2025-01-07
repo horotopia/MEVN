@@ -158,6 +158,8 @@
 <script>
 import AccessoiresCard from '../../components/AccessoiresCard.vue'
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 export default {
   name: 'AccessoiresPage',
   components: {
@@ -218,7 +220,7 @@ export default {
   },
   async created() {
     try {
-      const response = await fetch("http://localhost:5000/api/product");
+      const response = await fetch(`${__VITE_API_URL__}/api/product`);
       const data = await response.json();
 
       this.products = data
@@ -228,7 +230,7 @@ export default {
           name: item.name,
           description: item.description,
           image: item.pictures?.[0]?.name
-            ? `http://localhost:5000/uploads/products/${item._id}/${item.pictures[0].name}`
+            ? `${__VITE_API_URL__}/uploads/products/${item._id}/${item.pictures[0].name}`
             : `https://via.placeholder.com/150?text=${item.name}`,
           price: item.price,
           type: item.type || "Inconnu",

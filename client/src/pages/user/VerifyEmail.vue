@@ -40,6 +40,8 @@
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL;
+
 const route = useRoute();
 const router = useRouter();
 const loading = ref(true);
@@ -49,7 +51,7 @@ const success = ref(false);
 onMounted(async () => {
   try {
     const token = route.query.token;
-    const response = await fetch(`http://localhost:5000/api/auth/verify-email?token=${token}`);
+    const response = await fetch(`${__VITE_API_URL__}/api/auth/verify-email?token=${token}`);
     
     if (!response.ok) {
       const errorData = await response.json();

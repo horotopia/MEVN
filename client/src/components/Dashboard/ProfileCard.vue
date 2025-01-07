@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue'
 const user = JSON.parse(localStorage.getItem('user'))
 
+const __VITE_API_URL__ = import.meta.env.VITE_API_URL
+
 const formData = ref({
   fullName: user.name,
   phoneNumber: user.tel,
@@ -20,7 +22,7 @@ async function fetchUserAddress() {
   const jwtToken = localStorage.getItem('jwtToken');
 
   try {
-    const response = await fetch(`http://localhost:5000/api/address/${user._id}`, {
+    const response = await fetch(`${__VITE_API_URL__}/api/address/${user._id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ async function handleSubmit() {
 
   try {
     if (!addressId.value) {
-      const response = await fetch(`http://localhost:5000/api/address`, {
+      const response = await fetch(`${__VITE_API_URL__}/api/address`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +83,7 @@ async function handleSubmit() {
       alert('Adresse créée avec succès !');
       addressId.value = newAddress._id;
     } else {
-      const response = await fetch(`http://localhost:5000/api/address/${addressId.value}`, {
+      const response = await fetch(`${__VITE_API_URL__}/api/address/${addressId.value}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
