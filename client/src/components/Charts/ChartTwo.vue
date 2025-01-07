@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// @ts-ignore
 import VueApexCharts from 'vue3-apexcharts'
 
 const chartData = {
@@ -15,7 +14,7 @@ const apexOptions = {
     type: 'donut',
     width: 380
   },
-  colors: ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF'],
+  colors: ['#16DB65', '#058C42', '#04471C', '#0D2818'],
   labels: chartData.labels,
   legend: {
     show: false,

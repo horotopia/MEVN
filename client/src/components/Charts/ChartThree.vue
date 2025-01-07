@@ -1,35 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// @ts-ignore
 import VueApexCharts from 'vue3-apexcharts'
-
-// const urlApi = 'http://localhost:5000/api/orders';
-// const jwtToken = localStorage.getItem('jwtToken');
-//     console.log('JWT Token:', jwtToken);
-
-//     try {
-//         const response = await fetch(urlApi, {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${jwtToken}`,
-//             },
-//         });
-
-//         if (!response.ok) {
-//             if (response.status === 401) {
-//                 console.error('Jeton expiré ou non valide');
-//                 return;
-//             }
-//             throw new Error('Erreur lors de la récupération des utilisateurs');
-//         }
-
-//         const data = await response.json();
-//         console.log('Utilisateurs:', data);
-//     } catch (error) {
-//         console.error('Erreur:', error);
-//     }
-
 
 const chartDataRef = ref({
   pikachu: 65,
@@ -38,8 +9,8 @@ const chartDataRef = ref({
   dracofeu: 12
 })
 const chartData = {
-  series: [65, 34, 45, 12], // TODO: Nombre de pdts vendus
-  labels: ['Pikachu', 'Tiplouf', 'Leviator', 'Dracofeu']
+  series: [25, 25, 20, 18, 12],
+  labels: ['Laisse Rétractable', 'Superball', 'Pokeball', 'Hyperball', 'Croquettes Premium']
 }
 
 const chart = ref(null)
@@ -49,7 +20,7 @@ const apexOptions = {
     type: 'donut',
     width: 380
   },
-  colors: ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF'],
+  colors: ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF', '#A8D0DB'],
   labels: chartData.labels,
   legend: {
     show: false,
