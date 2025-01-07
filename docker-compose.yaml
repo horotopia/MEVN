@@ -3,7 +3,7 @@ services:
     container_name: api
     build:
       context: ./api
-      target: ${CONTEXT:-development}
+      target: development
     env_file: ./api/.env
     volumes:
       - ./api:/api
@@ -44,7 +44,7 @@ services:
     container_name: client
     build:
       context: ./client
-      target: production
+      target: ${CONTEXT:-development}
     volumes:
       - ./client:/app
     ports:
@@ -64,7 +64,6 @@ services:
 
 networks:
   mevn:
-
 
 volumes:
   mongo_db:
