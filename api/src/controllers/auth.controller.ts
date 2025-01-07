@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { generateToken } from "../middlewares/jwt";
+import { authenticateToken, generateToken } from "../middlewares/jwt";
 import { sessionMiddleware } from "../middlewares/session.middleware";
 import validateCreateUser from "../middlewares/validator/validateUser";
 import { Bcrypt, generateResetToken } from "../utils";
 import { mailService } from "../services/mail.service";
 import { findUser, findUserByVerificationToken, findUserByResetToken, updateUser, createUser } from "../models/user.interface";
+import { MongooseService } from "../services/mongoose/mongoose.service";
+import { validateRoleAdmin } from "../middlewares/validator/validateRole";
 
 export class AuthController {
   /**
@@ -283,6 +285,20 @@ export class AuthController {
     }
   };
 
+  async countSessionByMonth(req: Request, res: Response, next: NextFunction) {
+    console.log("countSessionByMonth");
+    try {
+      const mongooseService = await MongooseService.get();
+      const count = await mongooseService.sessionService.countSessionByMonth();
+      res.status(200).json(count);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
   buildRouter(): Router {
     const router = Router();
     router.post("/register", validateCreateUser, this.register);
@@ -291,6 +307,7 @@ export class AuthController {
     router.get("/verify-email", this.verifyEmail);
     router.post("/forgot-password", this.forgotPassword);
     router.post("/reset-password", this.resetPassword);
+    router.get("/countSessionByMonth", authenticateToken, validateRoleAdmin, this.countSessionByMonth.bind(this));
     return router;
   }
 }

@@ -406,7 +406,6 @@ export class ProductController {
 
   buildRouter(): Router {
     const router = Router();
-    router.get("/countProductSellInMonth", this.countProductSellInMonth.bind(this));
     router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
     router.get(
       "/:attribute/:value",
@@ -434,6 +433,7 @@ export class ProductController {
       validateObjectId,
       this.deleteProduct.bind(this)
     );
+    router.get("/countProductSellInMonth", authenticateToken, validateRoleAdmin, this.countProductSellInMonth.bind(this));
 
     return router;
   }
