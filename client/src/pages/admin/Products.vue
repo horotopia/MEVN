@@ -185,7 +185,7 @@ const getData = () => {
     post.value.media.saved = formEdit.value.item.pictures.map(picture => {
         return {
             _id: picture._id,
-            name: picture.userId + '/' + picture.name,
+            name: picture.productId + '/' + picture.name,
         }
     }) || []
 
