@@ -14,6 +14,7 @@ export interface User extends Timestamps {
   emailVerificationTokenExpires?: Date | null;
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
+  pictures?: Object | null;
 }
 
 export type UpdateUser = Partial<User>;
