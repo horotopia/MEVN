@@ -2,7 +2,11 @@ const mockingoose = require("mockingoose");
 import { User, UserModel, Pictures, PicturesModel, Address } from '../../models';
 
 describe('UserService', () => {
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
     beforeEach(() => {
         mockingoose.resetAll();
         jest.clearAllMocks();
@@ -44,4 +48,8 @@ describe('UserService', () => {
             });
         });
     });
+<<<<<<< Updated upstream
 });
+=======
+});
+>>>>>>> Stashed changes
