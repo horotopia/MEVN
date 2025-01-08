@@ -15,5 +15,6 @@ module.exports = {
     '/dist/'
   ],
   verbose: true,
-  modulePathIgnorePatterns: ['<rootDir>/src/tests/__WIP']
+  modulePathIgnorePatterns: ['<rootDir>/src/tests/__WIP'],
+  setupFiles: ['<rootDir>/src/tests/setup.js'],
 };
