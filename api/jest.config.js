@@ -14,5 +14,6 @@ module.exports = {
     '/node_modules/',
     '/dist/'
   ],
-  verbose: true
+  verbose: true,
+  modulePathIgnorePatterns: ['<rootDir>/src/tests/__WIP']
 };
