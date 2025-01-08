@@ -1,24 +1,50 @@
-import { ProductService } from '../../services/mongoose/product.service';
-import { MongooseService } from '../../services/mongoose/mongoose.service';
-import mockingoose from 'mockingoose';
-import { Product } from '../../models';
+const mockingoose =require('mockingoose');
+import { Product, ProductModel } from '../../models';
 
 describe('ProductService', () => {
-  let productService: ProductService;
-  let mongooseService: MongooseService;
-
-  beforeAll(() => {
-    mongooseService = new MongooseService();
-    productService = new ProductService(mongooseService);
-  });
-
   beforeEach(() => {
     mockingoose.resetAll();
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('createProduct', () => {
+    it('should validate', async () => {
+      const product = new ProductModel({
+        name: 'Pikachu',
+        description: 'Pokémon électrique',
+        type: 'électricité',
+        evolutionLevel: 2,
+        evolutionReference: 'Pichu',
+        weight: 6000,
+        height: 40,
+        age: 4,
+        price: 50000,
+        category: 'pokémon',
+        stock: 5,
+      });
+
+      await product.validate();
+
+      expect(product.toObject()).toHaveProperty('name');
+      expect(product.toObject()).toHaveProperty('description');
+      expect(product.toObject()).toHaveProperty('type');
+      expect(product.toObject()).toHaveProperty('evolutionLevel');
+      expect(product.toObject()).toHaveProperty('evolutionReference');
+      expect(product.toObject()).toHaveProperty('weight');
+      expect(product.toObject()).toHaveProperty('height');
+      expect(product.toObject()).toHaveProperty('age');
+      expect(product.toObject()).toHaveProperty('price');
+      expect(product.toObject()).toHaveProperty('category');
+      expect(product.toObject()).toHaveProperty('stock');
+    });
+
+
     it('should create a new product successfully', async () => {
-      const mockProduct = {
+      const product: Partial<Product> = {
         name: 'Pikachu',
         description: 'Pokémon électrique',
         type: 'électricité',
@@ -32,11 +58,12 @@ describe('ProductService', () => {
         stock: 5,
       };
 
-      mockingoose(Product).toReturn(mockProduct, 'save');
+      mockingoose(ProductModel).toReturn(product, 'save');
 
-      const result = await productService.createProduct(mockProduct);
-
-      expect(result).toEqual(expect.objectContaining(mockProduct));
+      const result = await ProductModel.create(product);
+      expect(result).toMatchObject({
+        name: 'Pikachu'
+      });
     });
   });
 

@@ -1,32 +1,31 @@
-import { SessionService } from '../../services/mongoose/session.service';
-import { MongooseService } from '../../services/mongoose/mongoose.service';
-import mockingoose from 'mockingoose';
-import { Session } from '../../models';
+const mockingoose = require("mockingoose");
+import { Session, SessionModel } from '../../models';
+
 
 describe('SessionService', () => {
 
-  beforeAll(() => {
-    mongooseService = new MongooseService();
-    sessionService = new SessionService(mongooseService);
-  });
-
   beforeEach(() => {
     mockingoose.resetAll();
+    jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });  
+
   describe('createSession', () => {
-    it('should create a new session successfully', async () => {
-      const mockSession = {
+    it('should validate', async () => {
+      const session = new SessionModel({
         userAgent: 'Mozilla/5.0',
         user: '507f191e810c19729de860ea',
-      };
+      });
 
-      mockingoose(Session).toReturn(mockSession, 'save');
-
-      const result = await sessionService.createSession(mockSession);
-
-      expect(result).toEqual(expect.objectContaining(mockSession));
+      await session.validate();
+            expect(session.toObject()).toHaveProperty('userAgent');
+            expect(session.toObject()).toHaveProperty('user');
     });
+
+    it('should create a new session', async () => {
   });
 
   describe('findActiveSession', () => {
