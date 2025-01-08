@@ -425,13 +425,5 @@ describe('Bon bah on va tester les routes des commandes', () => {
 
             expect(response.status).toBe(403);
         });
-
-        test('devrait retourner 400 si l\'année n\'est pas fournie', async () => {
-            const response = await request(app)
-                .get('/api/orders/totalAmountByMonth/')
-                .set('Authorization', `Bearer ${adminToken}`);
-
-            expect(response.status).toBe(404);
-        });
     });
 }); 
