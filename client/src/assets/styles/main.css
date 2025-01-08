@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap') layer(fonts);
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+  --font-primary: 'Montserrat', sans-serif;
+  --font-secondary: 'Open Sans', sans-serif;
+}
+
+/* Règles globales */
+body {
+  font-family: var(--font-secondary);
+}
+
+.montserrat-extrabold {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}

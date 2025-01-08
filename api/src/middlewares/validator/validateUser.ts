@@ -1,28 +1,47 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import logger from "../../config/logger";
+import { findUser } from "../../models/user.interface";
 
-const validateUser: Array<(req: Request, res: Response, next: NextFunction) => void> = [
-  // Validation de l'email
-  body("email").isEmail().withMessage("E-mail valide obligatoire"),
-  // Validation du mot de passe
+const validateCreateUser = [
+  body("email")
+    .isEmail()
+    .withMessage("E-mail valide obligatoire"),
+
   body("password")
-    .isLength({ min: 12 }).withMessage("Le mot de passe au moins contenir 12 caractères")
-    .matches(/[a-z]/).withMessage('Le mot de passe doit contenir au moins une lettre minuscule')
-    .matches(/[A-Z]/).withMessage('Le mot de passe doit contenir au moins une lettre majuscule')
-    .matches(/\d/).withMessage('Le mot de passe doit contenir au moins un chiffre')
-    .matches(/[@$!%*?&]/).withMessage('Le mot de passe doit contenir au moins un caractère spécial (@, $, !, %, *, ?, & etc.)'),
+    .isLength({ min: 12 })
+    .withMessage("Le mot de passe doit contenir au moins 12 caractères")
+    .matches(/[a-z]/)
+    .withMessage("Le mot de passe doit contenir au moins une lettre minuscule")
+    .matches(/[A-Z]/)
+    .withMessage("Le mot de passe doit contenir au moins une lettre majuscule")
+    .matches(/\d/)
+    .withMessage("Le mot de passe doit contenir au moins un chiffre")
+    .matches(/[@$!%*?&]/)
+    .withMessage(
+      "Le mot de passe doit contenir au moins un caractère spécial (@, $, !, %, *, ?, & etc.)"
+    ),
 
-  // Vérification des erreurs de validation
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      logger.http(`${req.method} ${req.url} - ${res.statusCode}`);
       res.status(400).json({ errors: errors.array() });
       return;
     }
+
+    if (req.path === '/login') {
+      const { email } = req.body;
+      const user = await findUser(email);
+      
+      if (user && !user.isEmailVerified) {
+        res.status(401).json({ 
+          message: 'Veuillez vérifier votre email avant de vous connecter'
+        });
+        return;
+      }
+    }
+
     next();
   }
 ];
 
-export default validateUser;
+export default validateCreateUser;

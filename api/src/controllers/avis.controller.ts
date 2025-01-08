@@ -1,87 +1,390 @@
-import { Request, Response } from "express";
-import logger from "../config/logger";
-import { Avis } from "../models/avis.model";
+import { NextFunction, Request, Response, Router } from "express";
+import { authenticateToken } from "../middlewares/jwt";
+import { validateObjectId } from "../middlewares/validate";
+import {
+  validateRoleAdminOrUser,
+  validateRoleUser,
+} from "../middlewares/validator/validateRole";
+import { MongooseService } from "../services/mongoose/mongoose.service";
 
-const getAvisByUserId = async (req: Request, res: Response) => {
+export class AvisController {
+  // TODO:
+  // créer un avis
+  /**
+   * @swagger
+   * /api/avis/:
+   *   post:
+   *     summary: Create a new avis
+   *     tags: [Avis]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/Avis'
+   *           example:
+   *             userId: "60f3b3b3b3b3b3b3b3b3b3"
+   *             productId: "60f3b3b3b3b3b3b3b3b3b3"
+   *             rating: 5
+   *             comment: "Super produit"
+   *     responses:
+   *       201:
+   *         description: Avis created successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Avis'
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden
+   *       409:
+   *         description: Conflict
+   *       500:
+   *         description: Internal server error
+   */
+  async createAvis(req: Request, res: Response, next: NextFunction) {
     try {
-        const avis = await Avis.find({ userId: req.params.userId });
-        if (!avis) {
-            throw new Error("Avis not found.");
-        }
-
-        res.status(200).json(avis);
-    } catch (err: Error | any) {
-        logger.error(`Error retrieving avis: ${err}`);
-        res.status(500).json({ message: err.message });
+      if (
+        !req.body ||
+        !req.body.userId ||
+        !req.body.productId ||
+        !req.body.rating ||
+        !req.body.comment
+      ) {
+        res.status(400);
+        throw new Error("Bad request");
+      }
+      const mongooseService = await MongooseService.get();
+      const avis = await mongooseService.avisService.createAvis({
+        userId: req.body.userId,
+        productId: req.body.productId,
+        rating: req.body.rating,
+        comment: req.body.comment,
+      });
+      res.status(201).json(avis);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.name === "MongooseError" &&
+        error.message.startsWith("E11000 duplicate key")
+      ) {
+        res.status(409);
+      }
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
     }
+  }
+  // obtenir tous les avis d'un user
+  /**
+   * @swagger
+   * /api/avis/u/{userId}:
+   *   get:
+   *     summary: Get all avis by user
+   *     tags: [Avis]
+   *     parameters:
+   *       - in: path
+   *         name: userId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the user to retrieve avis
+   *     responses:
+   *       200:
+   *         description: Avis found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Avis'
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden
+   *       404:
+   *         description: Avis not found
+   *       500:
+   *         description: Internal server error
+   */
+  async getAvisByUserId(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params || !req.params.userId) {
+        res.status(400);
+        throw new Error("Bad request");
+      }
+      const mongooseService = await MongooseService.get();
+      const avis = await mongooseService.avisService.findAllAvisByUserId(
+        req.params.userId
+      );
+      res.status(200).json(avis);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+  // obtenir tous les avis d'un produit
+  /**
+   * @swagger
+   * /api/avis/p/{productId}:
+   *   get:
+   *     summary: Get all avis by product
+   *     tags: [Avis]
+   *     parameters:
+   *       - in: path
+   *         name: productId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the product to retrieve avis
+   *     responses:
+   *       200:
+   *         description: Avis found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Avis'
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden
+   *       404:
+   *         description: Avis not found
+   *       500:
+   *         description: Internal server error
+   */
+  async getAvisByProductId(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params || !req.params.productId) {
+        res.status(400);
+        throw new Error("Bad request");
+      }
+      const mongooseService = await MongooseService.get();
+      const avis = await mongooseService.avisService.findAllAvisByProductId(
+        req.params.productId
+      );
+      res.status(200).json(avis);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+  // modifier un avis
+  /**
+   * @swagger
+   * /api/avis/{id}:
+   *   put:
+   *     summary: Update an avis
+   *     tags: [Avis]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the avis to update
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/Avis'
+   *           example:
+   *             userId: "60f3b3b3b3b3b3b3b3b3b3"
+   *             productId: "60f3b3b3b3b3b3b3b3b3b3"
+   *             rating: 5
+   *             comment: "Super produit"
+   *     responses:
+   *       200:
+   *         description: Avis updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Avis'
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden
+   *       404:
+   *         description: Avis not found
+   *       500:
+   *         description: Internal server error
+   */
+  async updateAvis(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (
+        !req.params ||
+        !req.params.id ||
+        !req.body ||
+        !req.body.userId ||
+        !req.body.productId ||
+        !req.body.rating ||
+        !req.body.comment
+      ) {
+        res.status(400);
+        throw new Error("Bad request");
+      }
+      const mongooseService = await MongooseService.get();
+      const avis = await mongooseService.avisService.updateAvis(req.params.id, {
+        userId: req.body.userId,
+        productId: req.body.productId,
+        rating: req.body.rating,
+        comment: req.body.comment,
+      });
+      if (!avis) {
+        res.status(404);
+        throw new Error("Avis not found");
+      }
+      res.status(200).json(avis);
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+  // suppr un avis
+  /**
+   * @swagger
+   * /api/avis/{id}:
+   *   delete:
+   *     summary: Delete an avis
+   *     tags: [Avis]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the avis to delete
+   *     responses:
+   *       204:
+   *         description: Avis deleted successfully
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden
+   *       404:
+   *         description: Avis not found
+   *       500:
+   *         description: Internal server error
+   */
+  async deleteAvis(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params || !req.params.id) {
+        res.status(400);
+        throw new Error("Bad request");
+      }
+      const mongooseService = await MongooseService.get();
+      const avis = await mongooseService.avisService.deleteAvis(req.params.id);
+      if (!avis) {
+        res.status(404);
+        throw new Error("Avis not found");
+      }
+      res.status(204).send();
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+  // anonymiser tous les avis du user (suppression de compte)
+  /**
+   * @swagger
+   * /api/avis/u/{userId}:
+   *   delete:
+   *     summary: Delete all avis by user
+   *     tags: [Avis]
+   *     parameters:
+   *       - in: path
+   *         name: userId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the user to delete avis
+   *     responses:
+   *       204:
+   *         description: Avis deleted successfully
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden
+   *       404:
+   *         description: Avis not found
+   *       500:
+   *         description: Internal server error
+   */
+  async deleteAvisByUserId(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params || !req.params.userId) {
+        res.status(400);
+        throw new Error("Bad request");
+      }
+      const mongooseService = await MongooseService.get();
+      const avis = await mongooseService.avisService.anonymise(
+        req.params.userId
+      );
+    } catch (error) {
+      if (!res.statusCode) {
+        res.status(500);
+      }
+      next(error);
+    }
+  }
+
+  buildRouter(): Router {
+    const router = Router();
+    router.post("/", authenticateToken, validateRoleUser, this.createAvis);
+    router.get(
+      "/u/:userId",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.getAvisByUserId
+    );
+    router.get("/p/:productId", validateObjectId, this.getAvisByProductId);
+    router.put(
+      "/:id",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.updateAvis
+    );
+    router.delete(
+      "/:id",
+      authenticateToken,
+      validateRoleUser,
+      validateObjectId,
+      this.deleteAvis
+    );
+    router.delete(
+      "/u/:userId",
+      authenticateToken,
+      validateRoleAdminOrUser,
+      validateObjectId,
+      this.deleteAvisByUserId
+    );
+    return router;
+  }
 }
-
-const getAvisById = async (req: Request, res: Response) => {
-    try {
-        const avis = await Avis.find({ productId: req.params.id });
-        if (!avis) {
-            throw new Error("Avis not found.");
-        }
-        res.status(200).json(avis);
-    } catch (err: Error | any) {
-        logger.error(`Error retrieving avis: ${err}`);
-        res.status(500).json({ message: 'Error fetching avis', err });
-    }
-};
-
-const createAvis = async (req: Request, res: Response) => {
-    const { userId, productId, rating, comment } = req.body;
-    if (!userId || !productId || !rating || !comment) {
-        res.status(500).json({ message: 'Missing required fields.' });
-        return;
-    }
-
-    try {
-        const newAvis = new Avis({ userId, productId, rating, comment });
-        const savedAvis = await newAvis.save();
-        res.status(201).json(savedAvis);
-    } catch (err: Error | any) {
-        logger.error(`Error creating avis: ${err}`);
-        res.status(500).json({ message: err.message });
-    }
-};
-
-const updateAvis = async (req: Request, res: Response) => {
-    const { userId, productId, rating, comment } = req.body;
-    if (!userId || !productId || !rating || !comment) {
-        res.status(500).json({ message: 'Missing required fields.' });
-        return;
-    }
-
-    try {
-        const updatedAvis = await Avis.findByIdAndUpdate(req.params.id, { userId, productId, rating, comment }, { new: true });
-        if (!updatedAvis) {
-            throw new Error("Avis not found.");
-        }
-        res.status(200).json(updatedAvis);
-    } catch (err: Error | any) {
-        logger.error(`Error updating avis: ${err}`);
-        res.status(500).json({ message: err.message });
-    }
-};
-
-const deleteAvis = async (req: Request, res: Response) => {
-    try {
-        const deletedAvis = await Avis.findByIdAndDelete(req.params.id);
-        if (!deletedAvis) {
-            throw new Error("Avis not found.");
-        }
-        res.status(200).json({ deletedAvis, message: 'Avis deleted successfully' });
-    } catch (err: Error | any) {
-        logger.error(`Error deleting avis: ${err}`);
-        res.status(500).json({ message: err.message });
-    }
-};
-
-export {
-    getAvisByUserId,
-    getAvisById,
-    createAvis,
-    updateAvis,
-    deleteAvis
-};
