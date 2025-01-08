@@ -32,7 +32,7 @@ const userSchema = new Schema<User>({
   resetPasswordExpires: Date
 }, { timestamps: true });
 
-const UserModel = model<User>('User', userSchema);
+export const UserModel = model<User>('User', userSchema);
 
 export async function findUser(email: string): Promise<User | null> {
   return UserModel.findOne({ email });
