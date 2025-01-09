@@ -1,4 +1,5 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
+import { cartsSchema } from "../services/mongoose";
 
 export interface Carts {
   _id: string;
@@ -8,3 +9,5 @@ export interface Carts {
     quantity: Number;
   }[];
 }
+
+export const CartsModel = model<Carts>('Carts', cartsSchema);

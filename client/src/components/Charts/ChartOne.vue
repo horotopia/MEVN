@@ -1,10 +1,9 @@
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue';
-// @ts-ignore
 import VueApexCharts from 'vue3-apexcharts';
 
-const orders2024 = ref<number[]>([]);
-const orders2025 = ref<number[]>([]);
+const orders2024 = ref([]);
+const orders2025 = ref([]);
 const chart = ref(null);
 
 const apexOptions = ref({
@@ -86,7 +85,7 @@ const chartData = ref({
   ],
 });
 
-const fetchOrders = async (urlApi: string): Promise<number[] | null> => {
+const fetchOrders = async (urlApi) => {
   const jwtToken = localStorage.getItem('jwtToken');
   try {
     const response = await fetch(urlApi, {
@@ -134,7 +133,7 @@ const loadOrders = async () => {
     Math.max(...orders2024.value),
     Math.max(...orders2025.value)
   );
-  apexOptions.value.yaxis.max = maxValue*1.1;
+  apexOptions.value.yaxis.max = maxValue * 1.1;
   if (chart.value) {
     chart.value.updateOptions({
       yaxis: {

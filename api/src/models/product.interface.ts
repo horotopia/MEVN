@@ -1,4 +1,6 @@
+import { model } from "mongoose";
 import { Timestamps } from "./timestamps.interface";
+import { productSchema } from "../services/mongoose";
 
 export interface Product extends Timestamps {
   _id: string;
@@ -16,3 +18,5 @@ export interface Product extends Timestamps {
   category: string;
   stock: number;
 }
+
+export const ProductModel = model<Product>('Product', productSchema);

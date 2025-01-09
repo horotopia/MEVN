@@ -57,7 +57,7 @@ app.use(
 app.post('/create-payment-intent', async (req, res) => {
   try {
     const { amount, currency } = req.body;
-    
+
     if (!amount || !currency) {
       throw new Error('Le montant et la devise sont requis.');
     }

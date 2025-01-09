@@ -1,4 +1,5 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
+import { addressSchema } from "../services/mongoose";
 
 export interface Address {
   _id: string;
@@ -8,3 +9,5 @@ export interface Address {
   postalCode: string;
   country: string;
 }
+
+export const AddressModel = model<Address>('Address', addressSchema);

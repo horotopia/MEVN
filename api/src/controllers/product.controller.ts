@@ -403,10 +403,10 @@ export class ProductController {
       next(error);
     }
   }
-
+  
   buildRouter(): Router {
     const router = Router();
-    router.get("/countProductSellInMonth", this.countProductSellInMonth.bind(this));
+    router.get("/countProductSellInMonth", authenticateToken, validateRoleAdmin, this.countProductSellInMonth.bind(this));
     router.get("/:id", validateObjectId, this.getOneProduct.bind(this));
     router.get(
       "/:attribute/:value",
